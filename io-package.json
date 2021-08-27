@@ -1,0 +1,90 @@
+{
+	"common": {
+		"name": "thehome",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"titleLang": {
+			"en": "The Home",
+			"de": "Das Zuhause",
+			"ru": "Дом",
+			"pt": "A casa",
+			"nl": "Het thuis",
+			"fr": "La maison",
+			"it": "La casa",
+			"es": "El hogar",
+			"pl": "Dom",
+			"zh-cn": "家"
+		},
+		"desc": {
+			"en": "Configure ioBroker for Swissglider --> upload/download deviceConfiguration / set Swissglider Tags / change influxDB names",
+			"de": "ioBroker für Swissglider konfigurieren --> Gerät hochladen/herunterladenKonfiguration / Swissglider Tags setzen / influxDB-Namen ändern",
+			"ru": "Настройка ioBroker для Swissglider -> загрузка / загрузка устройства Настройка / установка тегов Swissglider / изменение имен InfxDB",
+			"pt": "Configurar ioBroker para Swissglider -> upload / download deviceConfiguration / set Swissglider Tags / change influxDB names",
+			"nl": "Configureer ioBroker voor Swissglider --> upload/download deviceConfiguration / stel Swissglider Tags in / verander influxDB-namen",
+			"fr": "Configurer ioBroker pour Swissglider --> charger/télécharger la configuration de l'appareil / définir les balises Swissglider / modifier les noms influxDB",
+			"it": "Configura ioBroker per Swissglider --> carica/scarica la configurazione del dispositivo / imposta i tag Swissglider / cambia i nomi di influxDB",
+			"es": "Configurar ioBroker para Swissglider -> cargar / descargar dispositivo Configuración / establecer etiquetas Swissglider / cambiar nombres de influxDB",
+			"pl": "Skonfiguruj ioBroker dla Swissglider --> upload/download deviceConfiguration / ustaw Swissglider Tags / zmień nazwy influxDB",
+			"zh-cn": "为 Swissglider 配置 ioBroker --> 上传/下载设备配置/设置 Swissglider 标签/更改 influxDB 名称"
+		},
+		"authors": ["swissglider <npm@mailschweiz.com>"],
+		"keywords": ["config", "swissglider", "influxdb", "app"],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "build/main.js",
+		"icon": "thehome.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/swissglider/ioBroker.thehome/master/admin/thehome.png",
+		"readme": "https://github.com/swissglider/ioBroker.thehome/blob/master/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "utility",
+		"compact": true,
+		"connectionType": "local",
+		"dataSource": "poll",
+		"materialize": true,
+		"materializeTab": true,
+		"adminTab": {
+			"singleton": true,
+			"name": {
+				"en": "The Home",
+				"de": "Das Zuhause",
+				"ru": "Дом",
+				"pt": "A casa",
+				"nl": "Het thuis",
+				"fr": "La maison",
+				"it": "La casa",
+				"es": "El hogar",
+				"pl": "Dom",
+				"zh-cn": "家"
+			},
+			"link": "",
+			"fa-icon": "info"
+		},
+		"supportCustoms": true,
+		"dependencies": [
+			{
+				"js-controller": ">=2.0.0"
+			}
+		]
+	},
+	"native": {
+		"option1": true,
+		"option2": "42"
+	},
+	"objects": [],
+	"instanceObjects": []
+}
