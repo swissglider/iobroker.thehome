@@ -21,10 +21,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = __importStar(require("@iobroker/adapter-core"));
+const configAdapter_1 = __importDefault(require("./adapters/configAdapter"));
 // Load your modules here, e.g.:
 // import * as fs from "fs";
 class Thehome extends utils.Adapter {
@@ -33,11 +37,22 @@ class Thehome extends utils.Adapter {
             ...options,
             name: 'thehome',
         });
-        this.on('ready', this.onReady.bind(this));
-        this.on('stateChange', this.onStateChange.bind(this));
+        // try {
+        configAdapter_1.default.init(this);
+        // } catch (err: any) {
+        // 	// TODO ERRORHANDLING
+        // 	this.log.error('***********************');
+        // 	this.log.error('ERROR !!!!!');
+        // 	this.log.error(err.message);
+        // 	this.log.error(err.name);
+        // 	this.log.error(err.stack);
+        // 	this.log.error('***********************');
+        // }
+        // this.on('ready', this.onReady.bind(this));
+        // this.on('stateChange', this.onStateChange.bind(this));
         // this.on('objectChange', this.onObjectChange.bind(this));
         // this.on('message', this.onMessage.bind(this));
-        this.on('unload', this.onUnload.bind(this));
+        // this.on('unload', this.onUnload.bind(this));
     }
     /**
      * Is called when databases are connected and adapter received configuration.
@@ -48,7 +63,6 @@ class Thehome extends utils.Adapter {
         // this.config:
         this.log.info('config option1: ' + this.config.option1);
         this.log.info('config option2: ' + this.config.option2);
-        this.log.error('Guido is in the hose, again 1');
         /*
         For every state in the system there has to be also an object of type state
         Here a simple template for a boolean variable named "testVariable"

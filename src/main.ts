@@ -5,6 +5,7 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 import * as utils from '@iobroker/adapter-core';
+import ConfigAdapter from './adapters/configAdapter';
 
 // Load your modules here, e.g.:
 // import * as fs from "fs";
@@ -15,11 +16,22 @@ class Thehome extends utils.Adapter {
 			...options,
 			name: 'thehome',
 		});
-		this.on('ready', this.onReady.bind(this));
-		this.on('stateChange', this.onStateChange.bind(this));
+		// try {
+		ConfigAdapter.init(this);
+		// } catch (err: any) {
+		// 	// TODO ERRORHANDLING
+		// 	this.log.error('***********************');
+		// 	this.log.error('ERROR !!!!!');
+		// 	this.log.error(err.message);
+		// 	this.log.error(err.name);
+		// 	this.log.error(err.stack);
+		// 	this.log.error('***********************');
+		// }
+		// this.on('ready', this.onReady.bind(this));
+		// this.on('stateChange', this.onStateChange.bind(this));
 		// this.on('objectChange', this.onObjectChange.bind(this));
 		// this.on('message', this.onMessage.bind(this));
-		this.on('unload', this.onUnload.bind(this));
+		// this.on('unload', this.onUnload.bind(this));
 	}
 
 	/**
@@ -32,7 +44,6 @@ class Thehome extends utils.Adapter {
 		// this.config:
 		this.log.info('config option1: ' + this.config.option1);
 		this.log.info('config option2: ' + this.config.option2);
-		this.log.error('Guido is in the hose, again 1');
 
 		/*
 		For every state in the system there has to be also an object of type state
