@@ -32,6 +32,7 @@ class Thehome extends utils.Adapter {
 		// this.config:
 		this.log.info('config option1: ' + this.config.option1);
 		this.log.info('config option2: ' + this.config.option2);
+		this.log.error('Guido is in the hose, again 1');
 
 		/*
 		For every state in the system there has to be also an object of type state

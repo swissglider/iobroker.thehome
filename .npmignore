@@ -23,4 +23,7 @@ iobroker.*.tgz
 package-lock.json
 
 # maintenance scripts
-maintenance/**
+maintenance/**$
+
+# ioBroker dev-server
+.dev-server/

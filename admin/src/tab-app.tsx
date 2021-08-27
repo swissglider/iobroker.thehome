@@ -42,7 +42,7 @@ class TabApp extends GenericApp {
 
 		return (
 			<div className="App">
-				Add your components here.
+				Add your components here, Guido.
 				{this.renderError()}
 				{this.renderToast()}
 			</div>

@@ -51,12 +51,14 @@
 		"readme": "https://github.com/swissglider/ioBroker.thehome/blob/master/README.md",
 		"loglevel": "info",
 		"mode": "daemon",
-		"type": "utility",
+		"type": "general",
 		"compact": true,
 		"connectionType": "local",
 		"dataSource": "poll",
 		"materialize": true,
 		"materializeTab": true,
+		"messagebox": true,
+		"subscribe": "messagebox",
 		"adminTab": {
 			"singleton": true,
 			"name": {
@@ -83,7 +85,7 @@
 	},
 	"native": {
 		"option1": true,
-		"option2": "42"
+		"option2": "43"
 	},
 	"objects": [],
 	"instanceObjects": []
