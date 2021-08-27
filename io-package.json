@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-1",
+        "version": "0.0.2-2",
         "news": {
+            "0.0.2-2": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Первый выпуск",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "初始发行"
+            },
             "0.0.2-1": {
                 "en": "initial release",
                 "de": "Erstveröffentlichung",
