@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) initial release
+
 ### 0.0.2-1 (2021-08-27)
 
 -   (swissglider) initial release

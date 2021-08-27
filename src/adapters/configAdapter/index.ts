@@ -48,6 +48,7 @@ const onObjectChange = async (id: string, obj: ioBroker.Object | null | undefine
 	}
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const onUnload = async (callback: () => void): Promise<void> => {
 	_adapter.log.silly('ConfigAdapter::unload');
 	try {
