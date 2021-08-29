@@ -1,0 +1,106 @@
+@startuml
+!theme cyborg-outline
+
+title
+    SwissgliderTheHome Adapter - Class Diagram
+end title
+
+class InfluxDBHandlerAdapter {
+    + <<async>> stopInfluxDBAdapter()
+    + <<async>> startInfluxDBAdapter()
+    + <<async>> resetChangedTimeSeriesNameOnDB(string stateName)
+    + <<async>> deleteCustomInfluxAdapterEntry(string stateName)
+    + <<async>> changeCustomAlias()
+    + <<async>> enableCustom()
+    - <<async>> changeTimeSeriesNameOnDB(string oldName, string newName)
+
+}
+class ConfigAdapter {
+    + <<async>> singleConfigUpload()
+    + <<async>> configDownload(string format)
+    + <<async>> configUploadJSON()
+    + <<async>> configUploadYAML()
+    - <<async>> removeStateFromAllRoomAndFunctionEnums()
+    - <<async>> addStateToRoom()
+    - <<async>> addStateToFunction()
+    - <<async>> changeStateName()
+    - <<async>> convertJsonToYaml()
+}
+
+class BatteryChecker {
+    + <<async>> stopChecking()
+    + <<async>> startChecking()
+    + <<async>> removeStateFromService()
+    + <<async>> addStateFromService()
+}
+class ConnectionChecker {
+    + <<async>> stopChecking()
+    + <<async>> startChecking()
+    + <<async>> removeStateFromService()
+    + <<async>> addStateFromService()
+}
+class NameChangePreWorker {
+    - stateListe
+    + <<async>> stopListening()
+    + <<async>> startListening()
+    + <<async>> removeStateFromListener()
+    + <<async>> addStateFromListener()
+    - <<async>> onNameChange(string stateID, string newStateName)
+}
+
+interface StateInformation {
+    stateID:string,
+    stateName:string,
+    functions:string|undefined,
+    rooms:string|undefined,
+}
+
+class AdapterUtils {
+    + <<async>> stopAllServices()
+    + <<async>> startAllServices()
+    + <<async>> removeStateFromAllServices(string stateName)
+    + <<async>> addStateFromAllServices(string stateName)
+    + <<async>> sendTo()
+    + <<async>> getAllStateInformationsWithFunctionAndOrRoomEnums()
+}
+note right of AdapterUtils::stopAllServices
+    stops all Services in this order:
+    * BatteryChecker::stopChecking
+    * ConnectionChecker::stopChecking
+    * NameChangePreWorker::stopListening
+    * InfluxDBHandlerAdapter::stopInfluxDBAdapter
+end note
+
+note right of AdapterUtils::startAllServices
+    starts all Services in this order:
+    * InfluxDBHandlerAdapter::startInfluxDBAdapter
+    * NameChangePreWorker::startListening
+    * BatteryChecker::startChecking
+    * ConnectionChecker::startChecking
+end note
+
+note right of AdapterUtils::removeStateFromAllServices
+    removes the state from all Services:
+    * ConnectionChecker::removeStateFromService
+    * BatteryChecker::removeStateFromService
+    * NameChangePreWorker::removeStateFromListener
+    * InfluxDBHandlerAdapter::stopInfluxDBAdapter
+end note
+
+note right of AdapterUtils::addStateFromAllServices
+    removes the state from all Services:
+    * InfluxDBHandlerAdapter::startInfluxDBAdapter
+    * NameChangePreWorker::addStateFromListener
+    * ConnectionChecker::addStateFromService
+    * BatteryChecker::addStateFromService
+end note
+
+note right of AdapterUtils::getAllStateInformationsWithFunctionAndOrRoomEnums
+    returns a list with all States including:
+    * stateID
+    * stateName
+    * function Enum
+    * room Enum
+end note
+
+@enduml

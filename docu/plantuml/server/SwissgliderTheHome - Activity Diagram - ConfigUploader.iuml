@@ -1,0 +1,65 @@
+@startuml
+!theme cyborg-outline
+
+<style>
+    diamond {
+        BackgroundColor #ccf
+    }
+    partition {
+        FontColor green
+        RoundCorner 10
+    }
+  arrow {
+    FontColor black
+    FontName arial
+  }
+</style>
+
+title
+    SwissgliderTheHome Adapter - Upload ConfigFile
+end title
+
+start
+partition "On the Browser" {
+    :Upload YAML/JSON on Admin Page;
+}
+partition "on adapter admin" {
+:sendTo configUpload;
+}
+partition "on adapter" {
+    :configUpload;
+    partition "pre work - stop services and delete old configs" {
+        #palegreen:stop all services;
+        #palegreen:get all States with Room or/and Function enums;
+        repeat
+            :read next config state;
+            fork
+                #palegreen:reset Influx TimeSeries to org Statename on InfluxDB;
+                #palegreen:delete custom InfluxDBAdapter entry;
+                fork again
+                :remove state from all function and room enums;
+            end fork
+        repeat while (more states with Function and/or Room enums?)
+    }
+    partition "set new config" {
+        repeat
+            :read next config state;
+            fork
+                :add state to room enum from config;
+                fork again
+                :add state to function enum from config;
+                fork again
+                :change state name;
+                fork again
+                #palegreen:change alias on InfluxDBAdapter custom;
+                #palegreen:change TimeSeries State Name on InfluxDB;
+                #palegreen:set enable on InfluxDBAdapter custom;
+            end fork
+        repeat while (more config states?)
+    }
+    #palegreen:re-start all services;
+    :return result;
+}
+stop
+
+@enduml

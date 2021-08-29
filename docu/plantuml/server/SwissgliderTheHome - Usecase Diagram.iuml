@@ -1,0 +1,122 @@
+@startuml
+!theme cyborg-outline
+
+title
+    SwissgliderTheHome Adapter - Usecase Diagram
+end title
+
+actor client << Browser >>
+rectangle admin {
+    actor adminSendTo << AdminAction >> #pink;line:red;line.bold;text:red
+}
+
+rectangle adapter {
+    actor FrequenceBatteryChecker << Timer >>
+    actor FrequenceConnectionChecker << Timer >>
+    actor NameChangeListener << Listener >>
+    usecase ConfigUploader as "=Upload ConfigFile"
+        note top
+            Lädt die Configuration in einem 
+            yaml/json file hoch und ändert die
+            entsprechenden States mit den folgenden
+            Parameter:
+            ..
+            * State Name
+            * Room Enum (löschen und neu setzen)
+            * Function Enum (löschen und neu setzen)
+        end note
+    usecase SingleUploader as "=Upload SingleStateConfig"
+        note top
+            Lädt die einzelne Configuration, 
+            welche im Admin Interface eingegeben wird 
+            hoch und ändert den
+            entsprechenden State mit den folgenden
+            Parameter:
+            ..
+            * State Name
+            * Room Enum (löschen und neu setzen)
+            * Function Enum (löschen und neu setzen)
+        end note
+    usecase ConfigDownloader as "=Download ConfigFile"
+        note top
+            Lädt die Configuration in einem 
+            yaml/json file runter. 
+            Für alle States welche einem 
+            Room oder/und Function Enum zugewiesen sind
+            werden folgende Parameter geschrieben:
+            ..
+            * State Name
+            * Room Enum (löschen und neu setzen)
+            * Function Enum (löschen und neu setzen)
+        end note
+    usecase InfluxDBConverter as "=Convert DB StateNames"
+        note top
+            Alle bestehenden TimeSeries mit
+            dem original State Namen werden umgeschrieben
+            in den aliasID Name auf der InfluxDB selber
+        end note
+    usecase BatteryChecker as "=Check Battery"
+        note top
+            Schreibt ein State mit allen Battery Staties
+            und gibt dies als JSON auch zurück
+            Berücksichtigt werden alle Stati mit einem
+            Battery value
+        end note
+    usecase ConnectionChecker as "=Check Device Connections"
+        note top
+            Alle Stati welche ein Room und/oder Function Enum
+            haben werden geprüft, wann es das letzte mal
+            erreichbar war und schreibt das Resultat in
+            einen Status als JSON, dieser wird auch zurück
+            gegeben
+        end note
+    usecase NameChangePreWorker as "=Listen to StateNames changes"
+        note top
+            Wenn ein Name eines Status in Scope geändert wird, 
+            wird auch entsprechend InfluxDB entries dem Namen
+            angepasst.
+        end note
+}
+rectangle adapter1 as "Adapter function zu Prüfen" {
+    usecase SwissgliderGeneralParameterGenerator as "=Generate Swissglider General Parameters"
+        note bottom
+            Ruft SwissgliderGeneralParameterCleaner auf
+            und schreibt danach bei allen Stati welche ein 
+            Room und/oder Function Enum haben, die
+            native/swissglider/general
+            Parameter:
+            ..
+            * channelName
+            * deviceName
+            * adaptername
+            * instanceName
+            * instanceNumber
+            * id
+            * stateName
+        end note
+    usecase SwissgliderGeneralParameterCleaner as "=Clean all Swissglider General Parameters"
+        note bottom
+            löscht von allen Stati die 
+            native/swissglider/general
+            Parameters
+        end note
+}
+
+left to right direction
+client -left..> adminSendTo
+adminSendTo -up-> ConfigUploader
+adminSendTo -up-> SingleUploader
+adminSendTo -up-> ConfigDownloader
+adminSendTo -down-> SwissgliderGeneralParameterGenerator
+adminSendTo -down-> SwissgliderGeneralParameterCleaner
+SwissgliderGeneralParameterGenerator -> SwissgliderGeneralParameterCleaner
+
+ConfigUploader -> InfluxDBConverter
+SingleUploader -> InfluxDBConverter
+NameChangePreWorker -> SingleUploader
+
+FrequenceBatteryChecker -left-> BatteryChecker
+FrequenceConnectionChecker -left-> ConnectionChecker
+NameChangeListener -left-> NameChangePreWorker
+
+@enduml

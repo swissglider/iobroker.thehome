@@ -1,0 +1,37 @@
+@startuml
+!theme cyborg-outline
+
+<style>
+    diamond {
+        BackgroundColor #ccf
+    }
+    partition {
+        FontColor green
+        RoundCorner 10
+    }
+  arrow {
+    FontColor black
+    FontName arial
+  }
+</style>
+
+title
+    SwissgliderTheHome Adapter - Download ConfigFile
+end title
+
+start
+partition "On the Browser" {
+    :Download YAML/JSON on Admin Page;
+}
+partition "on adapter admin" {
+:sendTo configDownload;
+}
+partition "on adapter" {
+    :configDownload;
+    #palegreen:get all States with Room or/and Function enums;
+    :generat the JSON/YAML with the configurations;
+    :return result;
+}
+stop
+
+@enduml

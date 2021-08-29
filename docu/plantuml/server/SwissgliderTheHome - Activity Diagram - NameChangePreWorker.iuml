@@ -1,0 +1,38 @@
+@startuml
+!theme cyborg-outline
+
+<style>
+    diamond {
+        BackgroundColor #ccf
+    }
+    partition {
+        FontColor green
+        RoundCorner 10
+    }
+  arrow {
+    FontColor black
+    FontName arial
+  }
+</style>
+
+title
+    SwissgliderTheHome Adapter - Listen To StateName changes
+end title
+
+start
+
+partition "on adapter" {
+    partition "on start" {
+        #palegreen:get all States with Room or/and Function enums;
+        :init stateList to listen;
+    }
+    partition "on listening" {
+        if (on change) then (changed)
+            :on Name change;
+            #palegreen:singleConfigUpload;
+        endif
+    }
+}
+stop
+
+@enduml
