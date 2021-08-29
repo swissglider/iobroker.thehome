@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const functions_1 = __importDefault(require("./functions"));
 let _adapter;
 const onReady = async () => {
     _adapter.log.silly('ConfigAdapter::onReady');
@@ -8,6 +12,19 @@ const onMessage = async (obj) => {
     _adapter.log.silly('ConfigAdapter::onMessage');
     // if (typeof obj === 'object' && obj.message) {
     if (typeof obj === 'object') {
+        if (obj.command == 'ConfigAdapter:configDownload') {
+            if (obj.callback) {
+                const t1 = await functions_1.default.configDownload(_adapter);
+                _adapter.sendTo(obj.from, obj.command, t1, obj.callback);
+            }
+        }
+        if (obj.command == 'ConfigAdapter:configUpload') {
+            if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message && 'type' in obj.message) {
+                const config = obj.message.config;
+                const result = await functions_1.default.configUpload(_adapter, config);
+                _adapter.sendTo(obj.from, obj.command, result, obj.callback);
+            }
+        }
         if (obj.command == 'upload:object:configuration::send') {
             if (obj.callback) {
                 _adapter.sendTo(obj.from, obj.command, 'Message from upload:object:configuration::send', obj.callback);
@@ -47,6 +64,7 @@ const onObjectChange = async (id, obj) => {
         _adapter.log.silly(`object ${id} deleted`);
     }
 };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const onUnload = async (callback) => {
     _adapter.log.silly('ConfigAdapter::unload');
     try {

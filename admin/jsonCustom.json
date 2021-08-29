@@ -1,0 +1,76 @@
+{
+	"i18n": {
+		"changedByAdapter": {
+			"en": "Changed by Adapter",
+			"de": "Durch Adaptr geändert"
+		}
+	},
+	"items": {
+		"changedByAdapter1": {
+			"type": "staticText",
+			"label": "Changed by Adapter",
+			"sm": 12
+		},
+		"changedByAdapter": {
+			"type": "checkbox",
+			"label": "Changed by Adapter",
+			"default": true,
+			"disabled": "true",
+			"sm": 6,
+			"onChange": { "calculateFunc": "alert('Hallo Guido')" }
+		},
+		"div": {
+			"type": "divider",
+			"color": "secondary"
+		},
+		"header": {
+			"type": "header",
+			"text": "Hallo Header1"
+		},
+		"Editor": {
+			"type": "json",
+			"label": "Hallo JSON",
+			"json": { "hall": "el" },
+			"sm": 12
+		},
+		"InputFile": {
+			"type": "file",
+			"label": "Hallo File"
+		},
+		"selectFunctionsPanel": {
+			"type": "panel",
+			"color": "secondary",
+			"items": {
+				"selectFunctions": {
+					"type": "selectSendTo",
+					"command": "upload:object:CustomObjectAdapter::getAllFunctions",
+					"jsonData": "{\"id\":\"${customObj._id}\", \"lang\":\"${_system.language}\"}"
+				}
+			}
+		},
+		"selectRoomsPanel": {
+			"type": "panel",
+			"label": "selectRoomsPanel",
+			"color": "primary",
+			"items": {
+				"selectRooms": {
+					"type": "selectSendTo",
+					"command": "upload:object:CustomObjectAdapter::getAllRooms",
+					"jsonData": "{\"id\":\"${customObj._id}\", \"lang\":\"${_system.language}\", \"data\":${JSON.stringify(data)}}"
+				}
+			}
+		},
+		"tab2": {
+			"label": "Tab2",
+			"type": "button",
+			"color": "primary",
+			"items": {
+				"selectRooms": {
+					"type": "sendto",
+					"command": "upload:object:CustomObjectAdapter::getAllRooms",
+					"jsonData": "{\"id\":\"${customObj._id}\", \"lang\":\"${_system.language}\", \"data\":${JSON.stringify(data)}}"
+				}
+			}
+		}
+	}
+}

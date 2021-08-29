@@ -1,3 +1,5 @@
+import ConfigAdapterFunctions from './functions';
+
 let _adapter: ioBroker.Adapter;
 
 const onReady = async (): Promise<void> => {
@@ -8,6 +10,19 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 	_adapter.log.silly('ConfigAdapter::onMessage');
 	// if (typeof obj === 'object' && obj.message) {
 	if (typeof obj === 'object') {
+		if (obj.command == 'ConfigAdapter:configDownload') {
+			if (obj.callback) {
+				const t1 = await ConfigAdapterFunctions.configDownload(_adapter);
+				_adapter.sendTo(obj.from, obj.command, t1, obj.callback);
+			}
+		}
+		if (obj.command == 'ConfigAdapter:configUpload') {
+			if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message && 'type' in obj.message) {
+				const config = obj.message.config;
+				const result = await ConfigAdapterFunctions.configUpload(_adapter, config);
+				_adapter.sendTo(obj.from, obj.command, result, obj.callback);
+			}
+		}
 		if (obj.command == 'upload:object:configuration::send') {
 			if (obj.callback) {
 				_adapter.sendTo(obj.from, obj.command, 'Message from upload:object:configuration::send', obj.callback);

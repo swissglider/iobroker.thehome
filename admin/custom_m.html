@@ -21,7 +21,7 @@
 </script>
 
 <script type="text/javascript">
-	$.get("adapter/thehome/words.js", function(script) {
+	$.get('adapter/thehome/words.js', function (script) {
 		let translation = script.substring(script.indexOf('{'), script.length);
 		translation = translation.substring(0, translation.lastIndexOf(';'));
 		$.extend(systemDictionary, JSON.parse(translation));
@@ -32,13 +32,13 @@
 	// - with function in global variable "defaults". Function name is equal with adapter name.
 	//   as input function receives object with all information concerning it
 	if (typeof defaults !== 'undefined') {
-		defaults["thehome"] = function (obj, instanceObj) {
+		defaults['thehome'] = function (obj, instanceObj) {
 			return {
-				enabled:        false,
-				interval:       '5m',
-				state:          false,
-				setAck:         false
+				enabled: false,
+				interval: '5m',
+				state: false,
+				setAck: false,
 			};
-		}
+		};
 	}
 </script>
