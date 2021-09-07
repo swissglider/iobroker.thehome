@@ -106,6 +106,18 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+## **WORK IN PROGRESS**
+
+-   (swissglider) the following UseCases has been implemented
+
+    -   Upload ConfigFile
+    -   Download ConfigFile
+    -   Single ConfigFile Upload
+
+-   (swissglider) ToDo:
+    -   all InfluxDB functions
+    -   all Service/Listener functions
+
 ### 0.0.2-3 (2021-08-29)
 
 -   (swissglider) the following UseCases has been implemented
