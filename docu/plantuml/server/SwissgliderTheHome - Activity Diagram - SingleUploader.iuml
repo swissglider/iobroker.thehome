@@ -24,10 +24,10 @@ partition "On the Browser" {
     :Enter Config to upload on Admin Page;
 }
 partition "on adapter admin" {
-:sendTo singleConfigUploader;
+:sendTo singleStateConfigUploader;
 }
 partition "on adapter" {
-    :singleConfigUpload;
+    :singleStateConfigUpload;
     partition "pre work - stop services and delete old configs for the new config" {
         #palegreen:remove State from all services;
         fork
@@ -39,8 +39,10 @@ partition "on adapter" {
     }
     partition "set new config" {
         fork
+            :check and create if needed new enum;
             :add state to room enum from config;
             fork again
+            :check and create if needed new enum;
             :add state to function enum from config;
             fork again
             :change state name;

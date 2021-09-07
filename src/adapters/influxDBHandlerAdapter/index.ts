@@ -1,4 +1,4 @@
-import { StateInformation } from '../../utils/adapterUtils';
+import { StateInformation } from '../../utils/adapterUtils/I_StateInformation';
 
 const resetInfluxTimeSeries = async (adapter: ioBroker.Adapter, stateObject: ioBroker.Object): Promise<void> => {
 	adapter;

@@ -1,4 +1,5 @@
-import { StateInformation } from '../../utils/adapterUtils';
+import AdapterUtils from '../../utils/adapterUtils';
+import { StateInformation } from '../../utils/adapterUtils/I_StateInformation';
 import InfluxDBHandlerAdapter from '../influxDBHandlerAdapter';
 
 const handleInfluxDBReset = async (adapter: ioBroker.Adapter, stateObject: ioBroker.Object): Promise<void> => {
@@ -30,17 +31,21 @@ const removeAllRoomFunctionEnums = async (adapter: ioBroker.Adapter, stateObject
 const addStateToEnums = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
 	const addStateIDToEnum = async (_adapter: ioBroker.Adapter, enumID: string, stateID: string): Promise<void> => {
 		const en = await _adapter.getForeignObjectAsync(enumID, 'enum');
-		if (en && en.common.members) {
+		if (en && en.common.members && !en.common.members.includes(stateID)) {
 			en.common.members.push(stateID);
 			await _adapter.setForeignObjectAsync(enumID, en);
 		}
 	};
 
 	if (stateConfig.stateID && stateConfig.functions) {
+		// check and create if needed new enum
+		await AdapterUtils.chechAndCreateIfNeededNewEnum(adapter, stateConfig.functions);
 		// add state to function enum from config
 		await addStateIDToEnum(adapter, stateConfig.functions, stateConfig.stateID);
 	}
 	if (stateConfig.stateID && stateConfig.rooms) {
+		// check and create if needed new enum
+		await AdapterUtils.chechAndCreateIfNeededNewEnum(adapter, stateConfig.rooms);
 		// add state to room enum from config
 		await addStateIDToEnum(adapter, stateConfig.rooms, stateConfig.stateID);
 	}

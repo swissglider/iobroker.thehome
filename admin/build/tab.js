@@ -71648,13 +71648,21 @@ exports["default"] = _default;
 module.exports = {
   "thehome adapter settings": "Adapter settings for thehome",
   "option1": "option1",
-  "option2": "option2"
+  "option2": "option2",
+  "options": "General Options",
+  "stateConfig": "State Config Up/Download",
+  "singleStateUpload": "Single State Upload",
+  "b2": "B2"
 };
 },{}],"i18n/de.json":[function(require,module,exports) {
 module.exports = {
   "thehome adapter settings": "Adaptereinstellungen für thehome",
   "option1": "Option 1",
-  "option2": "Option 2"
+  "option2": "Option 2",
+  "options": "Generelle Konfiguration",
+  "stateConfig": "State Config Up/Download",
+  "singleStateUpload": "Single State Upload",
+  "b2": "B2"
 };
 },{}],"i18n/ru.json":[function(require,module,exports) {
 module.exports = {
@@ -71885,7 +71893,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52550" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52891" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -10,29 +10,24 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 	_adapter.log.silly('ConfigAdapter::onMessage');
 	// if (typeof obj === 'object' && obj.message) {
 	if (typeof obj === 'object') {
-		if (obj.command == 'ConfigAdapter:configDownload') {
+		if (obj.command == 'ConfigAdapter:statesConfigDownload') {
 			if (obj.callback) {
-				const t1 = await ConfigAdapterFunctions.configDownload(_adapter);
+				const t1 = await ConfigAdapterFunctions.statesConfigDownload(_adapter);
 				_adapter.sendTo(obj.from, obj.command, t1, obj.callback);
 			}
 		}
-		if (obj.command == 'ConfigAdapter:configUpload') {
-			if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message && 'type' in obj.message) {
+		if (obj.command == 'ConfigAdapter:statesConfigUpload') {
+			if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message) {
 				const config = obj.message.config;
-				const result = await ConfigAdapterFunctions.configUpload(_adapter, config);
+				const result = await ConfigAdapterFunctions.statesConfigUpload(_adapter, config);
 				_adapter.sendTo(obj.from, obj.command, result, obj.callback);
 			}
 		}
-		if (obj.command == 'upload:object:configuration::send') {
-			if (obj.callback) {
-				_adapter.sendTo(obj.from, obj.command, 'Message from upload:object:configuration::send', obj.callback);
-			}
-		}
-		if (obj.command == 'upload:object:configuration::test1') {
-			if (obj.callback) {
-				_adapter.log.warn('upload:object:configuration::test1');
-				_adapter.log.info(JSON.stringify(obj.message));
-				_adapter.sendTo(obj.from, obj.command, 'From sendTo test1', obj.callback);
+		if (obj.command == 'ConfigAdapter:singleStateConfigUpload') {
+			if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message) {
+				const config = obj.message.config;
+				const result = await ConfigAdapterFunctions.singleStateConfigUpload(_adapter, config);
+				_adapter.sendTo(obj.from, obj.command, result, obj.callback);
 			}
 		}
 	}

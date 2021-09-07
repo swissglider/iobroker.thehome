@@ -16,10 +16,10 @@ class InfluxDBHandlerAdapter {
 
 }
 class ConfigAdapter {
-    + <<async>> singleConfigUpload()
-    + <<async>> configDownload(string format)
-    + <<async>> configUploadJSON()
-    + <<async>> configUploadYAML()
+    + <<async>> singleStateConfigUpload()
+    + <<async>> statesConfigDownload(string format)
+    + <<async>> statesConfigUploadJSON()
+    + <<async>> statesConfigUploadYAML()
     - <<async>> removeStateFromAllRoomAndFunctionEnums()
     - <<async>> addStateToRoom()
     - <<async>> addStateToFunction()
@@ -62,6 +62,7 @@ class AdapterUtils {
     + <<async>> addStateFromAllServices(string stateName)
     + <<async>> sendTo()
     + <<async>> getAllStateInformationsWithFunctionAndOrRoomEnums()
+    + <<async>> chechAndCreateIfNeededNewEnum(string enumID)
 }
 note right of AdapterUtils::stopAllServices
     stops all Services in this order:

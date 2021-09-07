@@ -45,16 +45,53 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter,
     }));
     return stateInfos;
 };
-const stopAllServices = async () => {
+const stopAllServices = async (adapter) => {
     // TODO
+    adapter;
     return;
 };
-const startAllServices = async () => {
+const startAllServices = async (adapter) => {
     // TODO
+    adapter;
     return;
 };
-const restartAllServices = async () => {
+const restartAllServices = async (adapter) => {
     // TODO
+    adapter;
+    return;
+};
+const removeStateFromAllServices = async (adapter, stateConfig) => {
+    // TODO
+    adapter;
+    stateConfig;
+    return;
+};
+const addStateToAllServices = async (adapter, stateConfig) => {
+    // TODO
+    adapter;
+    stateConfig;
+    return;
+};
+const chechAndCreateIfNeededNewEnum = async (adapter, enumID, enumName, enumIcon, enumDescription, enumColor) => {
+    if (adapter && enumID) {
+        const enumObject = {};
+        enumObject.type = 'enum';
+        enumObject.common = {};
+        enumObject.common.name = enumName ? enumName : enumID.substr(enumID.lastIndexOf('.') + 1);
+        enumObject.common.enabled = true;
+        if (enumColor)
+            enumObject.common.color = enumColor;
+        if (enumDescription)
+            enumObject.common.desc = enumDescription;
+        if (enumIcon)
+            enumObject.common.icon = enumIcon;
+        enumObject.common.members = [];
+        enumObject.natice = {};
+        enumObject._id = enumID;
+        enumObject.from = 'system.adapter.admin.0';
+        enumObject.user = 'system.user.admin';
+        await adapter.setForeignObjectNotExistsAsync(enumID, enumObject);
+    }
     return;
 };
 const AdapterUtils = {
@@ -63,6 +100,9 @@ const AdapterUtils = {
     stopAllServices: stopAllServices,
     startAllServices: startAllServices,
     restartAllServices: restartAllServices,
+    removeStateFromAllServices: removeStateFromAllServices,
+    addStateToAllServices: addStateToAllServices,
+    chechAndCreateIfNeededNewEnum: chechAndCreateIfNeededNewEnum,
 };
 exports.default = AdapterUtils;
 //# sourceMappingURL=index.js.map

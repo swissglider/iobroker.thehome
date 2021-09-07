@@ -1,5 +1,9 @@
 {
 	"thehome adapter settings": "Adapter settings for thehome",
 	"option1": "option1",
-	"option2": "option2"
+	"option2": "option2",
+	"options": "General Options",
+	"stateConfig": "State Config Up/Download",
+	"singleStateUpload": "Single State Upload",
+	"b2": "B2"
 }

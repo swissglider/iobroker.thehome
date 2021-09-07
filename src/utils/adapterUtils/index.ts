@@ -1,9 +1,4 @@
-export interface StateInformation {
-	stateID: string;
-	stateName: string;
-	functions?: string;
-	rooms?: string;
-}
+import { StateInformation } from './I_StateInformation';
 
 /**
  * Creates and returns an array of ioBroker.Objects with all states that contains function and/or room enums
@@ -59,18 +54,62 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 	return stateInfos;
 };
 
-const stopAllServices = async (): Promise<void> => {
+const stopAllServices = async (adapter: ioBroker.Adapter): Promise<void> => {
 	// TODO
+	adapter;
 	return;
 };
 
-const startAllServices = async (): Promise<void> => {
+const startAllServices = async (adapter: ioBroker.Adapter): Promise<void> => {
 	// TODO
+	adapter;
 	return;
 };
 
-const restartAllServices = async (): Promise<void> => {
+const restartAllServices = async (adapter: ioBroker.Adapter): Promise<void> => {
 	// TODO
+	adapter;
+	return;
+};
+
+const removeStateFromAllServices = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
+	// TODO
+	adapter;
+	stateConfig;
+	return;
+};
+
+const addStateToAllServices = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
+	// TODO
+	adapter;
+	stateConfig;
+	return;
+};
+
+const chechAndCreateIfNeededNewEnum = async (
+	adapter: ioBroker.Adapter,
+	enumID: string,
+	enumName?: string,
+	enumIcon?: string,
+	enumDescription?: string,
+	enumColor?: string,
+): Promise<void> => {
+	if (adapter && enumID) {
+		const enumObject: ioBroker.Enum = {};
+		enumObject.type = 'enum';
+		enumObject.common = {};
+		enumObject.common.name = enumName ? enumName : enumID.substr(enumID.lastIndexOf('.') + 1);
+		enumObject.common.enabled = true;
+		if (enumColor) enumObject.common.color = enumColor;
+		if (enumDescription) enumObject.common.desc = enumDescription;
+		if (enumIcon) enumObject.common.icon = enumIcon;
+		enumObject.common.members = [];
+		enumObject.natice = {};
+		enumObject._id = enumID;
+		enumObject.from = 'system.adapter.admin.0';
+		enumObject.user = 'system.user.admin';
+		await adapter.setForeignObjectNotExistsAsync(enumID, enumObject);
+	}
 	return;
 };
 
@@ -80,6 +119,9 @@ const AdapterUtils = {
 	stopAllServices: stopAllServices,
 	startAllServices: startAllServices,
 	restartAllServices: restartAllServices,
+	removeStateFromAllServices: removeStateFromAllServices,
+	addStateToAllServices: addStateToAllServices,
+	chechAndCreateIfNeededNewEnum: chechAndCreateIfNeededNewEnum,
 };
 
 export default AdapterUtils;

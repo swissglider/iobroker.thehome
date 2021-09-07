@@ -1,14 +1,31 @@
 import React from 'react';
-import { Theme, withStyles } from '@material-ui/core/styles';
+import { Theme, withStyles, MuiThemeProvider } from '@material-ui/core/styles';
 
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import GenericApp from '@iobroker/adapter-react/GenericApp';
 import Settings from './components/settings';
 import { GenericAppProps, GenericAppSettings } from '@iobroker/adapter-react/types';
+import Loader from '@iobroker/adapter-react/Components/Loader';
 import { StyleRules } from '@material-ui/core/styles';
-import YAML from 'yaml';
+import I18n from '@iobroker/adapter-react/i18n';
+import StateConfig from './tabs/StateConfig';
+import Logo from '@iobroker/adapter-react/Components/Logo';
+import SingleStateConfigForm from './tabs/SingleStateConfig';
 
 const styles = (_theme: Theme): StyleRules => ({
 	root: {},
+	tabContent: {
+		padding: 10,
+		height: 'calc(100% - 64px - 48px - 20px)',
+		overflow: 'auto',
+	},
+	tabContentIFrame: {
+		padding: 10,
+		height: 'calc(100% - 64px - 48px - 20px - 38px)',
+		overflow: 'auto',
+	},
 });
 
 class App extends GenericApp {
@@ -36,79 +53,90 @@ class App extends GenericApp {
 		// executed when connection is ready
 	}
 
-	getConfiguration(type: 'json' | 'yaml'): void {
-		this.socket
-			.sendTo('thehome.0', 'ConfigAdapter:configDownload', { type: type })
-			.then((result: ioBroker.Message | undefined) => {
-				const a = document.createElement('a');
-				if (typeof result == 'string') {
-					switch (type) {
-						case 'json':
-							const blob1 = new Blob([result], { type: 'application/json' });
-							a.download = 'BackupConfig.json';
-							a.href = URL.createObjectURL(blob1);
-							break;
-						case 'yaml':
-							const blob2 = new Blob([YAML.stringify(JSON.parse(result))], {
-								type: 'application/x-yaml',
-							});
-							a.download = 'BackupConfig.yaml';
-							a.href = URL.createObjectURL(blob2);
-							break;
-					}
-				}
-				a.addEventListener('click', () => {
-					setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
-				});
-				a.click();
-			});
+	getSelectedTab() {
+		const tab = this.state.selectedTab;
+		if (!tab || tab === 'options') {
+			return 0;
+		} else if (tab === 'stateConfig') {
+			return 1;
+		} else if (tab === 'singleStateUpload') {
+			return 2;
+		} else if (tab === 'b2') {
+			return 3;
+		}
 	}
 
-	onChangeHandler(event): void {
-		const GetFile = new FileReader();
-		const type = event.target.files[0].type;
-		const socket = this.socket;
-		GetFile.onload = function () {
-			// DO Somthing
-			let config: any;
-			if (typeof GetFile.result === 'string') {
-				switch (type) {
-					case 'application/x-yaml':
-						config = YAML.parse(GetFile.result);
-						break;
-					case 'application/json':
-						config = JSON.parse(GetFile.result);
-						break;
-					default:
-						return;
-				}
-				socket
-					.sendTo('thehome.0', 'ConfigAdapter:configUpload', { type: type, config: config })
-					.then((result: ioBroker.Message | undefined) => {
-						console.log(result);
-					});
-			}
-		};
-		GetFile.readAsText(event.target.files[0]);
-	}
+	onError = (text) =>
+		this.setState({
+			errorText: (text || text === 0) && typeof text !== 'string' ? text.toString() : text,
+		});
+
+	onToast = (text) =>
+		this.setState({
+			toast: (text || text === 0) && typeof text !== 'string' ? text.toString() : text,
+		});
 
 	render() {
 		if (!this.state.loaded) {
-			return super.render();
+			return (
+				<MuiThemeProvider theme={this.state.theme}>
+					<Loader theme={this.state.themeType} />
+				</MuiThemeProvider>
+			);
 		}
 		return (
-			<div className="App">
-				<div>Hallo Guido1</div>
-				<button onClick={() => this.getConfiguration('json')}>Download Configuration as JSON</button>
-				<button onClick={() => this.getConfiguration('yaml')}>Download Configuration as YAML</button>
-				<div>
-					<input type="file" name="file" onChange={(e) => this.onChangeHandler(e)} />
+			<MuiThemeProvider theme={this.state.theme}>
+				<div
+					className="App"
+					style={{
+						background: this.state.theme.palette.background.default,
+						color: this.state.theme.palette.text.primary,
+					}}
+				>
+					<Logo
+						instance={this.instance}
+						classes={{ buttons: '', logo: '' }}
+						common={this.common}
+						native={this.state.native}
+						onError={(text) => alert(text)}
+						onLoad={(native) => this.onLoadConfig(native)}
+					/>
+					<AppBar position="static">
+						<Tabs
+							value={this.getSelectedTab()}
+							onChange={(e, index) => this.selectTab(e.target.parentNode.dataset.name, index)}
+							scrollButtons="auto"
+						>
+							<Tab label={I18n.t('options')} data-name="options" />
+							<Tab label={I18n.t('stateConfig')} data-name="stateConfig" />
+							<Tab label={I18n.t('singleStateUpload')} data-name="singleStateUpload" />
+							<Tab label={I18n.t('b2')} data-name="b2" />
+						</Tabs>
+					</AppBar>
+					<div
+						className={this.isIFrame ? this.props.classes.tabContentIFrame : this.props.classes.tabContent}
+					>
+						{(this.state.selectedTab === 'options' || !this.state.selectedTab) && (
+							<div>
+								<Settings
+									native={this.state.native}
+									onChange={(attr, value) => this.updateNativeValue(attr, value)}
+								/>
+							</div>
+						)}
+						{this.state.selectedTab === 'stateConfig' && (
+							<StateConfig socket={this.socket} onToast={this.onToast} onError={this.onError} />
+						)}
+						{this.state.selectedTab === 'singleStateUpload' && (
+							<SingleStateConfigForm socket={this.socket} onToast={this.onToast} onError={this.onError} />
+						)}
+						{this.state.selectedTab === 'b2' && <div>b2</div>}
+					</div>
+					{this.renderError()}
+					{this.renderToast()}
+					{this.renderSaveCloseButtons()}
 				</div>
-				<Settings native={this.state.native} onChange={(attr, value) => this.updateNativeValue(attr, value)} />
-				{this.renderError()}
-				{this.renderToast()}
-				{this.renderSaveCloseButtons()}
-			</div>
+			</MuiThemeProvider>
 		);
 	}
 }

@@ -14,7 +14,7 @@ rectangle adapter {
     actor FrequenceBatteryChecker << Timer >>
     actor FrequenceConnectionChecker << Timer >>
     actor NameChangeListener << Listener >>
-    usecase ConfigUploader as "=Upload ConfigFile"
+    usecase ConfigUploader as "=Upload StatesConfigFile"
         note top
             Lädt die Configuration in einem 
             yaml/json file hoch und ändert die
@@ -37,7 +37,7 @@ rectangle adapter {
             * Room Enum (löschen und neu setzen)
             * Function Enum (löschen und neu setzen)
         end note
-    usecase ConfigDownloader as "=Download ConfigFile"
+    usecase ConfigDownloader as "=Download StatesConfigFile"
         note top
             Lädt die Configuration in einem 
             yaml/json file runter. 

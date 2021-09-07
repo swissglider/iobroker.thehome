@@ -45,8 +45,10 @@ partition "on adapter" {
         repeat
             :read next config state;
             fork
+                :check and create if needed new enum;
                 :add state to room enum from config;
                 fork again
+                :check and create if needed new enum;
                 :add state to function enum from config;
                 fork again
                 :change state name;
