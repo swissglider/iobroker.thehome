@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-3",
+        "version": "0.0.2-4",
         "news": {
+            "0.0.2-4": {
+                "en": "the following UseCases has been implemented\n\nUpload ConfigFile\nDownload ConfigFile\nSingle ConfigFile Upload\n\nToDo:\nall InfluxDB functions\nall Service/Listener functions",
+                "de": "die folgenden UseCases wurden implementiert\n\nConfigFile hochladen\nKonfigurationsdatei herunterladen\nEinzelner ConfigFile-Upload\n\nMachen:\nalle InfluxDB-Funktionen\nalle Service-/Listener-Funktionen",
+                "ru": "были реализованы следующие варианты использования\n\nЗагрузить файл конфигурации\nСкачать ConfigFile\nЗагрузка одного файла конфигурации\n\nДелать:\nвсе функции InfluxDB\nвсе функции службы / прослушивателя",
+                "pt": "o seguinte UseCases foi implementado\n\nCarregar ConfigFile\nBaixar ConfigFile\nUpload único de ConfigFile\n\nPendência:\ntodas as funções do InfluxDB\ntodas as funções de serviço / ouvinte",
+                "nl": "de volgende UseCases zijn geïmplementeerd\n\nConfiguratiebestand uploaden\nConfiguratiebestand downloaden\nEén configuratiebestand uploaden\n\nTe doen:\nalle InfluxDB-functies\nalle service-/luisterfuncties",
+                "fr": "les cas d'utilisation suivants ont été implémentés\n\nTélécharger le fichier de configuration\nTélécharger le fichier de configuration\nTéléchargement de fichier de configuration unique\n\nÀ faire:\ntoutes les fonctions InfluxDB\ntoutes les fonctions Service/Ecoute",
+                "it": "è stato implementato il seguente UseCase\n\nCarica file di configurazione\nScarica il file di configurazione\nCaricamento file di configurazione singolo\n\nDa fare:\ntutte le funzioni di InfluxDB\ntutte le funzioni di servizio/ascoltatore",
+                "es": "se han implementado los siguientes UseCases\n\nCargar ConfigFile\nDescarga ConfigFile\nCarga de un único archivo de configuración\n\nHacer:\ntodas las funciones de InfluxDB\ntodas las funciones de servicio / escucha",
+                "pl": "wdrożono następujące Przypadki Użycia\n\nPrześlij plik konfiguracyjny\nPobierz plik konfiguracyjny\nPrzesyłanie pojedynczego pliku konfiguracyjnego\n\nDo zrobienia:\nwszystkie funkcje InfluxDB\nwszystkie funkcje usługi/odbiornika",
+                "zh-cn": "已实现以下用例\n\n上传配置文件\n下载配置文件\n单个配置文件上传\n\n去做：\n所有 InfluxDB 函数\n所有服务/监听器功能"
+            },
             "0.0.2-3": {
                 "en": "the following UseCases has been implemented\n\nUpload ConfigFile\nDownload ConfigFile\n\nToDo:\nall InfluxDB functions\nall Service/Listener functions",
                 "de": "die folgenden UseCases wurden implementiert\n\nConfigFile hochladen\nKonfigurationsdatei herunterladen\n\nMachen:\nalle InfluxDB-Funktionen\nalle Service-/Listener-Funktionen",
