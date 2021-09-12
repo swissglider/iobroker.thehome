@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-4",
+        "version": "0.0.2-5",
         "news": {
+            "0.0.2-5": {
+                "en": "added changed ConfigFile UseCases with store2DB",
+                "de": "geänderte ConfigFile UseCases mit store2DB hinzugefügt",
+                "ru": "добавлены измененные варианты использования ConfigFile с store2DB",
+                "pt": "adicionado ConfigFile UseCases alterado com store2DB",
+                "nl": "gewijzigde ConfigFile UseCases toegevoegd met store2DB",
+                "fr": "ajout de cas d'utilisation ConfigFile modifiés avec store2DB",
+                "it": "aggiunto ConfigFile modificato UseCases con store2DB",
+                "es": "Se agregaron los UseCases de ConfigFile cambiados con store2DB",
+                "pl": "dodano zmienione przypadki użycia ConfigFile z store2DB",
+                "zh-cn": "使用 store2DB 添加了更改的 ConfigFile UseCases"
+            },
             "0.0.2-4": {
                 "en": "the following UseCases has been implemented\n\nUpload ConfigFile\nDownload ConfigFile\nSingle ConfigFile Upload\n\nToDo:\nall InfluxDB functions\nall Service/Listener functions",
                 "de": "die folgenden UseCases wurden implementiert\n\nConfigFile hochladen\nKonfigurationsdatei herunterladen\nEinzelner ConfigFile-Upload\n\nMachen:\nalle InfluxDB-Funktionen\nalle Service-/Listener-Funktionen",
