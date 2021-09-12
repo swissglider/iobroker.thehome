@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) added translations
+
 ### 0.0.2-5 (2021-09-12)
 
 -   (swissglider) added changed ConfigFile UseCases with store2DB

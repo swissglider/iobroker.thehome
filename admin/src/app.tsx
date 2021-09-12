@@ -125,10 +125,20 @@ class App extends GenericApp {
 							</div>
 						)}
 						{this.state.selectedTab === 'stateConfig' && (
-							<StateConfig socket={this.socket} onToast={this.onToast} onError={this.onError} />
+							<StateConfig
+								socket={this.socket}
+								onToast={this.onToast}
+								onError={this.onError}
+								systemConfig={this._systemConfig}
+							/>
 						)}
 						{this.state.selectedTab === 'singleStateUpload' && (
-							<SingleStateConfigForm socket={this.socket} onToast={this.onToast} onError={this.onError} />
+							<SingleStateConfigForm
+								socket={this.socket}
+								onToast={this.onToast}
+								onError={this.onError}
+								systemConfig={this._systemConfig}
+							/>
 						)}
 						{this.state.selectedTab === 'b2' && <div>b2</div>}
 					</div>

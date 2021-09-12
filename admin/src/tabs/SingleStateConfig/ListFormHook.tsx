@@ -1,16 +1,24 @@
 import React, { FC } from 'react';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
-import Helper from './helper';
+import Helper from '../../helper';
+import I18n from '@iobroker/adapter-react/i18n';
 
 export interface I_ListFormHook_Props {
 	label: string;
 	name: string;
 	allElements: Record<string, ioBroker.Object>;
 	helperText?: string;
+	systemConfig: Record<string, any>;
 }
 
-const ListFormHook: FC<I_ListFormHook_Props> = ({ label, name, allElements, helperText }: I_ListFormHook_Props) => {
+const ListFormHook: FC<I_ListFormHook_Props> = ({
+	label,
+	name,
+	allElements,
+	helperText,
+	systemConfig,
+}: I_ListFormHook_Props) => {
 	const { watch, control } = useFormContext();
 
 	return (
@@ -28,7 +36,11 @@ const ListFormHook: FC<I_ListFormHook_Props> = ({ label, name, allElements, help
 						<Select labelId="sf2Label" {...field}>
 							{Object.values(allElements).map((obj: ioBroker.Object) => (
 								<MenuItem key={obj._id} value={obj._id}>
-									{obj.common.name === '__' ? <em>None</em> : Helper.getName(obj.common.name)}
+									{obj.common.name === '__' ? (
+										<em>{I18n.t('None')}</em>
+									) : (
+										Helper.getName(obj.common.name, systemConfig.language)
+									)}
 								</MenuItem>
 							))}
 						</Select>

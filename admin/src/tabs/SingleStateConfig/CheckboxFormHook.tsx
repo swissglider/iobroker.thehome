@@ -6,6 +6,7 @@ export interface I_CheckboxFormHook_Props {
 	label: string;
 	name: string;
 	disabled?: boolean;
+	systemConfig: Record<string, any>;
 }
 
 const CheckboxFormHook: FC<I_CheckboxFormHook_Props> = ({ label, name, disabled }: I_CheckboxFormHook_Props) => {

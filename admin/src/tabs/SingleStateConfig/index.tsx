@@ -17,8 +17,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import TextFormHook from './TextFormHook';
 import ListFormHook from './ListFormHook';
-import Helper from './helper';
+import Helper from '../../helper';
 import CheckboxFormHook from './CheckboxFormHook';
+import I18n from '@iobroker/adapter-react/i18n';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -33,6 +34,7 @@ export interface I_SingleStateConfigForm_Props {
 	socket: Connection;
 	onToast: any;
 	onError: any;
+	systemConfig: Record<string, any>;
 }
 
 interface I_SingleStateConfigForm_FormProps {
@@ -44,11 +46,8 @@ interface I_SingleStateConfigForm_FormProps {
 }
 
 const formSchema: yup.SchemaOf<I_SingleStateConfigForm_FormProps> = yup.object({
-	stateID: yup.string().required('Please search a State ID on clicking the "Search"-Button'),
-	stateName: yup
-		.string()
-		.required('State Name is required')
-		.min(3, 'Der Name muss aus mindestens 3 Buchstaben bestehen'),
+	stateID: yup.string().required(I18n.t('Please search a State ID on clicking the Search-Button')),
+	stateName: yup.string().required(I18n.t('State Name is required')).min(3, 'State Name needs at least 3 letters'),
 	room: yup.string().optional(),
 	sensorFunction: yup.string().optional(),
 	store2DB: yup.boolean().required(),
@@ -82,9 +81,9 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 			.sendTo('thehome.0', 'ConfigAdapter:singleStateConfigUpload', { config: config })
 			.then((result: ioBroker.Message | undefined) => {
 				if (typeof result === 'string' && result === 'ok') {
-					props.onToast('State Configuration sucessfully loaded');
+					props.onToast(I18n.t('State Configuration sucessfully changed'));
 				} else {
-					props.onError('Error: ' + JSON.stringify(result));
+					props.onError(I18n.t('Error: ') + JSON.stringify(result));
 				}
 			});
 	};
@@ -113,50 +112,55 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 						<CardActionArea disableRipple>
 							<CardContent>
 								<Typography gutterBottom variant="h5" component="h2">
-									Change Single State Configuration
+									{I18n.t('change single state configuration')}
 								</Typography>
 								<Grid container direction="column" spacing={1} alignItems="stretch">
 									<Grid item xs={12}>
 										<TextFormHook
-											label="State ID"
+											label={I18n.t('State ID')}
 											name="stateID"
-											placeholder="First Search the State"
+											placeholder={I18n.t('First Search the State')}
 											disabled
+											systemConfig={props.systemConfig}
 										/>
 									</Grid>
 									<Grid item xs={12}>
 										<TextFormHook
-											label="State Name"
+											label={I18n.t('State Name')}
 											name="stateName"
-											placeholder="First Search the State"
+											placeholder={I18n.t('First Search the State')}
 											disabled={methods.watch().stateID === '' ? true : false}
+											systemConfig={props.systemConfig}
 										/>
 									</Grid>
 									<Grid item xs={12}>
 										<Grid container justifyContent="space-evenly">
 											<Grid item>
 												<ListFormHook
-													label="Select Room"
+													label={I18n.t('select room')}
 													name="room"
 													allElements={allRooms}
-													helperText="For no Room, select None"
+													helperText={I18n.t('For no Room, select None')}
+													systemConfig={props.systemConfig}
 												/>
 											</Grid>
 											<Grid item>
 												<ListFormHook
-													label="Select Func"
+													label={I18n.t('select func')}
 													name="sensorFunction"
 													allElements={allFunction}
-													helperText="For no Function, select None"
+													helperText={I18n.t('For no Function, select None')}
+													systemConfig={props.systemConfig}
 												/>
 											</Grid>
 										</Grid>
 									</Grid>
 									<Grid item xs={12}>
 										<CheckboxFormHook
-											label="Should state changes be stored to InfluxDB"
+											label={I18n.t('Should state changes be stored to InfluxDB')}
 											name="store2DB"
 											disabled={methods.watch().stateID === '' ? true : false}
+											systemConfig={props.systemConfig}
 										/>
 									</Grid>
 								</Grid>
@@ -166,7 +170,7 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 							<Grid container direction="row" justifyContent="space-between" alignItems="stretch">
 								<Grid item>
 									<Button variant="outlined" onClick={() => setShowSearchDialog(true)}>
-										Search State
+										{I18n.t('Search State')}
 									</Button>
 								</Grid>
 								<Grid item>
@@ -175,7 +179,7 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 										onClick={() => methods.reset()}
 										disabled={methods.watch().stateID === '' ? true : false}
 									>
-										Clean Forms
+										{I18n.t('Clean Forms')}
 									</Button>
 								</Grid>
 								<Grid item>
@@ -185,7 +189,7 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 										type="submit"
 										disabled={methods.watch().stateID === '' ? true : false}
 									>
-										Change
+										{I18n.t('Save changes to State')}
 									</Button>
 								</Grid>
 							</Grid>
@@ -208,9 +212,13 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 									methods.reset();
 									methods.setValue('stateID', obj._id, { shouldValidate: true });
 									if (obj) {
-										methods.setValue('stateName', Helper.getName(obj.common.name), {
-											shouldValidate: true,
-										});
+										methods.setValue(
+											'stateName',
+											Helper.getName(obj.common.name, props.systemConfig.language),
+											{
+												shouldValidate: true,
+											},
+										);
 										methods.setValue(
 											'store2DB',
 											obj.native?.swissglider?.theHome?.store2DB ?? false,

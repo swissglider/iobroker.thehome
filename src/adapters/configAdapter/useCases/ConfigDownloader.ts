@@ -17,7 +17,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 		(state) =>
 			({
 				stateID: state._id,
-				stateName: Helper.getName(state.common.name),
+				stateName: Helper.getName(state.common.name, adapter.systemConfig.language),
 				functions: state.enums
 					? Object.keys(state.enums).find((e: string) => e.startsWith('enum.functions.'))
 					: undefined,

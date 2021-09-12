@@ -7,6 +7,7 @@ export interface I_TextFormHook_Props {
 	name: string;
 	placeholder?: string;
 	disabled?: boolean;
+	systemConfig: Record<string, any>;
 }
 
 const TextFormHook: FC<I_TextFormHook_Props> = ({ label, name, placeholder, disabled }: I_TextFormHook_Props) => {

@@ -3,6 +3,7 @@ import { Button, createStyles, makeStyles } from '@material-ui/core';
 import { DropzoneAreaBase, FileObject } from 'material-ui-dropzone';
 import YAML from 'yaml';
 import Connection from '@iobroker/adapter-react/Connection';
+import I18n from '@iobroker/adapter-react/i18n';
 
 export interface StateInformation {
 	stateID: string;
@@ -66,9 +67,9 @@ const DropzoneDownload: FC<I_DropzoneDownload_Props> = (props: I_DropzoneDownloa
 			.sendTo('thehome.0', 'ConfigAdapter:statesConfigUpload', { config: config })
 			.then((result: unknown | undefined) => {
 				if (typeof result === 'string' && result === 'ok') {
-					props.onToast('State Configuration sucessfully loaded');
+					props.onToast(I18n.t('State Configuration sucessfully loaded'));
 				} else {
-					props.onError('Error: ' + JSON.stringify(result));
+					props.onError(I18n.t('Error: ') + JSON.stringify(result));
 				}
 				setUpFiles([]);
 			});
@@ -77,7 +78,7 @@ const DropzoneDownload: FC<I_DropzoneDownload_Props> = (props: I_DropzoneDownloa
 	return (
 		<>
 			<Button onClick={onUpload} disabled={!(upFiles && upFiles.length > 0)} color="primary">
-				Upload Config
+				{I18n.t('Upload Config')}
 			</Button>
 			<DropzoneAreaBase
 				// showPreviews={true}
@@ -88,7 +89,7 @@ const DropzoneDownload: FC<I_DropzoneDownload_Props> = (props: I_DropzoneDownloa
 				previewText="Selected file"
 				acceptedFiles={['application/x-yaml', 'application/json']}
 				filesLimit={1}
-				dropzoneText="Drag or click to upload a Config File"
+				dropzoneText={I18n.t('Drag or click to upload a Config File')}
 				onAdd={onAdd}
 				fileObjects={upFiles}
 				onDelete={onDelete}
