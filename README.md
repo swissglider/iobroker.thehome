@@ -106,7 +106,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
-### **WORK IN PROGRESS**
+### 0.0.2-6 (2021-09-12)
 
 -   (swissglider) added translations
 
