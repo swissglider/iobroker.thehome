@@ -50,11 +50,6 @@ const DropzoneDownload: FC<I_DropzoneDownload_Props> = (props: I_DropzoneDownloa
 					default:
 						return;
 				}
-				setUpFiles([]);
-				setConfig(undefined);
-				// const decodedConfig: E.Either<D.DecodeError, StateInformation[]> = stateInformations.decode(_config);
-				// E.isLeft(decodedConfig) ? props.onError('Wrong configuration, please check the file !') : setUpFiles(a),
-				// 	setConfig(_config);
 				setUpFiles(a);
 				setConfig(_config);
 			}
@@ -93,7 +88,7 @@ const DropzoneDownload: FC<I_DropzoneDownload_Props> = (props: I_DropzoneDownloa
 				previewText="Selected file"
 				acceptedFiles={['application/x-yaml', 'application/json']}
 				filesLimit={1}
-				dropzoneText="Drag of click to upload a new State Config"
+				dropzoneText="Drag or click to upload a Config File"
 				onAdd={onAdd}
 				fileObjects={upFiles}
 				onDelete={onDelete}

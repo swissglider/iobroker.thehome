@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const functions_1 = __importDefault(require("./functions"));
+const useCases_1 = __importDefault(require("./useCases"));
 let _adapter;
 const onReady = async () => {
     _adapter.log.silly('ConfigAdapter::onReady');
@@ -14,21 +14,21 @@ const onMessage = async (obj) => {
     if (typeof obj === 'object') {
         if (obj.command == 'ConfigAdapter:statesConfigDownload') {
             if (obj.callback) {
-                const t1 = await functions_1.default.statesConfigDownload(_adapter);
+                const t1 = await useCases_1.default.statesConfigDownload(_adapter);
                 _adapter.sendTo(obj.from, obj.command, t1, obj.callback);
             }
         }
         if (obj.command == 'ConfigAdapter:statesConfigUpload') {
             if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message) {
                 const config = obj.message.config;
-                const result = await functions_1.default.statesConfigUpload(_adapter, config);
+                const result = await useCases_1.default.statesConfigUpload(_adapter, config);
                 _adapter.sendTo(obj.from, obj.command, result, obj.callback);
             }
         }
         if (obj.command == 'ConfigAdapter:singleStateConfigUpload') {
             if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message) {
                 const config = obj.message.config;
-                const result = await functions_1.default.singleStateConfigUpload(_adapter, config);
+                const result = await useCases_1.default.singleStateConfigUpload(_adapter, config);
                 _adapter.sendTo(obj.from, obj.command, result, obj.callback);
             }
         }

@@ -17,6 +17,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import TextFormHook from './TextFormHook';
 import ListFormHook from './ListFormHook';
+import Helper from './helper';
+import CheckboxFormHook from './CheckboxFormHook';
 
 const useStyles = makeStyles(() =>
 	createStyles({
@@ -38,7 +40,7 @@ interface I_SingleStateConfigForm_FormProps {
 	stateName: string;
 	room: string | undefined;
 	sensorFunction: string | undefined;
-	// MyCheckbox: boolean;
+	store2DB: boolean;
 }
 
 const formSchema: yup.SchemaOf<I_SingleStateConfigForm_FormProps> = yup.object({
@@ -49,6 +51,7 @@ const formSchema: yup.SchemaOf<I_SingleStateConfigForm_FormProps> = yup.object({
 		.min(3, 'Der Name muss aus mindestens 3 Buchstaben bestehen'),
 	room: yup.string().optional(),
 	sensorFunction: yup.string().optional(),
+	store2DB: yup.boolean().required(),
 });
 
 const defaultValues = {
@@ -56,18 +59,7 @@ const defaultValues = {
 	stateName: '',
 	room: '__',
 	sensorFunction: '__',
-};
-
-const getName = (name: ioBroker.StringOrTranslated): string => {
-	if (typeof name === 'string') {
-		return name;
-	} else if (typeof name === 'object' && 'de' in name && name.de) {
-		return name.de;
-	} else if (typeof name === 'object' && 'en' in name && name.en) {
-		return name.en;
-	} else {
-		return name.toString();
-	}
+	store2DB: false,
 };
 
 const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_SingleStateConfigForm_Props) => {
@@ -84,6 +76,7 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 			stateName: data.stateName,
 			functions: data.sensorFunction === '__' ? undefined : data.sensorFunction,
 			rooms: data.room === '__' ? undefined : data.room,
+			store2DB: data.store2DB,
 		};
 		socket
 			.sendTo('thehome.0', 'ConfigAdapter:singleStateConfigUpload', { config: config })
@@ -159,6 +152,13 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 											</Grid>
 										</Grid>
 									</Grid>
+									<Grid item xs={12}>
+										<CheckboxFormHook
+											label="Should state changes be stored to InfluxDB"
+											name="store2DB"
+											disabled={methods.watch().stateID === '' ? true : false}
+										/>
+									</Grid>
 								</Grid>
 							</CardContent>
 						</CardActionArea>
@@ -208,9 +208,16 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 									methods.reset();
 									methods.setValue('stateID', obj._id, { shouldValidate: true });
 									if (obj) {
-										methods.setValue('stateName', getName(obj.common.name), {
+										methods.setValue('stateName', Helper.getName(obj.common.name), {
 											shouldValidate: true,
 										});
+										methods.setValue(
+											'store2DB',
+											obj.native?.swissglider?.theHome?.store2DB ?? false,
+											{
+												shouldValidate: true,
+											},
+										);
 										if (obj.enums) {
 											for (const [key, value] of Object.entries(obj.enums)) {
 												if (

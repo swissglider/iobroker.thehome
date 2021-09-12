@@ -28,32 +28,29 @@ partition "on adapter admin" {
 }
 partition "on adapter" {
     :singleStateConfigUpload;
-    partition "pre work - stop services and delete old configs for the new config" {
-        #palegreen:remove State from all services;
+    partition "pre work" {
         fork
-            #palegreen:reset Influx TimeSeries to org Statename on InfluxDB;
-            #palegreen:delete custom InfluxDBAdapter entry;
+            #palegreen:stop BatteryChecker;
             fork again
-            :remove state from all function and room enums;
+            #palegreen:stop ConnectionChecker;
+            fork again
+            :remove state from all function and room enum;
         end fork
     }
     partition "set new config" {
+        :add state to enums (functions/rooms) and create the enum if needed;
+        :change name and store2DB on Object;
+    }
+    partition "post work" {
         fork
-            :check and create if needed new enum;
-            :add state to room enum from config;
+            #palegreen:new init BatteryChecker;
             fork again
-            :check and create if needed new enum;
-            :add state to function enum from config;
-            fork again
-            :change state name;
-            fork again
-            #palegreen:change alias on InfluxDBAdapter custom;
-            #palegreen:change TimeSeries State Name on InfluxDB;
-            #palegreen:set enable on InfluxDBAdapter custom;
+            #palegreen:new init ConnectionChecker;
         end fork
     }
-    #palegreen:add state all services;
-    :return result;
+    partition "result" {
+        :return result;
+    }
 }
 stop
 

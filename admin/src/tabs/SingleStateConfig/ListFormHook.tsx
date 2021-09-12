@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
 import { Controller, useFormContext } from 'react-hook-form';
+import Helper from './helper';
 
 export interface I_ListFormHook_Props {
 	label: string;
@@ -27,7 +28,7 @@ const ListFormHook: FC<I_ListFormHook_Props> = ({ label, name, allElements, help
 						<Select labelId="sf2Label" {...field}>
 							{Object.values(allElements).map((obj: ioBroker.Object) => (
 								<MenuItem key={obj._id} value={obj._id}>
-									{obj.common.name === '__' ? <em>None</em> : obj.common.name}
+									{obj.common.name === '__' ? <em>None</em> : Helper.getName(obj.common.name)}
 								</MenuItem>
 							))}
 						</Select>

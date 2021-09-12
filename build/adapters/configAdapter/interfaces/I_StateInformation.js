@@ -25,6 +25,7 @@ const D = __importStar(require("io-ts/Decoder"));
 exports.stateInformation = (0, pipeable_1.pipe)(D.type({
     stateID: D.string,
     stateName: D.string,
+    store2DB: D.boolean,
 }), D.intersect(D.partial({
     functions: D.string,
     rooms: D.string,

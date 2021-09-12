@@ -1,4 +1,4 @@
-import ConfigAdapterFunctions from './functions';
+import ConfigAdapterUseCases from './useCases';
 
 let _adapter: ioBroker.Adapter;
 
@@ -12,21 +12,21 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 	if (typeof obj === 'object') {
 		if (obj.command == 'ConfigAdapter:statesConfigDownload') {
 			if (obj.callback) {
-				const t1 = await ConfigAdapterFunctions.statesConfigDownload(_adapter);
+				const t1 = await ConfigAdapterUseCases.statesConfigDownload(_adapter);
 				_adapter.sendTo(obj.from, obj.command, t1, obj.callback);
 			}
 		}
 		if (obj.command == 'ConfigAdapter:statesConfigUpload') {
 			if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message) {
 				const config = obj.message.config;
-				const result = await ConfigAdapterFunctions.statesConfigUpload(_adapter, config);
+				const result = await ConfigAdapterUseCases.statesConfigUpload(_adapter, config);
 				_adapter.sendTo(obj.from, obj.command, result, obj.callback);
 			}
 		}
 		if (obj.command == 'ConfigAdapter:singleStateConfigUpload') {
 			if (obj.callback && typeof obj.message !== 'string' && 'config' in obj.message) {
 				const config = obj.message.config;
-				const result = await ConfigAdapterFunctions.singleStateConfigUpload(_adapter, config);
+				const result = await ConfigAdapterUseCases.singleStateConfigUpload(_adapter, config);
 				_adapter.sendTo(obj.from, obj.command, result, obj.callback);
 			}
 		}

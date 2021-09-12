@@ -6,12 +6,14 @@ export interface StateInformation {
 	stateName: string;
 	functions?: string;
 	rooms?: string;
+	store2DB: boolean;
 }
 
 export const stateInformation = pipe(
 	D.type({
 		stateID: D.string,
 		stateName: D.string,
+		store2DB: D.boolean,
 	}),
 	D.intersect(
 		D.partial({

@@ -11,73 +11,93 @@ rectangle admin {
 }
 
 rectangle adapter {
-    actor FrequenceBatteryChecker << Timer >>
-    actor FrequenceConnectionChecker << Timer >>
-    actor NameChangeListener << Listener >>
-    usecase ConfigUploader as "=Upload StatesConfigFile"
-        note top
-            Lädt die Configuration in einem 
-            yaml/json file hoch und ändert die
-            entsprechenden States mit den folgenden
-            Parameter:
-            ..
-            * State Name
-            * Room Enum (löschen und neu setzen)
-            * Function Enum (löschen und neu setzen)
-        end note
-    usecase SingleUploader as "=Upload SingleStateConfig"
-        note top
-            Lädt die einzelne Configuration, 
-            welche im Admin Interface eingegeben wird 
-            hoch und ändert den
-            entsprechenden State mit den folgenden
-            Parameter:
-            ..
-            * State Name
-            * Room Enum (löschen und neu setzen)
-            * Function Enum (löschen und neu setzen)
-        end note
-    usecase ConfigDownloader as "=Download StatesConfigFile"
-        note top
-            Lädt die Configuration in einem 
-            yaml/json file runter. 
-            Für alle States welche einem 
-            Room oder/und Function Enum zugewiesen sind
-            werden folgende Parameter geschrieben:
-            ..
-            * State Name
-            * Room Enum (löschen und neu setzen)
-            * Function Enum (löschen und neu setzen)
-        end note
-    usecase InfluxDBConverter as "=Convert DB StateNames"
-        note top
-            Alle bestehenden TimeSeries mit
-            dem original State Namen werden umgeschrieben
-            in den aliasID Name auf der InfluxDB selber
-        end note
-    usecase BatteryChecker as "=Check Battery"
-        note top
-            Schreibt ein State mit allen Battery Staties
-            und gibt dies als JSON auch zurück
-            Berücksichtigt werden alle Stati mit einem
-            Battery value
-        end note
-    usecase ConnectionChecker as "=Check Device Connections"
-        note top
-            Alle Stati welche ein Room und/oder Function Enum
-            haben werden geprüft, wann es das letzte mal
-            erreichbar war und schreibt das Resultat in
-            einen Status als JSON, dieser wird auch zurück
-            gegeben
-        end note
-    usecase NameChangePreWorker as "=Listen to StateNames changes"
-        note top
-            Wenn ein Name eines Status in Scope geändert wird, 
-            wird auch entsprechend InfluxDB entries dem Namen
-            angepasst.
-        end note
+    rectangle "configAdapter" {
+        usecase ConfigDownloader as "=Download StatesConfigFile"
+            note top
+                Lädt die Configuration in einem 
+                yaml/json file runter. 
+                Für alle States welche einem 
+                Room oder/und Function Enum zugewiesen sind
+                werden folgende Parameter geschrieben:
+                ..
+                * State Name
+                * Room Enum (löschen und neu setzen)
+                * Function Enum (löschen und neu setzen)
+                * store2DB state (native/swissglider/theHome/store2DB)
+            end note
+        usecase SingleUploader as "=Upload SingleStateConfig" #F4EE7C
+            note top
+                Lädt die einzelne Configuration, 
+                welche im Admin Interface eingegeben wird 
+                hoch und ändert den
+                entsprechenden State mit den folgenden
+                Parameter:
+                ..
+                * State Name
+                * Room Enum (löschen und neu setzen)
+                * Function Enum (löschen und neu setzen)
+                * store2DB state (native/swissglider/theHome/store2DB)
+            end note
+        usecase ConfigUploader as "=Upload StatesConfigFile" #F4EE7C
+            note top
+                Lädt die Configuration in einem 
+                yaml/json file hoch und ändert die
+                entsprechenden States mit den folgenden
+                Parameter:
+                ..
+                * State Name
+                * Room Enum (löschen und neu setzen)
+                * Function Enum (löschen und neu setzen)
+                * store2DB state (native/swissglider/theHome/store2DB)
+            end note
+    }
+
+    rectangle "configChangeListener" {
+        actor ConfigChangeListener << Listener >> #F7B4C8
+        usecase ConfigChangePreWorker as "=Listen to Config changes" #F7B4C8
+            note top
+                Wenn ein Object welches für die DB markiert ist geändert wird,
+                wird auch entsprechend der InfluxDB entry angepasst, z.B.:
+                * angelegt
+                * gelöscht
+                * Name angepasst
+                ..
+                Wenn ein Name eines Status in Scope geändert wird, 
+                wird auch entsprechend InfluxDB entries dem Namen
+                angepasst.
+            end note
+    }
+
+    rectangle "influxDBAdapter" {
+        usecase InfluxDBConverter as "=Convert DB StateNames" #F7B4C8
+            note top
+                Alle bestehenden TimeSeries mit
+                dem original State Namen werden umgeschrieben
+                in den aliasID Name auf der InfluxDB selber
+            end note
+    }
+
+    rectangle "batteryChecker & connectionChecker" {
+        actor FrequenceBatteryChecker << Timer >> #F7B4C8
+        actor FrequenceConnectionChecker << Timer >> #F7B4C8
+        usecase BatteryChecker as "=Check Battery" #F7B4C8
+            note top
+                Schreibt ein State mit allen Battery Staties
+                und gibt dies als JSON auch zurück
+                Berücksichtigt werden alle Stati mit einem
+                Battery value
+            end note
+        usecase ConnectionChecker as "=Check Device Connections" #F7B4C8
+            note top 
+                Alle Stati welche ein Room und/oder Function Enum
+                haben werden geprüft, wann es das letzte mal
+                erreichbar war und schreibt das Resultat in
+                einen Status als JSON, dieser wird auch zurück
+                gegeben
+            end note
+    }
 }
-rectangle adapter1 as "Adapter function zu Prüfen" {
+rectangle adapter1 as "Adapter function zu Prüfen" #F7B4C8 {
     usecase SwissgliderGeneralParameterGenerator as "=Generate Swissglider General Parameters"
         note bottom
             Ruft SwissgliderGeneralParameterCleaner auf
@@ -111,12 +131,10 @@ adminSendTo -down-> SwissgliderGeneralParameterGenerator
 adminSendTo -down-> SwissgliderGeneralParameterCleaner
 SwissgliderGeneralParameterGenerator -> SwissgliderGeneralParameterCleaner
 
-ConfigUploader -> InfluxDBConverter
-SingleUploader -> InfluxDBConverter
-NameChangePreWorker -> SingleUploader
+ConfigChangePreWorker -> InfluxDBConverter
 
 FrequenceBatteryChecker -left-> BatteryChecker
 FrequenceConnectionChecker -left-> ConnectionChecker
-NameChangeListener -left-> NameChangePreWorker
+ConfigChangeListener -left-> ConfigChangePreWorker
 
 @enduml

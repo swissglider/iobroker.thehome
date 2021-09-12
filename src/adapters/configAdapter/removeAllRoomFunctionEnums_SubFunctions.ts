@@ -1,6 +1,5 @@
-import AdapterUtils from '../../utils/adapterUtils';
-import { StateInformation } from '../../utils/adapterUtils/I_StateInformation';
 import InfluxDBHandlerAdapter from '../influxDBHandlerAdapter';
+import { StateInformation } from './interfaces/I_StateInformation';
 
 const handleInfluxDBReset = async (adapter: ioBroker.Adapter, stateObject: ioBroker.Object): Promise<void> => {
 	// reset Influx TimeSeries to org Statename on InfluxDB
@@ -9,57 +8,6 @@ const handleInfluxDBReset = async (adapter: ioBroker.Adapter, stateObject: ioBro
 	// delete custom InfluxDBAdapter entry
 	await InfluxDBHandlerAdapter.deletCustomInfluxDBAdapterEntries(adapter, stateObject);
 	return;
-};
-
-const removeAllRoomFunctionEnums = async (adapter: ioBroker.Adapter, stateObject: ioBroker.Object): Promise<void> => {
-	if (stateObject.enums) {
-		for (const enumID of Object.keys(stateObject.enums)) {
-			// await adapter.deleteStateFromEnumAsync(enumID, '', '', stateObject._id);
-			if (enumID.startsWith('enum.rooms.') || enumID.startsWith('enum.functions.')) {
-				const en = await adapter.getForeignObjectAsync(enumID, 'enum');
-				if (en && en.common.members) {
-					const members = en.common.members.filter((e: string) => e !== stateObject._id);
-					en.common.members = members;
-					await adapter.setForeignObjectAsync(enumID, en);
-				}
-			}
-		}
-	}
-	return;
-};
-
-const addStateToEnums = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
-	const addStateIDToEnum = async (_adapter: ioBroker.Adapter, enumID: string, stateID: string): Promise<void> => {
-		const en = await _adapter.getForeignObjectAsync(enumID, 'enum');
-		if (en && en.common.members && !en.common.members.includes(stateID)) {
-			en.common.members.push(stateID);
-			await _adapter.setForeignObjectAsync(enumID, en);
-		}
-	};
-
-	if (stateConfig.stateID && stateConfig.functions) {
-		// check and create if needed new enum
-		await AdapterUtils.chechAndCreateIfNeededNewEnum(adapter, stateConfig.functions);
-		// add state to function enum from config
-		await addStateIDToEnum(adapter, stateConfig.functions, stateConfig.stateID);
-	}
-	if (stateConfig.stateID && stateConfig.rooms) {
-		// check and create if needed new enum
-		await AdapterUtils.chechAndCreateIfNeededNewEnum(adapter, stateConfig.rooms);
-		// add state to room enum from config
-		await addStateIDToEnum(adapter, stateConfig.rooms, stateConfig.stateID);
-	}
-};
-
-const changeStateName = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
-	if (stateConfig.stateID && stateConfig.stateName) {
-		// change state name
-		const en = await adapter.getForeignObjectAsync(stateConfig.stateID, 'state');
-		if (en) {
-			en.common.name = stateConfig.stateName;
-			await adapter.setForeignObjectAsync(stateConfig.stateID, en);
-		}
-	}
 };
 
 const handleInfluxDBNewConfiguration = async (
@@ -82,10 +30,7 @@ const handleInfluxDBNewConfiguration = async (
 };
 
 const removeAllRoomFunctionEnums_SubFunctions = {
-	removeAllRoomFunctionEnums: removeAllRoomFunctionEnums,
 	handleInfluxDBReset: handleInfluxDBReset,
-	addStateToEnums: addStateToEnums,
-	changeStateName: changeStateName,
 	handleInfluxDBNewConfiguration: handleInfluxDBNewConfiguration,
 };
 
