@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+###
+
+-   (swissglider) implemented the configChange Listener and Admin state name reset view
+
 ### 0.0.2-6 (2021-09-12)
 
 -   (swissglider) added translations

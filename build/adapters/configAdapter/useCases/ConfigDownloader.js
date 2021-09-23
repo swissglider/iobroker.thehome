@@ -16,7 +16,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter,
     const filteredStates = await enumHandler_1.default.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
     const stateInfos = filteredStates.map((state) => ({
         stateID: state._id,
-        stateName: helper_1.default.getName(state.common.name),
+        stateName: helper_1.default.getName(state.common.name, adapter.systemConfig.language),
         functions: state.enums
             ? Object.keys(state.enums).find((e) => e.startsWith('enum.functions.'))
             : undefined,

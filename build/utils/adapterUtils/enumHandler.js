@@ -18,6 +18,7 @@ const chechAndCreateIfNeededNewEnum = async (adapter, enumID, enumName, enumIcon
         enumObject._id = enumID;
         enumObject.from = 'system.adapter.admin.0';
         enumObject.user = 'system.user.admin';
+        delete enumObject.enums;
         await adapter.setForeignObjectNotExistsAsync(enumID, enumObject);
     }
     return;

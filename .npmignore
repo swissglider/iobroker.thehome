@@ -27,3 +27,6 @@ maintenance/**$
 
 # ioBroker dev-server
 .dev-server/
+
+admin/build
+build

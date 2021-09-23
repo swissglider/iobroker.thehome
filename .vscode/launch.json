@@ -8,7 +8,7 @@
 			"skipFiles": ["<node_internals>/**"],
 			"args": ["--debug", "0"],
 			"program": "node_modules/iobroker.thehome/build/main.js",
-			"cwd": "${workspaceFolder}/.dev-server/default"
+			"cwd": "${workspaceFolder}/.dev-server/test"
 		}
 	]
 }

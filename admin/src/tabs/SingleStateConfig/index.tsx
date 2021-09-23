@@ -15,10 +15,10 @@ import DialogSelectID from '@iobroker/adapter-react/Dialogs/SelectID';
 import Connection from '@iobroker/adapter-react/Connection';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import TextFormHook from './TextFormHook';
-import ListFormHook from './ListFormHook';
+import TextFormHook from '../../hooks/TextFormHook';
+import ListFormHook from '../../hooks/ListFormHook';
+import CheckboxFormHook from '../../hooks/CheckboxFormHook';
 import Helper from '../../helper';
-import CheckboxFormHook from './CheckboxFormHook';
 import I18n from '@iobroker/adapter-react/i18n';
 
 const useStyles = makeStyles(() =>
@@ -85,6 +85,9 @@ const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_Singl
 				} else {
 					props.onError(I18n.t('Error: ') + JSON.stringify(result));
 				}
+			})
+			.catch((reason) => {
+				props.onError(I18n.t('Error: ') + JSON.stringify(reason));
 			});
 	};
 

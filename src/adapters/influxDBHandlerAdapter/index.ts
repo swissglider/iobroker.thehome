@@ -1,50 +1,22 @@
-import { StateInformation } from '../configAdapter/interfaces/I_StateInformation';
-
-const resetInfluxTimeSeries = async (adapter: ioBroker.Adapter, stateObject: ioBroker.Object): Promise<void> => {
-	adapter;
-	stateObject;
-	//TODO
-};
-
-const deletCustomInfluxDBAdapterEntries = async (
-	adapter: ioBroker.Adapter,
-	stateObject: ioBroker.Object,
+const changeAllMessurementsToNewAliasNameOnDB = async (
+	id: string,
+	newName: ioBroker.StringOrTranslated,
 ): Promise<void> => {
-	adapter;
-	stateObject;
-	//TODO
+	id;
+	newName;
 };
 
-const changeInfluxDBAdapterCustomAliasEntry = async (
-	adapter: ioBroker.Adapter,
-	stateConfig: StateInformation,
+const deleteAllMessurementsWithAliasNameOnDB = async (
+	id: string,
+	newName: ioBroker.StringOrTranslated,
 ): Promise<void> => {
-	adapter;
-	stateConfig;
-	//TODO
-};
-
-const changeInfluxTimeSeries = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
-	adapter;
-	stateConfig;
-	//TODO
-};
-
-const setInfluxDBAdapterCustomEnableEntry = async (
-	adapter: ioBroker.Adapter,
-	stateConfig: StateInformation,
-): Promise<void> => {
-	adapter;
-	stateConfig;
-	//TODO
+	id;
+	newName;
 };
 
 const InfluxDBHandlerAdapter = {
-	resetInfluxTimeSeries: resetInfluxTimeSeries,
-	deletCustomInfluxDBAdapterEntries: deletCustomInfluxDBAdapterEntries,
-	changeInfluxDBAdapterCustomAliasEntry: changeInfluxDBAdapterCustomAliasEntry,
-	changeInfluxTimeSeries: changeInfluxTimeSeries,
-	setInfluxDBAdapterCustomEnableEntry: setInfluxDBAdapterCustomEnableEntry,
+	changeAllMessurementsToNewAliasNameOnDB: changeAllMessurementsToNewAliasNameOnDB,
+	deleteAllMessurementsWithAliasNameOnDB: deleteAllMessurementsWithAliasNameOnDB,
 };
 
 export default InfluxDBHandlerAdapter;

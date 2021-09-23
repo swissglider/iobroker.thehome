@@ -3,10 +3,12 @@
 	"option1": "Option 1",
 	"option2": "Option 2",
 	"options": "Generelle Konfiguration",
+	"startConfigChangeListener": "Config Change Listener starten ?",
 
 	"stateConfig": "State Config Up/Download",
 	"singleStateUpload": "Änderung eines einzelnen State",
-	"b2": "B2",
+	"resetNames": "State Namen zurücksetzen",
+	"resetName": "State Name zurücksetzen",
 
 	"First Search the State": "Zuerst den Status suchen",
 	"State ID": "State ID",
@@ -33,5 +35,11 @@
 	"Upload Config": "Lade Konfig-Datei hoch",
 	"State Configuration sucessfully loaded": "Alle State's Konfigurationen erfolgreich geändert",
 	"Drag or click to upload a Config File": "Ziehe das Konfigurations-Datei hier rein oder klicke hier (JSON/YAML)",
-	"Selected file": "Ausgewälte Datei"
+	"Selected file": "Ausgewälte Datei",
+	"resetNameTitle": "Einzelner State Namen zurücksetzen",
+	"resetNamesTitle": "Alle State Namen zurücksetzen",
+	"Reset2DefaultName": "Auf default Namen zurücksetzen",
+	"Single State Name sucessfully reseted": "Einzelner Status Name erfolgreich zurückgesetzt",
+	"Select State Name to reset":"Wähle den State Name welcher zurück gesetzt werden soll",
+	"All State Names sucessfully reseted":"Alle State Namen sind erfolgreich zurück gesetzt"
 }

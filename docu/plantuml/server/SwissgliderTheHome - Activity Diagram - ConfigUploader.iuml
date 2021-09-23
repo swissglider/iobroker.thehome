@@ -34,27 +34,20 @@ partition "on adapter" {
             fork again
             #palegreen:stop ConnectionChecker;
             fork again
-            #palegreen:stop ConfigChangeListener;
-            fork again
             :remove all states from function and room enums;
             fork again
-            :remove state.native.swissglider.theHome 
+            :remove state.native.swissglider.theHome.store2DB
             parameter from all states;
         end fork
     }
     partition "set new config" {
         repeat
-            fork
-                :add all states to enums (functions/rooms) and create the enum if needed;
-                fork again
-                :change name and store2DB on all Objects;
-            end fork
+            :add all states to enums (functions/rooms) and create the enum if needed;
+            :change name and store2DB on all Objects;
         repeat while (read next config state?)
     }
     partition "post work" {
         fork
-            #palegreen:new init ConfigChangeListener (includes new init of DB);
-            fork again
             #palegreen:new init BatteryChecker;
             fork again
             #palegreen:new init ConnectionChecker;

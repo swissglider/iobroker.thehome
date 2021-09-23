@@ -2,7 +2,6 @@ import * as E from 'fp-ts/Either';
 import * as D from 'io-ts/Decoder';
 import BatteryChecker from '../../../checker/batteryChecker';
 import ConnectionChecker from '../../../checker/connectionChecker';
-import ConfigChangeListener from '../../../listener/configChangeListener';
 import EnumHandler from '../../../utils/adapterUtils/enumHandler';
 import { StateInformation, stateInformations } from '../interfaces/I_StateInformation';
 import Helper from '../utils/helper';
@@ -22,7 +21,6 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 		await Promise.all([
 			BatteryChecker.stopBatteryChecker(adapter),
 			ConnectionChecker.stopConnectionChecker(adapter),
-			ConfigChangeListener.stopConfigChangeListener(adapter),
 			EnumHandler.removeAllStatesFromAllRoomFunctionEnums(adapter),
 			Helper.removeAllTheHomeParametersFromAllObjects(adapter),
 		]);
@@ -49,7 +47,6 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 	// = new init ConnectionChecker
 	try {
 		await Promise.all([
-			ConfigChangeListener.initConfigChangeListener(adapter),
 			BatteryChecker.initBatteryChecker(adapter),
 			ConnectionChecker.initConnectionChecker(adapter),
 		]);

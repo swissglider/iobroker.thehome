@@ -26,7 +26,6 @@ exports.statesConfigUpload = void 0;
 const E = __importStar(require("fp-ts/Either"));
 const batteryChecker_1 = __importDefault(require("../../../checker/batteryChecker"));
 const connectionChecker_1 = __importDefault(require("../../../checker/connectionChecker"));
-const configChangeListener_1 = __importDefault(require("../../../listener/configChangeListener"));
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
 const I_StateInformation_1 = require("../interfaces/I_StateInformation");
 const helper_1 = __importDefault(require("../utils/helper"));
@@ -45,7 +44,6 @@ const statesConfigUpload = async (adapter, config) => {
         await Promise.all([
             batteryChecker_1.default.stopBatteryChecker(adapter),
             connectionChecker_1.default.stopConnectionChecker(adapter),
-            configChangeListener_1.default.stopConfigChangeListener(adapter),
             enumHandler_1.default.removeAllStatesFromAllRoomFunctionEnums(adapter),
             helper_1.default.removeAllTheHomeParametersFromAllObjects(adapter),
         ]);
@@ -72,7 +70,6 @@ const statesConfigUpload = async (adapter, config) => {
     // = new init ConnectionChecker
     try {
         await Promise.all([
-            configChangeListener_1.default.initConfigChangeListener(adapter),
             batteryChecker_1.default.initBatteryChecker(adapter),
             connectionChecker_1.default.initConnectionChecker(adapter),
         ]);

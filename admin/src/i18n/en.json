@@ -3,10 +3,13 @@
 	"option1": "option1",
 	"option2": "option2",
 	"options": "General Options",
+	"startConfigChangeListener": "Start Config Change Listener ?",
 
 	"stateConfig": "State Config Up/Download",
 	"singleStateUpload": "Single State Upload",
-	"b2": "B2",
+	"resetNames": "reset state names",
+	"resetName": "reset state name",
+
 
 	"First Search the State": "First Search the State",
 	"State ID": "State ID",
@@ -33,5 +36,11 @@
 	"Upload Config": "Upload Config",
 	"State Configuration sucessfully loaded": "State Configuration sucessfully loaded",
 	"Drag or click to upload a Config File": "Drag or click to upload a Config File (JSON/YAML)",
-	"Selected file": "Selected file"
+	"Selected file": "Selected file",
+	"resetNameTitle": "Single reset state name",
+	"resetNamesTitle": "Reset all state names",
+	"Reset2DefaultName": "reset to default name",
+	"Single State Name sucessfully reseted": "Single State Name sucessfully reseted",
+	"Select State Name to reset":"select state name to reset",
+	"All State Names sucessfully reseted":"all state names are sucessfully reseted"
 }

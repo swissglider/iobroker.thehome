@@ -1,0 +1,62 @@
+@startuml
+!theme cyborg-outline
+skinparam defaultTextAlignment center
+
+<style>
+    diamond {
+        BackgroundColor #ccf
+    }
+    partition {
+        FontColor green
+        RoundCorner 10
+    }
+  arrow {
+    FontColor black
+    FontName arial
+  }
+</style>
+
+title
+    SwissgliderTheHome Adapter - Listen to Config changes
+end title
+
+start
+partition "On the Browser" {
+    :Enter Config changes Listern Tab;
+}
+partition "on adapter admin Config changes Listern Tab" {
+    if (resetStateNameToDefault)
+        :sendTo resetStateNameToDefault;
+    elseif (resetAllStateNamesToDefault)
+        :sendTo resetAllStateNamesToDefault;
+    else ()
+    -[hidden]->
+        stop
+    endif
+}
+partition "on adapter" {
+    split
+        if (resetStateNameToDefault)
+            :resetStateNameToDefault;
+        elseif (resetAllStateNamesToDefault)
+            :resetAllStateNamesToDefault;
+        else ()
+            -[hidden]->
+            stop
+        endif
+        partition "result" {
+                :return result;
+            }
+    split again
+        -[hidden]->
+        #LightGray://ConfigChangeListener//
+        **::init**/
+        :objectChange;
+        #palegreen:change Alias Names on InfluxDB for all changed/deleted State Names;
+        stop
+    end split
+}
+stop
+
+
+@enduml

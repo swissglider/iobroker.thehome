@@ -1,14 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const getName = (name) => {
+const getName = (name, systemLanguage = 'en') => {
     if (typeof name === 'string') {
         return name;
     }
-    else if (typeof name === 'object' && 'de' in name && name.de) {
-        return name.de;
+    else if (typeof name === 'object' &&
+        typeof systemLanguage === 'string' &&
+        systemLanguage &&
+        systemLanguage in name &&
+        name[systemLanguage]) {
+        return name[systemLanguage];
     }
     else if (typeof name === 'object' && 'en' in name && name.en) {
         return name.en;
+    }
+    else if (typeof name === 'object' && 'de' in name && name.de) {
+        return name.de;
     }
     else {
         return name.toString();

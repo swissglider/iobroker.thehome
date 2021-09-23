@@ -13,6 +13,7 @@ import I18n from '@iobroker/adapter-react/i18n';
 import StateConfig from './tabs/StateConfig';
 import Logo from '@iobroker/adapter-react/Components/Logo';
 import SingleStateConfigForm from './tabs/SingleStateConfig';
+import ResetNames from './tabs/ResetNames';
 
 const styles = (_theme: Theme): StyleRules => ({
 	root: {},
@@ -61,7 +62,7 @@ class App extends GenericApp {
 			return 1;
 		} else if (tab === 'singleStateUpload') {
 			return 2;
-		} else if (tab === 'b2') {
+		} else if (tab === 'resetNames') {
 			return 3;
 		}
 	}
@@ -110,7 +111,7 @@ class App extends GenericApp {
 							<Tab label={I18n.t('options')} data-name="options" />
 							<Tab label={I18n.t('stateConfig')} data-name="stateConfig" />
 							<Tab label={I18n.t('singleStateUpload')} data-name="singleStateUpload" />
-							<Tab label={I18n.t('b2')} data-name="b2" />
+							<Tab label={I18n.t('resetNames')} data-name="resetNames" />
 						</Tabs>
 					</AppBar>
 					<div
@@ -140,7 +141,14 @@ class App extends GenericApp {
 								systemConfig={this._systemConfig}
 							/>
 						)}
-						{this.state.selectedTab === 'b2' && <div>b2</div>}
+						{this.state.selectedTab === 'resetNames' && (
+							<ResetNames
+								socket={this.socket}
+								onToast={this.onToast}
+								onError={this.onError}
+								systemConfig={this._systemConfig}
+							/>
+						)}
 					</div>
 					{this.renderError()}
 					{this.renderToast()}
