@@ -106,7 +106,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
-### **WORK IN PROGRESS**
+### 0.0.2-8 (2021-09-29)
 
 -   (swissglider) implemented the InfluxDBHandler Adapter and Admin page
 

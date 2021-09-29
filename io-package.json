@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-7",
+        "version": "0.0.2-8",
         "news": {
+            "0.0.2-8": {
+                "en": "implemented the InfluxDBHandler Adapter and Admin page",
+                "de": "implementierte den InfluxDBHandler Adapter und die Admin-Seite",
+                "ru": "реализовал адаптер InfluxDBHandler и страницу администратора",
+                "pt": "implementou o adaptador InfluxDBHandler e a página Admin",
+                "nl": "de InfluxDBHandler-adapter en beheerderspagina geïmplementeerd",
+                "fr": "implémenté la page InfluxDBHandler Adapter and Admin",
+                "it": "implementato l'Adattatore InfluxDBHandler e la pagina di amministrazione",
+                "es": "implementó la página de administración y adaptador InfluxDBHandler",
+                "pl": "wdrożyliśmy adapter InfluxDBHandler i stronę administracyjną",
+                "zh-cn": "实现了 InfluxDBHandler 适配器和管理页面"
+            },
             "0.0.2-7": {
                 "en": "implemented the configChange Listener and Admin state name reset view",
                 "de": "die Ansicht zum Zurücksetzen des configChange-Listeners und des Admin-Statusnamens implementiert",
@@ -192,11 +204,24 @@
         "option2": "43",
         "InfluxDBHandlerAdapter_token": "12345",
         "InfluxDBHandlerAdapter_bucketLabels": "iobroker_labels_per_stateID",
-        "InfluxDBHandlerAdapter_labels":[
-            {"name":"iobroker", "color":"#27389A"}, 
-            {"name":"swissglider", "description":"Swissglider"}, 
-            {"name":"theHome", "description":"This is from the ioBroker TheHome Adapter", "color": "#3B875A" }, 
-            {"name":"transformed", "description":"This is transformed for better us with Labels"}
+        "InfluxDBHandlerAdapter_labels": [
+            {
+                "name": "iobroker",
+                "color": "#27389A"
+            },
+            {
+                "name": "swissglider",
+                "description": "Swissglider"
+            },
+            {
+                "name": "theHome",
+                "description": "This is from the ioBroker TheHome Adapter",
+                "color": "#3B875A"
+            },
+            {
+                "name": "transformed",
+                "description": "This is transformed for better us with Labels"
+            }
         ]
     },
     "protectedNative": [
