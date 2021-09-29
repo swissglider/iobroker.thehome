@@ -69,11 +69,13 @@ rectangle adapter {
     }
 
     rectangle "influxDBAdapter" {
-        usecase InfluxDBConverter as "=Convert DB StateNames" #F7B4C8
+        usecase InfluxDBConverter as "=InfluxDBHandler Adapter" #F7B4C8
             note top
-                Alle bestehenden TimeSeries mit
-                dem original State Namen werden umgeschrieben
-                in den aliasID Name auf der InfluxDB selber
+                Tags werden in nach InfluxdDB 
+                Bucket iobroker_labels_per_stateID geschrieben,
+                
+                so können diese anhand der ID mit den measurements 
+                zusammen gefügt werden
             end note
     }
 
@@ -135,10 +137,10 @@ adminSendTo -down-> SwissgliderGeneralParameterGenerator  #F7B4C8
 adminSendTo -down-> SwissgliderGeneralParameterCleaner  #F7B4C8
 SwissgliderGeneralParameterGenerator -> SwissgliderGeneralParameterCleaner  #F7B4C8
 
-ConfigChangePreWorker -> InfluxDBConverter  #F7B4C8
-
 FrequenceBatteryChecker -left-> BatteryChecker  #F7B4C8
 FrequenceConnectionChecker -left-> ConnectionChecker  #F7B4C8
 ConfigChangeListener -left-> ConfigChangePreWorker  #F7B4C8
+
+ConfigChangePreWorker -> InfluxDBConverter  #F7B4C8
 
 @enduml

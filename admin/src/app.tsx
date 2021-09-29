@@ -14,6 +14,7 @@ import StateConfig from './tabs/StateConfig';
 import Logo from '@iobroker/adapter-react/Components/Logo';
 import SingleStateConfigForm from './tabs/SingleStateConfig';
 import ResetNames from './tabs/ResetNames';
+import InfluxDBHandler from './tabs/InfluxDBHandler';
 
 const styles = (_theme: Theme): StyleRules => ({
 	root: {},
@@ -64,6 +65,8 @@ class App extends GenericApp {
 			return 2;
 		} else if (tab === 'resetNames') {
 			return 3;
+		} else if (tab === 'influxDBHandler') {
+			return 4;
 		}
 	}
 
@@ -112,6 +115,7 @@ class App extends GenericApp {
 							<Tab label={I18n.t('stateConfig')} data-name="stateConfig" />
 							<Tab label={I18n.t('singleStateUpload')} data-name="singleStateUpload" />
 							<Tab label={I18n.t('resetNames')} data-name="resetNames" />
+							<Tab label={I18n.t('influxDBHandler')} data-name="influxDBHandler" />
 						</Tabs>
 					</AppBar>
 					<div
@@ -146,6 +150,16 @@ class App extends GenericApp {
 								socket={this.socket}
 								onToast={this.onToast}
 								onError={this.onError}
+								systemConfig={this._systemConfig}
+							/>
+						)}
+						{this.state.selectedTab === 'influxDBHandler' && (
+							<InfluxDBHandler
+								socket={this.socket}
+								onToast={this.onToast}
+								onError={this.onError}
+								native={this.state.native}
+								onChange={(attr, value) => this.updateNativeValue(attr, value)}
 								systemConfig={this._systemConfig}
 							/>
 						)}

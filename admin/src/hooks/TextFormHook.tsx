@@ -8,13 +8,27 @@ export interface I_TextFormHook_Props {
 	placeholder?: string;
 	disabled?: boolean;
 	systemConfig: Record<string, any>;
+	onChange?: (value: any, name: string) => void;
 }
 
-const TextFormHook: FC<I_TextFormHook_Props> = ({ label, name, placeholder, disabled }: I_TextFormHook_Props) => {
+const TextFormHook: FC<I_TextFormHook_Props> = ({
+	label,
+	name,
+	placeholder,
+	disabled,
+	onChange: onChangeProps,
+}: I_TextFormHook_Props) => {
 	const {
 		register,
 		formState: { errors },
 	} = useFormContext();
+
+	const { onChange } = register('lastChange');
+
+	const onChangeNew = (e: any) => {
+		if (onChangeProps) onChangeProps(name, e.target.value);
+		onChange(e);
+	};
 
 	return (
 		<TextField
@@ -30,6 +44,7 @@ const TextFormHook: FC<I_TextFormHook_Props> = ({ label, name, placeholder, disa
 			}}
 			disabled={disabled === undefined ? false : disabled}
 			{...register(name)}
+			onChange={onChangeNew}
 		/>
 	);
 };

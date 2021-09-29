@@ -72062,6 +72062,8 @@ module.exports = {
   "singleStateUpload": "Single State Upload",
   "resetNames": "reset state names",
   "resetName": "reset state name",
+  "influxDBHandler": "InfluxDB handler",
+  "influxDBHandlerTitle": "InfluxDB handler parameters",
   "First Search the State": "First Search the State",
   "State ID": "State ID",
   "State Name": "State Name",
@@ -72106,6 +72108,8 @@ module.exports = {
   "singleStateUpload": "Änderung eines einzelnen State",
   "resetNames": "State Namen zurücksetzen",
   "resetName": "State Name zurücksetzen",
+  "influxDBHandler": "InfluxDB Handler",
+  "influxDBHandlerTitle": "InfluxDB Handler Parameters",
   "First Search the State": "Zuerst den Status suchen",
   "State ID": "State ID",
   "State Name": "State Name",
@@ -72368,7 +72372,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50116" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61755" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

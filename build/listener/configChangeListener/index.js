@@ -3,35 +3,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports._allStateIDsWithConfig = exports.objectStateInformations = void 0;
 const influxDBHandlerAdapter_1 = __importDefault(require("../../adapters/influxDBHandlerAdapter"));
-const objectStateInformations = 'objectStateInformations';
+exports.objectStateInformations = 'objectStateInformations';
 let _adapter;
-let _allStateIDsWithConfig = {};
+exports._allStateIDsWithConfig = {};
 const _setObjectStateInformations = async () => {
-    await _adapter.setStateChangedAsync(objectStateInformations, JSON.stringify(_allStateIDsWithConfig), true);
+    await _adapter.setStateChangedAsync(exports.objectStateInformations, JSON.stringify(exports._allStateIDsWithConfig), true);
 };
 const _getLatestName = (key) => {
-    return _allStateIDsWithConfig[key].names[_allStateIDsWithConfig[key].names.length - 1];
+    return exports._allStateIDsWithConfig[key].names[exports._allStateIDsWithConfig[key].names.length - 1];
 };
-const _setNewName = async (key, value) => {
+const _setNewName = async (key, value, init = false) => {
+    var _a;
     if (!value) {
         // state deleted
-        await influxDBHandlerAdapter_1.default.deleteAllMessurementsWithAliasNameOnDB(key, _getLatestName(key));
-        delete _allStateIDsWithConfig[key];
+        delete exports._allStateIDsWithConfig[key];
         await _setObjectStateInformations();
         _adapter.log.silly(`object ${key} deleted`);
         return;
     }
-    else if (value && !(key in _allStateIDsWithConfig)) {
+    else if (value && !(key in exports._allStateIDsWithConfig)) {
         // new state
-        _allStateIDsWithConfig[key] = { defaultName: value.common.name, names: [value.common.name] };
+        exports._allStateIDsWithConfig[key] = { defaultName: value.common.name, names: [value.common.name] };
     }
     else if (value && JSON.stringify(_getLatestName(key)) !== JSON.stringify(value.common.name)) {
         // state name changed
-        _allStateIDsWithConfig[key].names.push(value.common.name);
+        exports._allStateIDsWithConfig[key].names.push(value.common.name);
     }
     await _setObjectStateInformations();
-    await influxDBHandlerAdapter_1.default.changeAllMessurementsToNewAliasNameOnDB(key, _getLatestName(key));
+    if (!init) {
+        if (value.common.custom && ((_a = value.common.custom['influxdb.0']) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
+            await influxDBHandlerAdapter_1.default.changeNameOnDBBucket(key);
+        }
+    }
     _adapter.log.silly(`object ${key} changed: ${JSON.stringify(value)}`);
 };
 const _initConfigChangeListener = async () => {
@@ -40,29 +45,29 @@ const _initConfigChangeListener = async () => {
     const allDeviceObjects = await _adapter.getForeignObjectsAsync('*', 'device');
     const allObjects = { ...allStateObjects, ...allChannelObjects, ...allDeviceObjects };
     for (const [key, value] of Object.entries(allObjects)) {
-        await _setNewName(key, value);
+        await _setNewName(key, value, true);
     }
 };
 const resetStateNameToDefault = async (id) => {
-    if (!(id in _allStateIDsWithConfig))
+    if (!(id in exports._allStateIDsWithConfig))
         return;
     const obj = await _adapter.getForeignObjectAsync(id);
     if (obj) {
-        obj.common.name = _allStateIDsWithConfig[id].defaultName;
+        obj.common.name = exports._allStateIDsWithConfig[id].defaultName;
         delete obj.enums;
         await _adapter.setForeignObjectAsync(id, obj);
     }
 };
 const resetAllStateNamesToDefault = async () => {
     const promiseArray = [];
-    for (const id of Object.keys(_allStateIDsWithConfig)) {
+    for (const id of Object.keys(exports._allStateIDsWithConfig)) {
         promiseArray.push(resetStateNameToDefault(id));
     }
     await Promise.all(promiseArray);
 };
 const onReady = async () => {
     _adapter.log.silly('ConfigChangeListener::onReady');
-    await _adapter.setObjectNotExistsAsync(objectStateInformations, {
+    await _adapter.setObjectNotExistsAsync(exports.objectStateInformations, {
         type: 'config',
         common: {
             name: 'ObjectStateInformations',
@@ -74,12 +79,12 @@ const onReady = async () => {
         },
         native: {},
     });
-    const rawState = await _adapter.getStateAsync(objectStateInformations);
+    const rawState = await _adapter.getStateAsync(exports.objectStateInformations);
     if (!!rawState && !!rawState.val) {
-        _allStateIDsWithConfig = JSON.parse(rawState.val);
+        exports._allStateIDsWithConfig = JSON.parse(rawState.val);
     }
     else {
-        _allStateIDsWithConfig = {};
+        exports._allStateIDsWithConfig = {};
     }
     await _initConfigChangeListener();
 };
@@ -112,14 +117,11 @@ const onMessage = async (obj) => {
 };
 const onObjectChange = async (id, obj) => {
     _adapter.log.silly('ConfigChangeListener::onObjectChange');
-    console.debug('ConfigChangeListener::onObjectChange');
     await _setNewName(id, obj);
     _adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
 };
 const onUnload = async () => {
     _adapter.log.error('ConfigChangeListener::onUnload');
-    console.log('ConfigChangeListener::onUnload');
-    console.debug('ConfigChangeListener::onUnload');
     await _setObjectStateInformations();
 };
 const init = (adapter) => {

@@ -1,9 +1,9 @@
 import InfluxDBHandlerAdapter from '../../adapters/influxDBHandlerAdapter';
 import { T_StateIDWithConfig } from '../../utils/types/T_StateIDWithConfig';
 
-const objectStateInformations = 'objectStateInformations';
+export const objectStateInformations = 'objectStateInformations';
 let _adapter: ioBroker.Adapter;
-let _allStateIDsWithConfig: T_StateIDWithConfig = {};
+export let _allStateIDsWithConfig: T_StateIDWithConfig = {};
 
 const _setObjectStateInformations = async (): Promise<void> => {
 	await _adapter.setStateChangedAsync(objectStateInformations, JSON.stringify(_allStateIDsWithConfig), true);
@@ -13,10 +13,9 @@ const _getLatestName = (key: string): ioBroker.StringOrTranslated => {
 	return _allStateIDsWithConfig[key].names[_allStateIDsWithConfig[key].names.length - 1];
 };
 
-const _setNewName = async (key: string, value: ioBroker.Object | null | undefined): Promise<void> => {
+const _setNewName = async (key: string, value: ioBroker.Object | null | undefined, init = false): Promise<void> => {
 	if (!value) {
 		// state deleted
-		await InfluxDBHandlerAdapter.deleteAllMessurementsWithAliasNameOnDB(key, _getLatestName(key));
 		delete _allStateIDsWithConfig[key];
 		await _setObjectStateInformations();
 		_adapter.log.silly(`object ${key} deleted`);
@@ -30,7 +29,11 @@ const _setNewName = async (key: string, value: ioBroker.Object | null | undefine
 	}
 
 	await _setObjectStateInformations();
-	await InfluxDBHandlerAdapter.changeAllMessurementsToNewAliasNameOnDB(key, _getLatestName(key));
+	if (!init) {
+		if (value.common.custom && value.common.custom['influxdb.0']?.enabled === true) {
+			await InfluxDBHandlerAdapter.changeNameOnDBBucket(key);
+		}
+	}
 	_adapter.log.silly(`object ${key} changed: ${JSON.stringify(value)}`);
 };
 
@@ -41,7 +44,7 @@ const _initConfigChangeListener = async (): Promise<void> => {
 
 	const allObjects = { ...allStateObjects, ...allChannelObjects, ...allDeviceObjects };
 	for (const [key, value] of Object.entries(allObjects)) {
-		await _setNewName(key, value);
+		await _setNewName(key, value, true);
 	}
 };
 
@@ -115,7 +118,6 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 
 const onObjectChange = async (id: string, obj: ioBroker.Object | null | undefined): Promise<void> => {
 	_adapter.log.silly('ConfigChangeListener::onObjectChange');
-	console.debug('ConfigChangeListener::onObjectChange');
 
 	await _setNewName(id, obj);
 	_adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
@@ -123,8 +125,6 @@ const onObjectChange = async (id: string, obj: ioBroker.Object | null | undefine
 
 const onUnload = async (): Promise<void> => {
 	_adapter.log.error('ConfigChangeListener::onUnload');
-	console.log('ConfigChangeListener::onUnload');
-	console.debug('ConfigChangeListener::onUnload');
 	await _setObjectStateInformations();
 };
 

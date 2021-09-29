@@ -9,6 +9,8 @@
 	"singleStateUpload": "Änderung eines einzelnen State",
 	"resetNames": "State Namen zurücksetzen",
 	"resetName": "State Name zurücksetzen",
+	"influxDBHandler": "InfluxDB Handler",
+	"influxDBHandlerTitle":"InfluxDB Handler Parameters",
 
 	"First Search the State": "Zuerst den Status suchen",
 	"State ID": "State ID",

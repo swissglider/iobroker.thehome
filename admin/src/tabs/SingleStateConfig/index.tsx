@@ -64,7 +64,12 @@ const defaultValues = {
 const SingleStateConfigForm: FC<I_SingleStateConfigForm_Props> = (props: I_SingleStateConfigForm_Props) => {
 	const classes = useStyles();
 	const [showSearchDialog, setShowSearchDialog] = useState<boolean>(false);
-	const methods = useForm<I_SingleStateConfigForm_FormProps>({ defaultValues, resolver: yupResolver(formSchema) });
+	const methods = useForm<I_SingleStateConfigForm_FormProps>({
+		defaultValues,
+		mode: 'onChange',
+		reValidateMode: 'onChange',
+		resolver: yupResolver(formSchema),
+	});
 
 	const submitStateInformation: SubmitHandler<I_SingleStateConfigForm_FormProps> = async (
 		data: I_SingleStateConfigForm_FormProps,

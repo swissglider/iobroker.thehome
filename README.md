@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) implemented the InfluxDBHandler Adapter and Admin page
+
 ### 0.0.2-7 (2021-09-23)
 
 -   (swissglider) implemented the configChange Listener and Admin state name reset view

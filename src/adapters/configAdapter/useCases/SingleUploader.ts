@@ -3,8 +3,8 @@ import * as D from 'io-ts/Decoder';
 import BatteryChecker from '../../../checker/batteryChecker';
 import ConnectionChecker from '../../../checker/connectionChecker';
 import EnumHandler from '../../../utils/adapterUtils/enumHandler';
+import NameHelper from '../../../utils/adapterUtils/nameHelper';
 import { StateInformation, stateInformation } from '../interfaces/I_StateInformation';
-import Helper from '../utils/helper';
 
 export const singleStateConfigUpload = async (
 	adapter: ioBroker.Adapter,
@@ -37,7 +37,7 @@ export const singleStateConfigUpload = async (
 	}
 	// = change name and store2DB on Object
 	try {
-		await Helper.changeStateNameAndStore2DB(adapter, stateConfig);
+		await NameHelper.changeStateNameAndStore2DB(adapter, stateConfig);
 	} catch (error) {
 		return `unknown error while setting config name or store2DB: ${error}`;
 	}

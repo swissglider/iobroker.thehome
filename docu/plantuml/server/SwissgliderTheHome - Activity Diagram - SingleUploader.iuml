@@ -46,6 +46,8 @@ partition "on adapter" {
             #palegreen:new init BatteryChecker;
             fork again
             #palegreen:new init ConnectionChecker;
+            fork again
+            #palegreen:influxDBHandlerAdapter: update all Labels;
         end fork
     }
     partition "result" {

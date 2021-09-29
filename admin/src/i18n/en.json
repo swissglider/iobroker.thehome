@@ -9,6 +9,8 @@
 	"singleStateUpload": "Single State Upload",
 	"resetNames": "reset state names",
 	"resetName": "reset state name",
+	"influxDBHandler": "InfluxDB handler",
+	"influxDBHandlerTitle":"InfluxDB handler parameters",
 
 
 	"First Search the State": "First Search the State",

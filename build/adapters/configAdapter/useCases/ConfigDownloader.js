@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.statesConfigDownload = void 0;
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
-const helper_1 = __importDefault(require("../utils/helper"));
+const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHelper"));
 /**
  * Creates and returns an array of StateInformations with all states that contains function and/or room enums
  * @param adapter adapter Object
@@ -16,7 +16,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter,
     const filteredStates = await enumHandler_1.default.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
     const stateInfos = filteredStates.map((state) => ({
         stateID: state._id,
-        stateName: helper_1.default.getName(state.common.name, adapter.systemConfig.language),
+        stateName: nameHelper_1.default.getName(state.common.name, adapter.systemConfig.language),
         functions: state.enums
             ? Object.keys(state.enums).find((e) => e.startsWith('enum.functions.'))
             : undefined,
@@ -35,8 +35,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter,
 };
 const statesConfigDownload = async (adapter) => {
     const states = await getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation(adapter);
-    const objectWIthStore2DB = await helper_1.default.getAllObjectsTheHomeParameter(adapter, 'StateInformationArray');
-    console.log(objectWIthStore2DB);
+    const objectWIthStore2DB = await nameHelper_1.default.getAllObjectsTheHomeParameter(adapter, 'StateInformationArray');
     for (const obj of objectWIthStore2DB) {
         const tObj = obj;
         if (states.find((e) => e.stateID === tObj.stateID) === undefined) {

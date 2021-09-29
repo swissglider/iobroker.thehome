@@ -182,14 +182,29 @@
         "supportCustoms": true,
         "dependencies": [
             {
-                "js-controller": ">=2.0.0"
+                "js-controller": ">=2.0.0",
+                "influxdb": ">=2.2.0"
             }
         ]
     },
     "native": {
         "option1": true,
-        "option2": "43"
+        "option2": "43",
+        "InfluxDBHandlerAdapter_token": "12345",
+        "InfluxDBHandlerAdapter_bucketLabels": "iobroker_labels_per_stateID",
+        "InfluxDBHandlerAdapter_labels":[
+            {"name":"iobroker", "color":"#27389A"}, 
+            {"name":"swissglider", "description":"Swissglider"}, 
+            {"name":"theHome", "description":"This is from the ioBroker TheHome Adapter", "color": "#3B875A" }, 
+            {"name":"transformed", "description":"This is transformed for better us with Labels"}
+        ]
     },
+    "protectedNative": [
+        "InfluxDBHandlerAdapter_token"
+    ],
+    "encryptedNative": [
+        "InfluxDBHandlerAdapter_token"
+    ],
     "objects": [],
     "instanceObjects": []
 }

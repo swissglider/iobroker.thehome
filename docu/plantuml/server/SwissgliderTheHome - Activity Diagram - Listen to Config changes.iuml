@@ -52,7 +52,6 @@ partition "on adapter" {
         #LightGray://ConfigChangeListener//
         **::init**/
         :objectChange;
-        #palegreen:change Alias Names on InfluxDB for all changed/deleted State Names;
         stop
     end split
 }

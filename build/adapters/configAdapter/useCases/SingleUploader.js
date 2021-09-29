@@ -27,8 +27,8 @@ const E = __importStar(require("fp-ts/Either"));
 const batteryChecker_1 = __importDefault(require("../../../checker/batteryChecker"));
 const connectionChecker_1 = __importDefault(require("../../../checker/connectionChecker"));
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
+const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHelper"));
 const I_StateInformation_1 = require("../interfaces/I_StateInformation");
-const helper_1 = __importDefault(require("../utils/helper"));
 const singleStateConfigUpload = async (adapter, stateConfig) => {
     // check config
     const decodedConfig = I_StateInformation_1.stateInformation.decode(stateConfig);
@@ -58,7 +58,7 @@ const singleStateConfigUpload = async (adapter, stateConfig) => {
     }
     // = change name and store2DB on Object
     try {
-        await helper_1.default.changeStateNameAndStore2DB(adapter, stateConfig);
+        await nameHelper_1.default.changeStateNameAndStore2DB(adapter, stateConfig);
     }
     catch (error) {
         return `unknown error while setting config name or store2DB: ${error}`;

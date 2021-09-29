@@ -3,8 +3,8 @@ import * as D from 'io-ts/Decoder';
 import BatteryChecker from '../../../checker/batteryChecker';
 import ConnectionChecker from '../../../checker/connectionChecker';
 import EnumHandler from '../../../utils/adapterUtils/enumHandler';
+import NameHelper from '../../../utils/adapterUtils/nameHelper';
 import { StateInformation, stateInformations } from '../interfaces/I_StateInformation';
-import Helper from '../utils/helper';
 
 export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: StateInformation[]): Promise<string> => {
 	// check config
@@ -22,7 +22,7 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 			BatteryChecker.stopBatteryChecker(adapter),
 			ConnectionChecker.stopConnectionChecker(adapter),
 			EnumHandler.removeAllStatesFromAllRoomFunctionEnums(adapter),
-			Helper.removeAllTheHomeParametersFromAllObjects(adapter),
+			NameHelper.removeAllTheHomeParametersFromAllObjects(adapter),
 		]);
 	} catch (error) {
 		return `unknown error while stopping connection/battery checker or configChange listener / deleting all enums with state: ${error}`;
@@ -34,7 +34,7 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 	try {
 		await Promise.all([
 			EnumHandler.addAllStatesToEnums(adapter, config),
-			Helper.changeAllStateNameAndStore2DBs(adapter, config),
+			NameHelper.changeAllStateNameAndStore2DBs(adapter, config),
 		]);
 	} catch (error) {
 		console.log((error as TypeError).stack);

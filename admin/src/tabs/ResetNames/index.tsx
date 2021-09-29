@@ -61,7 +61,12 @@ const defaultValues = {
 const ResetNames: FC<I_ResetNames_Props> = (props: I_ResetNames_Props) => {
 	const classes = useStyles();
 	const [showSearchDialog, setShowSearchDialog] = useState<boolean>(false);
-	const methods = useForm<I_ResetNames_FormProps>({ defaultValues, resolver: yupResolver(formSchema) });
+	const methods = useForm<I_ResetNames_FormProps>({
+		defaultValues,
+		mode: 'onChange',
+		reValidateMode: 'onChange',
+		resolver: yupResolver(formSchema),
+	});
 
 	const handleClose = (values: I_ResetNames_FormProps | undefined) => {
 		setShowSearchDialog(false);

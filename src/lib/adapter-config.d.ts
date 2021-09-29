@@ -7,9 +7,14 @@ declare global {
 			option1: boolean;
 			option2: string;
 			startConfigChangeListener: boolean;
+			InfluxDBHandlerAdapter_token: string;
+			InfluxDBHandlerAdapter_bucketTransformed: string;
+			InfluxDBHandlerAdapter_bucketLabels: string;
+			InfluxDBHandlerAdapter_labels: { name: string; color?: string; description?: string }[];
 		}
 	}
 }
 
 // this is required so the above AdapterConfig is found by TypeScript / type checking
-export {};
+export { };
+

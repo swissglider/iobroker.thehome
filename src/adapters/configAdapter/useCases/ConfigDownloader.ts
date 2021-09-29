@@ -1,6 +1,6 @@
 import EnumHandler from '../../../utils/adapterUtils/enumHandler';
+import NameHelper from '../../../utils/adapterUtils/nameHelper';
 import { StateInformation } from '../interfaces/I_StateInformation';
-import Helper from '../utils/helper';
 
 /**
  * Creates and returns an array of StateInformations with all states that contains function and/or room enums
@@ -17,7 +17,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 		(state) =>
 			({
 				stateID: state._id,
-				stateName: Helper.getName(state.common.name, adapter.systemConfig.language),
+				stateName: NameHelper.getName(state.common.name, adapter.systemConfig.language),
 				functions: state.enums
 					? Object.keys(state.enums).find((e: string) => e.startsWith('enum.functions.'))
 					: undefined,
@@ -39,8 +39,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 
 export const statesConfigDownload = async (adapter: ioBroker.Adapter): Promise<string> => {
 	const states = await getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation(adapter);
-	const objectWIthStore2DB = await Helper.getAllObjectsTheHomeParameter(adapter, 'StateInformationArray');
-	console.log(objectWIthStore2DB);
+	const objectWIthStore2DB = await NameHelper.getAllObjectsTheHomeParameter(adapter, 'StateInformationArray');
 	for (const obj of objectWIthStore2DB) {
 		const tObj = obj as StateInformation;
 		if (states.find((e) => e.stateID === tObj.stateID) === undefined) {

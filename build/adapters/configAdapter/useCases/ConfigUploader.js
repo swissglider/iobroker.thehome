@@ -27,8 +27,8 @@ const E = __importStar(require("fp-ts/Either"));
 const batteryChecker_1 = __importDefault(require("../../../checker/batteryChecker"));
 const connectionChecker_1 = __importDefault(require("../../../checker/connectionChecker"));
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
+const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHelper"));
 const I_StateInformation_1 = require("../interfaces/I_StateInformation");
-const helper_1 = __importDefault(require("../utils/helper"));
 const statesConfigUpload = async (adapter, config) => {
     // check config
     const decodedConfig = I_StateInformation_1.stateInformations.decode(config);
@@ -45,7 +45,7 @@ const statesConfigUpload = async (adapter, config) => {
             batteryChecker_1.default.stopBatteryChecker(adapter),
             connectionChecker_1.default.stopConnectionChecker(adapter),
             enumHandler_1.default.removeAllStatesFromAllRoomFunctionEnums(adapter),
-            helper_1.default.removeAllTheHomeParametersFromAllObjects(adapter),
+            nameHelper_1.default.removeAllTheHomeParametersFromAllObjects(adapter),
         ]);
     }
     catch (error) {
@@ -57,7 +57,7 @@ const statesConfigUpload = async (adapter, config) => {
     try {
         await Promise.all([
             enumHandler_1.default.addAllStatesToEnums(adapter, config),
-            helper_1.default.changeAllStateNameAndStore2DBs(adapter, config),
+            nameHelper_1.default.changeAllStateNameAndStore2DBs(adapter, config),
         ]);
     }
     catch (error) {
