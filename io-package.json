@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-8",
+        "version": "0.0.2-9",
         "news": {
+            "0.0.2-9": {
+                "en": "some InfluxDBHandler Adapter topics fixed and swissglider native removed",
+                "de": "einige InfluxDBHandler Adapter Themen behoben und swissglider nativ entfernt",
+                "ru": "исправлены некоторые темы адаптера InfluxDBHandler и удален собственный swissglider",
+                "pt": "alguns tópicos do adaptador InfluxDBHandler corrigidos e swissglider nativo removido",
+                "nl": "sommige InfluxDBHandler Adapter-onderwerpen opgelost en swissglider native verwijderd",
+                "fr": "certains sujets relatifs à l'adaptateur InfluxDBHandler ont été corrigés et swissglider natif a été supprimé",
+                "it": "alcuni argomenti dell'adattatore InfluxDBHandler sono stati corretti e il nativo di swissglider è stato rimosso",
+                "es": "Se corrigieron algunos temas del adaptador InfluxDBHandler y se eliminó el nativo de swissglider",
+                "pl": "Naprawiono niektóre tematy dotyczące adaptera InfluxDBHandler i usunięto natywny program Swissglider",
+                "zh-cn": "修复了一些 InfluxDBHandler Adapter 主题并移除了 swissglider 本机"
+            },
             "0.0.2-8": {
                 "en": "implemented the InfluxDBHandler Adapter and Admin page",
                 "de": "implementierte den InfluxDBHandler Adapter und die Admin-Seite",
