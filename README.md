@@ -106,7 +106,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
-### **WORK IN PROGRESS**
+### 0.0.2-10 (2021-09-29)
 
 -   (swissglider) ConfigChangeListener_disabled and InfluxDBHandlerAdapter_disabled on adapter and admin
 

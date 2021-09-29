@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-9",
+        "version": "0.0.2-10",
         "news": {
+            "0.0.2-10": {
+                "en": "ConfigChangeListener_disabled and InfluxDBHandlerAdapter_disabled on adapter and admin",
+                "de": "ConfigChangeListener_disabled und InfluxDBHandlerAdapter_disabled auf Adapter und Admin",
+                "ru": "ConfigChangeListener_disabled и InfluxDBHandlerAdapter_disabled для адаптера и администратора",
+                "pt": "ConfigChangeListener_disabled e InfluxDBHandlerAdapter_disabled no adaptador e admin",
+                "nl": "ConfigChangeListener_disabled en InfluxDBHandlerAdapter_disabled op adapter en beheerder",
+                "fr": "ConfigChangeListener_disabled et InfluxDBHandlerAdapter_disabled sur l'adaptateur et l'administrateur",
+                "it": "ConfigChangeListener_disabled e InfluxDBHandlerAdapter_disabled su adapter e admin",
+                "es": "ConfigChangeListener_disabled e InfluxDBHandlerAdapter_disabled en el adaptador y el administrador",
+                "pl": "ConfigChangeListener_disabled i InfluxDBHandlerAdapter_disabled na karcie i administratorze",
+                "zh-cn": "适配器和管理员上的 ConfigChangeListener_disabled 和 InfluxDBHandlerAdapter_disabled"
+            },
             "0.0.2-9": {
                 "en": "some InfluxDBHandler Adapter topics fixed and swissglider native removed",
                 "de": "einige InfluxDBHandler Adapter Themen behoben und swissglider nativ entfernt",
