@@ -212,6 +212,8 @@ const _updateOneLablePerObj = async (obj) => {
 };
 const changeNameOnDBBucket = async (id) => {
     _adapter.log.silly('InfluxDBHandlerAdapter::changeNameOnDBBucket - ' + id);
+    if (_adapter.config.InfluxDBHandlerAdapter_disabled)
+        return;
     const tmpoAllObjects = await _adapter.getForeignObjectsAsync(id);
     for (const obj of Object.values(tmpoAllObjects)) {
         await _updateOneLablePerObj(obj);
@@ -252,6 +254,8 @@ const _initInfluxDBTags = async () => {
 };
 const onReady = async () => {
     _adapter.log.silly('InfluxDBHandlerAdapter::onReady');
+    if (_adapter.config.InfluxDBHandlerAdapter_disabled)
+        return;
     try {
         _initInfluxDBTags();
     }
@@ -264,7 +268,8 @@ const onMessage = async (obj) => {
     if (typeof obj === 'object') {
         if (obj.command == 'InfluxDBHandlerAdapter:refreshAllTagsOnInfluxDB' && obj.callback) {
             try {
-                await _initInfluxDBTags();
+                if (!_adapter.config.InfluxDBHandlerAdapter_disabled)
+                    await _initInfluxDBTags();
                 _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
             }
             catch (error) {
@@ -279,6 +284,8 @@ const onUnload = async () => {
 };
 const init = (adapter) => {
     _adapter = adapter;
+    if (_adapter.config.InfluxDBHandlerAdapter_disabled)
+        return;
     _adapter.on('ready', onReady);
     _adapter.on('message', onMessage);
     _adapter.on('unload', onUnload);

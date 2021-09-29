@@ -5,6 +5,8 @@
 	"options": "Generelle Konfiguration",
 	"startConfigChangeListener": "Config Change Listener starten ?",
 
+	"ConfigChangeListener_disabled": "Config Change Listener abeschaltet",
+	"InfluxDBHandlerAdapter_disabled": "InfluxDB Handler Adapter abeschaltet",
 	"stateConfig": "State Config Up/Download",
 	"singleStateUpload": "Änderung eines einzelnen State",
 	"resetNames": "State Namen zurücksetzen",

@@ -51,6 +51,7 @@ const _initConfigChangeListener = async (): Promise<void> => {
 };
 
 const resetStateNameToDefault = async (id: string): Promise<void> => {
+	if (_adapter.config.ConfigChangeListener_disabled) return;
 	if (!(id in _allStateIDsWithConfig)) return;
 	const obj = await _adapter.getForeignObjectAsync(id);
 	if (obj) {
@@ -61,6 +62,7 @@ const resetStateNameToDefault = async (id: string): Promise<void> => {
 };
 
 const resetAllStateNamesToDefault = async (): Promise<void> => {
+	if (_adapter.config.ConfigChangeListener_disabled) return;
 	const promiseArray: Promise<void>[] = [];
 	for (const id of Object.keys(_allStateIDsWithConfig)) {
 		promiseArray.push(resetStateNameToDefault(id));
@@ -69,6 +71,7 @@ const resetAllStateNamesToDefault = async (): Promise<void> => {
 };
 
 const onReady = async (): Promise<void> => {
+	if (_adapter.config.ConfigChangeListener_disabled) return;
 	_adapter.log.silly('ConfigChangeListener::onReady');
 	await _adapter.setObjectNotExistsAsync(objectStateInformations, {
 		type: 'config',
@@ -102,14 +105,14 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 			obj.callback
 		) {
 			try {
-				await resetStateNameToDefault(obj.message.id);
+				if (!_adapter.config.ConfigChangeListener_disabled) await resetStateNameToDefault(obj.message.id);
 				_adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
 			} catch (error) {
 				_adapter.sendTo(obj.from, obj.command, `unknown error on ${obj.command}: ${error}`, obj.callback);
 			}
 		} else if (obj.command == 'ConfigChangeListener:resetAllStateNamesToDefault' && obj.callback) {
 			try {
-				await resetAllStateNamesToDefault();
+				if (!_adapter.config.ConfigChangeListener_disabled) await resetAllStateNamesToDefault();
 				_adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
 			} catch (error) {
 				_adapter.sendTo(obj.from, obj.command, `unknown error on ${obj.command}: ${error}`, obj.callback);
@@ -121,17 +124,20 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 const onObjectChange = async (id: string, obj: ioBroker.Object | null | undefined): Promise<void> => {
 	_adapter.log.silly('ConfigChangeListener::onObjectChange');
 
-	await _setNewName(id, obj);
-	_adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
+	if (!_adapter.config.ConfigChangeListener_disabled) {
+		await _setNewName(id, obj);
+		_adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
+	}
 };
 
 const onUnload = async (): Promise<void> => {
 	_adapter.log.error('ConfigChangeListener::onUnload');
-	await _setObjectStateInformations();
+	if (!_adapter.config.ConfigChangeListener_disabled) await _setObjectStateInformations();
 };
 
 const init = (adapter: ioBroker.Adapter): void => {
 	_adapter = adapter;
+	if (_adapter.config.ConfigChangeListener_disabled) return;
 	_adapter.on('ready', onReady);
 	_adapter.on('message', onMessage);
 	// _adapter.on('stateChange', onStateChange);

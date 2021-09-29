@@ -6,11 +6,13 @@ declare global {
 		interface AdapterConfig {
 			option1: boolean;
 			option2: string;
+			ConfigChangeListener_disabled: boolean;
 			startConfigChangeListener: boolean;
 			InfluxDBHandlerAdapter_token: string;
 			InfluxDBHandlerAdapter_bucketTransformed: string;
 			InfluxDBHandlerAdapter_bucketLabels: string;
 			InfluxDBHandlerAdapter_labels: { name: string; color?: string; description?: string }[];
+			InfluxDBHandlerAdapter_disabled: boolean;
 		}
 	}
 }

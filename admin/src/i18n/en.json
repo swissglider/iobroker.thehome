@@ -4,6 +4,8 @@
 	"option2": "option2",
 	"options": "General Options",
 	"startConfigChangeListener": "Start Config Change Listener ?",
+	"ConfigChangeListener_disabled": "config change listener disabled",
+	"InfluxDBHandlerAdapter_disabled": "InfluxDB handler adapter disabled",
 
 	"stateConfig": "State Config Up/Download",
 	"singleStateUpload": "Single State Upload",

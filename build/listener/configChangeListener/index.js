@@ -51,6 +51,8 @@ const _initConfigChangeListener = async () => {
     }
 };
 const resetStateNameToDefault = async (id) => {
+    if (_adapter.config.ConfigChangeListener_disabled)
+        return;
     if (!(id in exports._allStateIDsWithConfig))
         return;
     const obj = await _adapter.getForeignObjectAsync(id);
@@ -61,6 +63,8 @@ const resetStateNameToDefault = async (id) => {
     }
 };
 const resetAllStateNamesToDefault = async () => {
+    if (_adapter.config.ConfigChangeListener_disabled)
+        return;
     const promiseArray = [];
     for (const id of Object.keys(exports._allStateIDsWithConfig)) {
         promiseArray.push(resetStateNameToDefault(id));
@@ -68,6 +72,8 @@ const resetAllStateNamesToDefault = async () => {
     await Promise.all(promiseArray);
 };
 const onReady = async () => {
+    if (_adapter.config.ConfigChangeListener_disabled)
+        return;
     _adapter.log.silly('ConfigChangeListener::onReady');
     await _adapter.setObjectNotExistsAsync(exports.objectStateInformations, {
         type: 'config',
@@ -99,7 +105,8 @@ const onMessage = async (obj) => {
             'id' in obj.message &&
             obj.callback) {
             try {
-                await resetStateNameToDefault(obj.message.id);
+                if (!_adapter.config.ConfigChangeListener_disabled)
+                    await resetStateNameToDefault(obj.message.id);
                 _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
             }
             catch (error) {
@@ -108,7 +115,8 @@ const onMessage = async (obj) => {
         }
         else if (obj.command == 'ConfigChangeListener:resetAllStateNamesToDefault' && obj.callback) {
             try {
-                await resetAllStateNamesToDefault();
+                if (!_adapter.config.ConfigChangeListener_disabled)
+                    await resetAllStateNamesToDefault();
                 _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
             }
             catch (error) {
@@ -119,15 +127,20 @@ const onMessage = async (obj) => {
 };
 const onObjectChange = async (id, obj) => {
     _adapter.log.silly('ConfigChangeListener::onObjectChange');
-    await _setNewName(id, obj);
-    _adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
+    if (!_adapter.config.ConfigChangeListener_disabled) {
+        await _setNewName(id, obj);
+        _adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
+    }
 };
 const onUnload = async () => {
     _adapter.log.error('ConfigChangeListener::onUnload');
-    await _setObjectStateInformations();
+    if (!_adapter.config.ConfigChangeListener_disabled)
+        await _setObjectStateInformations();
 };
 const init = (adapter) => {
     _adapter = adapter;
+    if (_adapter.config.ConfigChangeListener_disabled)
+        return;
     _adapter.on('ready', onReady);
     _adapter.on('message', onMessage);
     // _adapter.on('stateChange', onStateChange);

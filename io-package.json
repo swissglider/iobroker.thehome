@@ -214,6 +214,8 @@
     "native": {
         "option1": true,
         "option2": "43",
+        "ConfigChangeListener_disabled": false,
+        "InfluxDBHandlerAdapter_disabled": false,
         "InfluxDBHandlerAdapter_token": "12345",
         "InfluxDBHandlerAdapter_bucketLabels": "iobroker_labels_per_stateID",
         "InfluxDBHandlerAdapter_labels": [

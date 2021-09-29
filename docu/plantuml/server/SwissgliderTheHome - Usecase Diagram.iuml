@@ -53,8 +53,8 @@ rectangle adapter {
     }
 
     rectangle "configChangeListener" {
-        actor ConfigChangeListener << Listener >> #F7B4C8
-        usecase ConfigChangePreWorker as "=Listen to Config changes" #F7B4C8
+        actor ConfigChangeListener << Listener >>
+        usecase ConfigChangePreWorker as "=Listen to Config changes"
             note top
                 Wenn ein Object welches für die DB markiert ist geändert wird,
                 wird auch entsprechend der InfluxDB entry angepasst.
@@ -66,7 +66,7 @@ rectangle adapter {
     }
 
     rectangle "influxDBAdapter" {
-        usecase InfluxDBConverter as "=InfluxDBHandler Adapter" #F7B4C8
+        usecase InfluxDBConverter as "=InfluxDBHandler Adapter"
             note top
                 Tags werden in nach InfluxdDB 
                 Bucket iobroker_labels_per_stateID geschrieben,
@@ -136,8 +136,8 @@ SwissgliderGeneralParameterGenerator -> SwissgliderGeneralParameterCleaner  #F7B
 
 FrequenceBatteryChecker -left-> BatteryChecker  #F7B4C8
 FrequenceConnectionChecker -left-> ConnectionChecker  #F7B4C8
-ConfigChangeListener -left-> ConfigChangePreWorker  #F7B4C8
+ConfigChangeListener -left-> ConfigChangePreWorker
 
-ConfigChangePreWorker -> InfluxDBConverter  #F7B4C8
+ConfigChangePreWorker -> InfluxDBConverter
 
 @enduml

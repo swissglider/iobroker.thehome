@@ -133,7 +133,9 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
 				<br />
 				{this.renderInput('option2', 'option2', 'text')}
 				<br />
-				{this.renderCheckbox('startConfigChangeListener', 'startConfigChangeListener')}
+				{this.renderCheckbox('ConfigChangeListener_disabled', 'ConfigChangeListener_disabled')}
+				<br />
+				{this.renderCheckbox('InfluxDBHandlerAdapter_disabled', 'InfluxDBHandlerAdapter_disabled')}
 			</form>
 		);
 	}
