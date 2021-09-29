@@ -1,4 +1,5 @@
 import EnumHandler from '../../../utils/adapterUtils/enumHandler';
+import InfluxDBHelper from '../../../utils/adapterUtils/influxDBHelper';
 import NameHelper from '../../../utils/adapterUtils/nameHelper';
 import { StateInformation } from '../interfaces/I_StateInformation';
 
@@ -13,25 +14,19 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 	mandatoryEnums: 0 | 1 | 2 | 3 = 3,
 ): Promise<StateInformation[]> => {
 	const filteredStates = await EnumHandler.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
+	const influxName = await InfluxDBHelper.getInfluxInstanceName(adapter);
 	const stateInfos: StateInformation[] = filteredStates.map(
 		(state) =>
 			({
 				stateID: state._id,
-				stateName: NameHelper.getName(state.common.name, adapter.systemConfig.language),
+				stateName: NameHelper.getName(state.common.name, adapter.systemConfig?.language ?? 'de'),
 				functions: state.enums
 					? Object.keys(state.enums).find((e: string) => e.startsWith('enum.functions.'))
 					: undefined,
 				rooms: state.enums
 					? Object.keys(state.enums).find((e: string) => e.startsWith('enum.rooms.'))
 					: undefined,
-				store2DB:
-					state.native &&
-					state.native.swissglider &&
-					state.native.swissglider.theHome &&
-					state.native.swissglider.theHome.store2DB &&
-					typeof state.native.swissglider.theHome.store2DB === 'boolean'
-						? state.native.swissglider.theHome.store2DB
-						: false,
+				store2DB: (state.common.custom && state.common.custom[influxName]?.enabled === true) ?? false,
 			} as StateInformation),
 	);
 	return stateInfos;
@@ -39,12 +34,5 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 
 export const statesConfigDownload = async (adapter: ioBroker.Adapter): Promise<string> => {
 	const states = await getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation(adapter);
-	const objectWIthStore2DB = await NameHelper.getAllObjectsTheHomeParameter(adapter, 'StateInformationArray');
-	for (const obj of objectWIthStore2DB) {
-		const tObj = obj as StateInformation;
-		if (states.find((e) => e.stateID === tObj.stateID) === undefined) {
-			states.push(tObj);
-		}
-	}
 	return JSON.stringify(states, null, 2);
 };

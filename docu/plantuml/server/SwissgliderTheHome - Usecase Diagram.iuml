@@ -23,7 +23,7 @@ rectangle adapter {
                 * State Name
                 * Room Enum (löschen und neu setzen)
                 * Function Enum (löschen und neu setzen)
-                * store2DB state (native/swissglider/theHome/store2DB)
+                * store2DB
             end note
         usecase SingleUploader as "=Upload SingleStateConfig"
             note top
@@ -36,7 +36,7 @@ rectangle adapter {
                 * State Name
                 * Room Enum (löschen und neu setzen)
                 * Function Enum (löschen und neu setzen)
-                * store2DB state (native/swissglider/theHome/store2DB)
+                * store2DB
             end note
         usecase ConfigUploader as "=Upload StatesConfigFile"
             note top
@@ -48,7 +48,7 @@ rectangle adapter {
                 * State Name
                 * Room Enum (löschen und neu setzen)
                 * Function Enum (löschen und neu setzen)
-                * store2DB state (native/swissglider/theHome/store2DB)
+                * store2DB
             end note
     }
 
@@ -57,10 +57,7 @@ rectangle adapter {
         usecase ConfigChangePreWorker as "=Listen to Config changes" #F7B4C8
             note top
                 Wenn ein Object welches für die DB markiert ist geändert wird,
-                wird auch entsprechend der InfluxDB entry angepasst, z.B.:
-                * angelegt
-                * gelöscht
-                * Name angepasst
+                wird auch entsprechend der InfluxDB entry angepasst.
                 ..
                 Wenn ein Name eines Status in Scope geändert wird, 
                 wird auch entsprechend InfluxDB entries dem Namen
@@ -73,7 +70,7 @@ rectangle adapter {
             note top
                 Tags werden in nach InfluxdDB 
                 Bucket iobroker_labels_per_stateID geschrieben,
-                
+
                 so können diese anhand der ID mit den measurements 
                 zusammen gefügt werden
             end note

@@ -1,4 +1,5 @@
 import InfluxDBHandlerAdapter from '../../adapters/influxDBHandlerAdapter';
+import InfluxDBHelper from '../../utils/adapterUtils/influxDBHelper';
 import { T_StateIDWithConfig } from '../../utils/types/T_StateIDWithConfig';
 
 export const objectStateInformations = 'objectStateInformations';
@@ -29,8 +30,9 @@ const _setNewName = async (key: string, value: ioBroker.Object | null | undefine
 	}
 
 	await _setObjectStateInformations();
+	const influxName = await InfluxDBHelper.getInfluxInstanceName(_adapter);
 	if (!init) {
-		if (value.common.custom && value.common.custom['influxdb.0']?.enabled === true) {
+		if (value.common.custom && value.common.custom[influxName]?.enabled === true) {
 			await InfluxDBHandlerAdapter.changeNameOnDBBucket(key);
 		}
 	}

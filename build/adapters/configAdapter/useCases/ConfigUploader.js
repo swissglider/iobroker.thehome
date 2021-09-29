@@ -39,13 +39,11 @@ const statesConfigUpload = async (adapter, config) => {
     // = stop Connection Checker
     // = stop Config Change Listener
     // = remove states from all function and room enum
-    // = remove state.native.swissglider.theHome parameter from all states;
     try {
         await Promise.all([
             batteryChecker_1.default.stopBatteryChecker(adapter),
             connectionChecker_1.default.stopConnectionChecker(adapter),
             enumHandler_1.default.removeAllStatesFromAllRoomFunctionEnums(adapter),
-            nameHelper_1.default.removeAllTheHomeParametersFromAllObjects(adapter),
         ]);
     }
     catch (error) {

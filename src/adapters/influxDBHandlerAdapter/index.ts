@@ -9,6 +9,7 @@ import {
 	// eslint-disable-next-line prettier/prettier
 	OrgsAPI
 } from '@influxdata/influxdb-client-apis';
+import InfluxDBHelper from '../../utils/adapterUtils/influxDBHelper';
 import NameHelper from '../../utils/adapterUtils/nameHelper';
 
 let _adapter: ioBroker.Adapter;
@@ -166,11 +167,14 @@ const _calculateChannelAndDeviceName = async (tags: T_TAGS_TYPE, id: string): Pr
 		if (tempObj) {
 			switch (tempObj.type) {
 				case 'channel': {
-					tags.channelName = NameHelper.getName(tempObj?.common.name);
+					tags.channelName = NameHelper.getName(
+						tempObj?.common.name,
+						_adapter.systemConfig?.language ?? 'de',
+					);
 					break;
 				}
 				case 'device': {
-					tags.deviceName = NameHelper.getName(tempObj?.common.name);
+					tags.deviceName = NameHelper.getName(tempObj?.common.name, _adapter.systemConfig?.language ?? 'de');
 					break;
 				}
 			}
@@ -182,7 +186,7 @@ const _calculateChannelAndDeviceName = async (tags: T_TAGS_TYPE, id: string): Pr
 
 const _getEnum = (obj: Record<string, ioBroker.StringOrTranslated>, filterString: string): string | undefined => {
 	const tmp = Object.entries(obj).find(([key]) => key.includes(filterString));
-	return tmp ? NameHelper.getName(tmp[1]) : undefined;
+	return tmp ? NameHelper.getName(tmp[1], _adapter.systemConfig?.language ?? 'de') : undefined;
 };
 
 const _updateOnDB = async (tags: T_TAGS_TYPE): Promise<void> => {
@@ -218,11 +222,12 @@ const _updateOnDB = async (tags: T_TAGS_TYPE): Promise<void> => {
 };
 
 const _updateOneLablePerObj = async (obj: ioBroker.Object): Promise<void> => {
-	if (obj.common.custom && obj.common.custom['influxdb.0']?.enabled === true) {
+	const influxName = await InfluxDBHelper.getInfluxInstanceName(_adapter);
+	if (obj.common.custom && obj.common.custom[influxName]?.enabled === true) {
 		const array = obj._id.split('.');
 		const tags: T_TAGS_TYPE = {
 			id: obj._id,
-			name: NameHelper.getName(obj.common.name),
+			name: NameHelper.getName(obj.common.name, _adapter.systemConfig?.language ?? 'de'),
 			adapterName: array[0],
 			instanceNumber: array[1],
 			role: obj.common.role as string,
@@ -299,7 +304,7 @@ const onMessage = async (obj: ioBroker.Message): Promise<void> => {
 				await _initInfluxDBTags();
 				_adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
 			} catch (error) {
-				_adapter.log.silly(`unknown error on ${obj.command}: ${error}`);
+				_adapter.log.error(`unknown error on ${obj.command}: ${error}`);
 				_adapter.sendTo(obj.from, obj.command, `unknown error on ${obj.command}: ${error}`, obj.callback);
 			}
 		}

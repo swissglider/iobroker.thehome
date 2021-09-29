@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports._allStateIDsWithConfig = exports.objectStateInformations = void 0;
 const influxDBHandlerAdapter_1 = __importDefault(require("../../adapters/influxDBHandlerAdapter"));
+const influxDBHelper_1 = __importDefault(require("../../utils/adapterUtils/influxDBHelper"));
 exports.objectStateInformations = 'objectStateInformations';
 let _adapter;
 exports._allStateIDsWithConfig = {};
@@ -32,8 +33,9 @@ const _setNewName = async (key, value, init = false) => {
         exports._allStateIDsWithConfig[key].names.push(value.common.name);
     }
     await _setObjectStateInformations();
+    const influxName = await influxDBHelper_1.default.getInfluxInstanceName(_adapter);
     if (!init) {
-        if (value.common.custom && ((_a = value.common.custom['influxdb.0']) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
+        if (value.common.custom && ((_a = value.common.custom[influxName]) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
             await influxDBHandlerAdapter_1.default.changeNameOnDBBucket(key);
         }
     }

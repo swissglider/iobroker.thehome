@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.statesConfigDownload = void 0;
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
+const influxDBHelper_1 = __importDefault(require("../../../utils/adapterUtils/influxDBHelper"));
 const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHelper"));
 /**
  * Creates and returns an array of StateInformations with all states that contains function and/or room enums
@@ -14,34 +15,25 @@ const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHe
  */
 const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter, mandatoryEnums = 3) => {
     const filteredStates = await enumHandler_1.default.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
-    const stateInfos = filteredStates.map((state) => ({
-        stateID: state._id,
-        stateName: nameHelper_1.default.getName(state.common.name, adapter.systemConfig.language),
-        functions: state.enums
-            ? Object.keys(state.enums).find((e) => e.startsWith('enum.functions.'))
-            : undefined,
-        rooms: state.enums
-            ? Object.keys(state.enums).find((e) => e.startsWith('enum.rooms.'))
-            : undefined,
-        store2DB: state.native &&
-            state.native.swissglider &&
-            state.native.swissglider.theHome &&
-            state.native.swissglider.theHome.store2DB &&
-            typeof state.native.swissglider.theHome.store2DB === 'boolean'
-            ? state.native.swissglider.theHome.store2DB
-            : false,
-    }));
+    const influxName = await influxDBHelper_1.default.getInfluxInstanceName(adapter);
+    const stateInfos = filteredStates.map((state) => {
+        var _a, _b, _c, _d;
+        return ({
+            stateID: state._id,
+            stateName: nameHelper_1.default.getName(state.common.name, (_b = (_a = adapter.systemConfig) === null || _a === void 0 ? void 0 : _a.language) !== null && _b !== void 0 ? _b : 'de'),
+            functions: state.enums
+                ? Object.keys(state.enums).find((e) => e.startsWith('enum.functions.'))
+                : undefined,
+            rooms: state.enums
+                ? Object.keys(state.enums).find((e) => e.startsWith('enum.rooms.'))
+                : undefined,
+            store2DB: (_d = (state.common.custom && ((_c = state.common.custom[influxName]) === null || _c === void 0 ? void 0 : _c.enabled) === true)) !== null && _d !== void 0 ? _d : false,
+        });
+    });
     return stateInfos;
 };
 const statesConfigDownload = async (adapter) => {
     const states = await getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation(adapter);
-    const objectWIthStore2DB = await nameHelper_1.default.getAllObjectsTheHomeParameter(adapter, 'StateInformationArray');
-    for (const obj of objectWIthStore2DB) {
-        const tObj = obj;
-        if (states.find((e) => e.stateID === tObj.stateID) === undefined) {
-            states.push(tObj);
-        }
-    }
     return JSON.stringify(states, null, 2);
 };
 exports.statesConfigDownload = statesConfigDownload;

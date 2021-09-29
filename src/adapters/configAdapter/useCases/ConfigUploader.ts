@@ -16,13 +16,11 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 	// = stop Connection Checker
 	// = stop Config Change Listener
 	// = remove states from all function and room enum
-	// = remove state.native.swissglider.theHome parameter from all states;
 	try {
 		await Promise.all([
 			BatteryChecker.stopBatteryChecker(adapter),
 			ConnectionChecker.stopConnectionChecker(adapter),
 			EnumHandler.removeAllStatesFromAllRoomFunctionEnums(adapter),
-			NameHelper.removeAllTheHomeParametersFromAllObjects(adapter),
 		]);
 	} catch (error) {
 		return `unknown error while stopping connection/battery checker or configChange listener / deleting all enums with state: ${error}`;

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const influxdb_client_1 = require("@influxdata/influxdb-client");
 const influxdb_client_apis_1 = require("@influxdata/influxdb-client-apis");
+const influxDBHelper_1 = __importDefault(require("../../utils/adapterUtils/influxDBHelper"));
 const nameHelper_1 = __importDefault(require("../../utils/adapterUtils/nameHelper"));
 let _adapter;
 let _influxDBInstanceConfiguration;
@@ -129,6 +130,7 @@ const _createLabelBucketIfNeeded = async () => {
     await _createBucketIfNeeded(_adapter.config.InfluxDBHandlerAdapter_bucketLabels, 'Created by Swissglider:TheHome Adapter for taged based Measurements');
 };
 const _calculateChannelAndDeviceName = async (tags, id) => {
+    var _a, _b, _c, _d;
     const array = id.split(/\.(?=[^\.]+$)/);
     if (array.length == 1)
         return;
@@ -137,11 +139,11 @@ const _calculateChannelAndDeviceName = async (tags, id) => {
         if (tempObj) {
             switch (tempObj.type) {
                 case 'channel': {
-                    tags.channelName = nameHelper_1.default.getName(tempObj === null || tempObj === void 0 ? void 0 : tempObj.common.name);
+                    tags.channelName = nameHelper_1.default.getName(tempObj === null || tempObj === void 0 ? void 0 : tempObj.common.name, (_b = (_a = _adapter.systemConfig) === null || _a === void 0 ? void 0 : _a.language) !== null && _b !== void 0 ? _b : 'de');
                     break;
                 }
                 case 'device': {
-                    tags.deviceName = nameHelper_1.default.getName(tempObj === null || tempObj === void 0 ? void 0 : tempObj.common.name);
+                    tags.deviceName = nameHelper_1.default.getName(tempObj === null || tempObj === void 0 ? void 0 : tempObj.common.name, (_d = (_c = _adapter.systemConfig) === null || _c === void 0 ? void 0 : _c.language) !== null && _d !== void 0 ? _d : 'de');
                     break;
                 }
             }
@@ -151,8 +153,9 @@ const _calculateChannelAndDeviceName = async (tags, id) => {
     return;
 };
 const _getEnum = (obj, filterString) => {
+    var _a, _b;
     const tmp = Object.entries(obj).find(([key]) => key.includes(filterString));
-    return tmp ? nameHelper_1.default.getName(tmp[1]) : undefined;
+    return tmp ? nameHelper_1.default.getName(tmp[1], (_b = (_a = _adapter.systemConfig) === null || _a === void 0 ? void 0 : _a.language) !== null && _b !== void 0 ? _b : 'de') : undefined;
 };
 const _updateOnDB = async (tags) => {
     const deleteAPI = new influxdb_client_apis_1.DeleteAPI(_influxDB);
@@ -185,12 +188,13 @@ const _updateOnDB = async (tags) => {
     }
 };
 const _updateOneLablePerObj = async (obj) => {
-    var _a, _b;
-    if (obj.common.custom && ((_a = obj.common.custom['influxdb.0']) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
+    var _a, _b, _c, _d;
+    const influxName = await influxDBHelper_1.default.getInfluxInstanceName(_adapter);
+    if (obj.common.custom && ((_a = obj.common.custom[influxName]) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
         const array = obj._id.split('.');
         const tags = {
             id: obj._id,
-            name: nameHelper_1.default.getName(obj.common.name),
+            name: nameHelper_1.default.getName(obj.common.name, (_c = (_b = _adapter.systemConfig) === null || _b === void 0 ? void 0 : _b.language) !== null && _c !== void 0 ? _c : 'de'),
             adapterName: array[0],
             instanceNumber: array[1],
             role: obj.common.role,
@@ -200,7 +204,7 @@ const _updateOneLablePerObj = async (obj) => {
         };
         await _calculateChannelAndDeviceName(tags, obj._id);
         for (const key of Object.keys(tags)) {
-            tags[key] = (_b = tags[key]) !== null && _b !== void 0 ? _b : '-';
+            tags[key] = (_d = tags[key]) !== null && _d !== void 0 ? _d : '-';
             tags[key] = tags[key].replace(/\s/g, '_');
         }
         await _updateOnDB(tags);
@@ -264,7 +268,7 @@ const onMessage = async (obj) => {
                 _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
             }
             catch (error) {
-                _adapter.log.silly(`unknown error on ${obj.command}: ${error}`);
+                _adapter.log.error(`unknown error on ${obj.command}: ${error}`);
                 _adapter.sendTo(obj.from, obj.command, `unknown error on ${obj.command}: ${error}`, obj.callback);
             }
         }
