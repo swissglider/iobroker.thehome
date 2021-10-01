@@ -55,7 +55,7 @@
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
-    "@iobroker/adapter-react": "2.0.9",
+    "@iobroker/adapter-react": "2.0.13",
     "@iobroker/testing": "^2.4.4",
     "@types/chai": "^4.2.21",
     "@types/chai-as-promised": "^7.1.4",
