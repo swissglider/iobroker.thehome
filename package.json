@@ -19,7 +19,7 @@
     "url": "https://github.com/swissglider/ioBroker.thehome"
   },
   "dependencies": {
-    "@babel/core": "^7.15.0",
+    "@babel/core": "^7.16.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@hookform/resolvers": "^2.8.0",
