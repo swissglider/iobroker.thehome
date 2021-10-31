@@ -3,41 +3,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._allStateIDsWithConfig = exports.objectStateInformations = void 0;
-const influxDBHandlerAdapter_1 = __importDefault(require("../../adapters/influxDBHandlerAdapter"));
-const influxDBHelper_1 = __importDefault(require("../../utils/adapterUtils/influxDBHelper"));
+exports.objectStateInformations = void 0;
+const lodash_1 = __importDefault(require("lodash"));
+const adapterUtilsFunctions_1 = __importDefault(require("../../utils/adapterUtils/adapterUtilsFunctions"));
 exports.objectStateInformations = 'objectStateInformations';
 let _adapter;
-exports._allStateIDsWithConfig = {};
+let _allStateIDsWithConfig = {};
 const _setObjectStateInformations = async () => {
-    await _adapter.setStateChangedAsync(exports.objectStateInformations, JSON.stringify(exports._allStateIDsWithConfig), true);
+    await _adapter.setStateChangedAsync(exports.objectStateInformations, JSON.stringify(_allStateIDsWithConfig), true);
 };
 const _getLatestName = (key) => {
-    return exports._allStateIDsWithConfig[key].names[exports._allStateIDsWithConfig[key].names.length - 1];
+    return _allStateIDsWithConfig[key].names[_allStateIDsWithConfig[key].names.length - 1];
 };
 const _setNewName = async (key, value, init = false) => {
-    var _a;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    if (key.startsWith('system.') ||
+        key.startsWith('0_userdata.') ||
+        key.startsWith('admin.') ||
+        key.startsWith('alias.') ||
+        key.startsWith('enum.') ||
+        key.startsWith('_design.')) {
+        return;
+    }
     if (!value) {
         // state deleted
-        delete exports._allStateIDsWithConfig[key];
-        await _setObjectStateInformations();
+        delete _allStateIDsWithConfig[key];
         _adapter.log.silly(`object ${key} deleted`);
         return;
     }
-    else if (value && !(key in exports._allStateIDsWithConfig)) {
+    else if (value && !(key in _allStateIDsWithConfig)) {
         // new state
-        exports._allStateIDsWithConfig[key] = { defaultName: value.common.name, names: [value.common.name] };
+        _allStateIDsWithConfig[key] = { defaultName: (_b = (_a = value.common) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : '', names: [(_d = (_c = value.common) === null || _c === void 0 ? void 0 : _c.name) !== null && _d !== void 0 ? _d : ''] };
     }
-    else if (value && JSON.stringify(_getLatestName(key)) !== JSON.stringify(value.common.name)) {
+    else if (value && !lodash_1.default.isEqual(_getLatestName(key), (_f = (_e = value.common) === null || _e === void 0 ? void 0 : _e.name) !== null && _f !== void 0 ? _f : '')) {
         // state name changed
-        exports._allStateIDsWithConfig[key].names.push(value.common.name);
-    }
-    await _setObjectStateInformations();
-    const influxName = await influxDBHelper_1.default.getInfluxInstanceName(_adapter);
-    if (!init) {
-        if (value.common.custom && ((_a = value.common.custom[influxName]) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
-            await influxDBHandlerAdapter_1.default.changeNameOnDBBucket(key);
-        }
+        _allStateIDsWithConfig[key].names.push((_h = (_g = value.common) === null || _g === void 0 ? void 0 : _g.name) !== null && _h !== void 0 ? _h : '');
     }
     _adapter.log.silly(`object ${key} changed: ${JSON.stringify(value)}`);
 };
@@ -49,32 +49,43 @@ const _initConfigChangeListener = async () => {
     for (const [key, value] of Object.entries(allObjects)) {
         await _setNewName(key, value, true);
     }
+    await _setObjectStateInformations();
 };
 const resetStateNameToDefault = async (id) => {
-    if (_adapter.config.ConfigChangeListener_disabled)
+    if (!_adapter.config.ConfigChangeListener_active)
         return;
-    if (!(id in exports._allStateIDsWithConfig))
+    if (!(id in _allStateIDsWithConfig))
         return;
     const obj = await _adapter.getForeignObjectAsync(id);
     if (obj) {
-        obj.common.name = exports._allStateIDsWithConfig[id].defaultName;
+        obj.common.name = _allStateIDsWithConfig[id].defaultName;
         delete obj.enums;
         await _adapter.setForeignObjectAsync(id, obj);
     }
 };
 const resetAllStateNamesToDefault = async () => {
-    if (_adapter.config.ConfigChangeListener_disabled)
+    if (!_adapter.config.ConfigChangeListener_active)
         return;
     const promiseArray = [];
-    for (const id of Object.keys(exports._allStateIDsWithConfig)) {
+    for (const id of Object.keys(_allStateIDsWithConfig)) {
         promiseArray.push(resetStateNameToDefault(id));
     }
     await Promise.all(promiseArray);
 };
+const getObjectIDsWithChangedNames = () => {
+    const returnArray = [];
+    for (const [key, value] of Object.entries(_allStateIDsWithConfig)) {
+        if (!lodash_1.default.isEqual(value.defaultName, value.names[value.names.length - 1])) {
+            returnArray.push(key);
+        }
+    }
+    return returnArray;
+};
 const onReady = async () => {
-    if (_adapter.config.ConfigChangeListener_disabled)
+    if (!_adapter.config.ConfigChangeListener_active)
         return;
     _adapter.log.silly('ConfigChangeListener::onReady');
+    await adapterUtilsFunctions_1.default.checkIFStartable(_adapter);
     await _adapter.setObjectNotExistsAsync(exports.objectStateInformations, {
         type: 'config',
         common: {
@@ -89,10 +100,10 @@ const onReady = async () => {
     });
     const rawState = await _adapter.getStateAsync(exports.objectStateInformations);
     if (!!rawState && !!rawState.val) {
-        exports._allStateIDsWithConfig = JSON.parse(rawState.val);
+        _allStateIDsWithConfig = JSON.parse(rawState.val);
     }
     else {
-        exports._allStateIDsWithConfig = {};
+        _allStateIDsWithConfig = {};
     }
     await _initConfigChangeListener();
 };
@@ -105,7 +116,7 @@ const onMessage = async (obj) => {
             'id' in obj.message &&
             obj.callback) {
             try {
-                if (!_adapter.config.ConfigChangeListener_disabled)
+                if (_adapter.config.ConfigChangeListener_active)
                     await resetStateNameToDefault(obj.message.id);
                 _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
             }
@@ -115,7 +126,7 @@ const onMessage = async (obj) => {
         }
         else if (obj.command == 'ConfigChangeListener:resetAllStateNamesToDefault' && obj.callback) {
             try {
-                if (!_adapter.config.ConfigChangeListener_disabled)
+                if (_adapter.config.ConfigChangeListener_active)
                     await resetAllStateNamesToDefault();
                 _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
             }
@@ -127,30 +138,26 @@ const onMessage = async (obj) => {
 };
 const onObjectChange = async (id, obj) => {
     _adapter.log.silly('ConfigChangeListener::onObjectChange');
-    if (!_adapter.config.ConfigChangeListener_disabled) {
+    if (_adapter.config.ConfigChangeListener_active) {
         await _setNewName(id, obj);
         _adapter.log.silly(`object ${id} changed: ${JSON.stringify(obj)}`);
     }
 };
 const onUnload = async () => {
     _adapter.log.error('ConfigChangeListener::onUnload');
-    if (!_adapter.config.ConfigChangeListener_disabled)
+    if (_adapter.config.ConfigChangeListener_active)
         await _setObjectStateInformations();
 };
 const init = (adapter) => {
     _adapter = adapter;
-    if (_adapter.config.ConfigChangeListener_disabled)
-        return;
     _adapter.on('ready', onReady);
     _adapter.on('message', onMessage);
-    // _adapter.on('stateChange', onStateChange);
     _adapter.on('objectChange', onObjectChange);
     _adapter.on('unload', onUnload);
 };
 const ConfigChangeListener = {
     init: init,
-    resetStateNameToDefault: resetStateNameToDefault,
-    resetAllStateNamesToDefault: resetAllStateNamesToDefault,
+    getObjectIDsWithChangedNames: getObjectIDsWithChangedNames,
 };
 exports.default = ConfigChangeListener;
 //# sourceMappingURL=index.js.map

@@ -122,6 +122,8 @@ const EnumHandler = {
 	removeStateFromAllRoomFunctionEnums: removeStateFromAllRoomFunctionEnums,
 	removeAllStatesFromAllRoomFunctionEnums: removeAllStatesFromAllRoomFunctionEnums,
 	addStateToEnums: addStateToEnums,
+	chechAndCreateIfNeededNewEnum: chechAndCreateIfNeededNewEnum,
+	addStateIDToEnum: addStateIDToEnum,
 	addAllStatesToEnums: addAllStatesToEnums,
 };
 

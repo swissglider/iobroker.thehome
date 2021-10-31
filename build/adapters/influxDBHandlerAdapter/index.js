@@ -5,63 +5,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const influxdb_client_1 = require("@influxdata/influxdb-client");
 const influxdb_client_apis_1 = require("@influxdata/influxdb-client-apis");
-const influxDBHelper_1 = __importDefault(require("../../utils/adapterUtils/influxDBHelper"));
-const nameHelper_1 = __importDefault(require("../../utils/adapterUtils/nameHelper"));
-let _adapter;
-let _influxDBInstanceConfiguration;
-let _influxDB;
-let _influxDBOrgBucketName = '';
-const zeroTime = '1970-08-16T08:00:00Z';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _sample = async () => {
-    const queryApi = _influxDB.getQueryApi('swissglider');
-    const fluxQuery = `
-		import "strings" 
-		
-		data = from(bucket: "iobroker") 
-			|> range(start: -40y) 
-			|> filter(fn: (r) => r["_measurement"] == "netatmo.0.Zuhaus-(Weather-Station).Outdoor-Module.Temperature.Temperature") 
-			|> drop(columns: ["_start", "_stop"]) 
-			|> map(fn: (r) => { 
-				parts = strings.split(v: r._measurement, t: ".") 
-				return {r with _measurement:"__test", adapter: parts[0], instanceNB: parts[1], location: parts[3], device: parts[4], function: parts[5]}}) 
-		
-		data 
-			|> to(bucket: "iobroker")
-	`;
-    await queryApi.queryRaw(fluxQuery);
-    const deleteAPI = new influxdb_client_apis_1.DeleteAPI(_influxDB);
-    try {
-        const now = new Date();
-        await deleteAPI.postDelete({
-            body: {
-                start: '1970-08-16T08:00:00Z',
-                stop: now.toISOString(),
-                predicate: `_measurement="netatmo.0.Zuhaus-(Weather-Station).Outdoor-Module.Temperature.Temperature"`,
-            },
-            org: 'swissglider',
-            bucket: 'iobroker',
-        });
-    }
-    catch (e) {
-        console.error(e);
-    }
+const adapterUtilsFunctions_1 = __importDefault(require("../../utils/adapterUtils/adapterUtilsFunctions"));
+const BatteryBucketHandler_1 = __importDefault(require("./BatteryBucketHandler"));
+const LabelBucketHandler_1 = __importDefault(require("./LabelBucketHandler"));
+const name = 'InfluxDBHandlerAdapter';
+const adapterName = 'influxdb';
+const influxStatics = {};
+const _getOrganization = () => {
+    if (!influxStatics.organization)
+        throw new Error('Organization not set');
+    return influxStatics.organization;
 };
-const _getOrganization = async () => {
-    const name = _influxDBInstanceConfiguration.organization;
-    const orgsApi = new influxdb_client_apis_1.OrgsAPI(_influxDB);
-    const apiResponse = await orgsApi.getOrgs({ org: name });
-    if (apiResponse) {
-        if (!apiResponse.orgs || apiResponse.orgs.length === 0) {
-            throw new Error(`No organization named ${name} found!`);
-        }
-        return apiResponse.orgs[0];
-    }
-    throw new Error('Something is wrong while getting the InfluxDB Organization');
+const _getInfluxName = () => {
+    if (!influxStatics.influxName)
+        throw new Error('InfluxName not set');
+    return influxStatics.influxName;
 };
-const _createLabel = async (labelStruct, labelsApi) => {
-    const { id: orgID } = await _getOrganization();
-    const apiResponse = await labelsApi.postLabels({
+const _createLabel = async (adapter, labelStruct) => {
+    var _a;
+    const { id: orgID } = _getOrganization();
+    const apiResponse = await ((_a = influxStatics.labelsAPI) === null || _a === void 0 ? void 0 : _a.postLabels({
         body: {
             name: labelStruct.name,
             orgID: orgID,
@@ -70,14 +33,14 @@ const _createLabel = async (labelStruct, labelsApi) => {
                 description: labelStruct.description,
             },
         },
-    });
-    if (apiResponse.label)
-        return apiResponse.label;
+    }));
+    if (apiResponse === null || apiResponse === void 0 ? void 0 : apiResponse.label)
+        return apiResponse === null || apiResponse === void 0 ? void 0 : apiResponse.label;
     throw new Error('Something is wrong while creating the InfluxDB Label: ' + name);
 };
-const _getLabel = async (labelStruct) => {
-    const labelsApi = new influxdb_client_apis_1.LabelsAPI(_influxDB);
-    const apiResponse = await labelsApi.getLabels();
+const _getLabel = async (adapter, labelStruct) => {
+    var _a;
+    const apiResponse = await ((_a = influxStatics.labelsAPI) === null || _a === void 0 ? void 0 : _a.getLabels());
     if (apiResponse && apiResponse.labels) {
         for (const label of apiResponse.labels) {
             if (label && label.name && label.name === labelStruct.name) {
@@ -85,214 +48,195 @@ const _getLabel = async (labelStruct) => {
             }
         }
     }
-    return _createLabel(labelStruct, labelsApi);
+    return _createLabel(adapter, labelStruct);
 };
-const _addAllLabelsToTheBucket = async (bucketsAPI, bucketID) => {
-    if (_adapter.config.InfluxDBHandlerAdapter_labels && Array.isArray(_adapter.config.InfluxDBHandlerAdapter_labels)) {
-        for (const labelStruct of _adapter.config.InfluxDBHandlerAdapter_labels) {
-            const tmpLabel = await _getLabel(labelStruct);
+const _addAllLabelsToTheBucket = async (adapter, bucketID) => {
+    var _a;
+    if (adapter.config.InfluxDBHandlerAdapter_labels && Array.isArray(adapter.config.InfluxDBHandlerAdapter_labels)) {
+        for (const labelStruct of adapter.config.InfluxDBHandlerAdapter_labels) {
+            const tmpLabel = await _getLabel(adapter, labelStruct);
             if (tmpLabel && tmpLabel.id) {
-                await bucketsAPI.postBucketsIDLabels({ bucketID: bucketID, body: { labelID: tmpLabel.id } });
+                await ((_a = influxStatics.bucketsAPI) === null || _a === void 0 ? void 0 : _a.postBucketsIDLabels({
+                    bucketID: bucketID,
+                    body: { labelID: tmpLabel.id },
+                }));
             }
         }
     }
 };
-const _createBucketIfNeeded = async (name, description) => {
-    const bucketsAPI = new influxdb_client_apis_1.BucketsAPI(_influxDB);
-    const { id: orgID } = await _getOrganization();
-    const temp = await bucketsAPI.getBuckets({
-        orgID,
+const testInfluxDBConnectionWithToken = async (adapter, { token: token }) => {
+    // create config object for influxDB Test call
+    const isAdapterConnected = await adapterUtilsFunctions_1.default.isAdapterConnected(adapter, 'influxdb');
+    if (!isAdapterConnected)
+        throw new Error('Influxdb adapter is not running correct');
+    const tmpConfig = {
+        ...influxStatics.influxDBInstanceConfiguration,
+        ...{
+            token: token,
+        },
+    };
+    const usedParams = ['port', 'host', 'dbversion', 'protocol', 'organization', 'dbname', 'token'];
+    const subset = Object.fromEntries(Object.entries(tmpConfig).filter(([key]) => usedParams.includes(key)));
+    const testResult = await adapter
+        .sendToAsync(_getInfluxName(), 'test', { config: subset })
+        .catch((reason) => {
+        console.log('hallo', 1, reason);
+        throw new Error(reason);
     });
-    if (temp && temp.buckets) {
+    if (testResult.error) {
+        throw testResult.error;
+    }
+    return 'ok';
+};
+const createBucketIfNeeded = async (adapter, name, description) => {
+    var _a, _b, _c;
+    const { id: orgID } = _getOrganization();
+    const temp = await ((_a = influxStatics.bucketsAPI) === null || _a === void 0 ? void 0 : _a.getBuckets({
+        orgID,
+    }));
+    if (temp && temp.buckets && influxStatics.influxDBInstanceConfiguration) {
         let tmpRetentionRules;
         for (const bucket of temp.buckets) {
-            if (bucket.name === _influxDBOrgBucketName) {
+            const influxDBOrgBucketName = (_b = influxStatics.influxDBInstanceConfiguration.bucket) !== null && _b !== void 0 ? _b : influxStatics.influxDBInstanceConfiguration.dbname;
+            if (bucket.name === influxDBOrgBucketName) {
                 tmpRetentionRules = bucket.retentionRules;
             }
             if (bucket.name === name) {
                 return;
             }
         }
-        const tmpBucket = await bucketsAPI.postBuckets({
+        const tmpBucket = await ((_c = influxStatics.bucketsAPI) === null || _c === void 0 ? void 0 : _c.postBuckets({
             body: {
                 name: name,
                 description: description,
                 retentionRules: tmpRetentionRules !== null && tmpRetentionRules !== void 0 ? tmpRetentionRules : [],
                 orgID: orgID,
             },
-        });
+        }));
         if (tmpBucket && tmpBucket.id) {
-            await _addAllLabelsToTheBucket(bucketsAPI, tmpBucket.id);
+            await _addAllLabelsToTheBucket(adapter, tmpBucket.id);
         }
     }
 };
-const _createLabelBucketIfNeeded = async () => {
-    await _createBucketIfNeeded(_adapter.config.InfluxDBHandlerAdapter_bucketLabels, 'Created by Swissglider:TheHome Adapter for taged based Measurements');
-};
-const _calculateChannelAndDeviceName = async (tags, id) => {
-    var _a, _b, _c, _d;
-    const array = id.split(/\.(?=[^\.]+$)/);
-    if (array.length == 1)
-        return;
-    if (array[0]) {
-        const tempObj = await _adapter.getForeignObjectAsync(array[0], '*');
-        if (tempObj) {
-            switch (tempObj.type) {
-                case 'channel': {
-                    tags.channelName = nameHelper_1.default.getName(tempObj === null || tempObj === void 0 ? void 0 : tempObj.common.name, (_b = (_a = _adapter.systemConfig) === null || _a === void 0 ? void 0 : _a.language) !== null && _b !== void 0 ? _b : 'de');
-                    break;
-                }
-                case 'device': {
-                    tags.deviceName = nameHelper_1.default.getName(tempObj === null || tempObj === void 0 ? void 0 : tempObj.common.name, (_d = (_c = _adapter.systemConfig) === null || _c === void 0 ? void 0 : _c.language) !== null && _d !== void 0 ? _d : 'de');
-                    break;
-                }
+const deleteBucket = async (adapter, bucketName) => {
+    var _a, _b;
+    const { id: orgID } = _getOrganization();
+    const temp = await ((_a = influxStatics.bucketsAPI) === null || _a === void 0 ? void 0 : _a.getBuckets({
+        orgID,
+    }));
+    if (temp && temp.buckets) {
+        for (const bucket of temp.buckets) {
+            if (bucket.name === bucketName && bucket.id) {
+                await ((_b = influxStatics.bucketsAPI) === null || _b === void 0 ? void 0 : _b.deleteBucketsID({ bucketID: bucket.id }));
             }
         }
-        await _calculateChannelAndDeviceName(tags, array[0]);
-    }
-    return;
-};
-const _getEnum = (obj, filterString) => {
-    var _a, _b;
-    const tmp = Object.entries(obj).find(([key]) => key.includes(filterString));
-    return tmp ? nameHelper_1.default.getName(tmp[1], (_b = (_a = _adapter.systemConfig) === null || _a === void 0 ? void 0 : _a.language) !== null && _b !== void 0 ? _b : 'de') : undefined;
-};
-const _updateOnDB = async (tags) => {
-    const deleteAPI = new influxdb_client_apis_1.DeleteAPI(_influxDB);
-    try {
-        const now = new Date();
-        await deleteAPI.postDelete({
-            body: {
-                start: zeroTime,
-                stop: now.toISOString(),
-                predicate: `_measurement="${tags.id}"`,
-            },
-            org: _influxDBInstanceConfiguration.organization,
-            bucket: _adapter.config.InfluxDBHandlerAdapter_bucketLabels,
-        });
-    }
-    catch (error) {
-        console.error(error);
-        throw error;
-    }
-    const writeApi = _influxDB.getWriteApi(_influxDBInstanceConfiguration.organization, _adapter.config.InfluxDBHandlerAdapter_bucketLabels);
-    writeApi.useDefaultTags(JSON.parse(JSON.stringify(tags)));
-    const point1 = new influxdb_client_1.Point(tags.id).stringField('value', 'tags');
-    writeApi.writePoint(point1);
-    try {
-        await writeApi.close();
-    }
-    catch (error) {
-        console.log('WRITE FAILED', error);
-        throw error;
     }
 };
-const _updateOneLablePerObj = async (obj) => {
-    var _a, _b, _c, _d;
-    const influxName = await influxDBHelper_1.default.getInfluxInstanceName(_adapter);
-    if (obj.common.custom && ((_a = obj.common.custom[influxName]) === null || _a === void 0 ? void 0 : _a.enabled) === true) {
-        const array = obj._id.split('.');
-        const tags = {
-            id: obj._id,
-            name: nameHelper_1.default.getName(obj.common.name, (_c = (_b = _adapter.systemConfig) === null || _b === void 0 ? void 0 : _b.language) !== null && _c !== void 0 ? _c : 'de'),
-            adapterName: array[0],
-            instanceNumber: array[1],
-            role: obj.common.role,
-            unit: obj.common.unit,
-            function: obj.enums && typeof obj.enums === 'object' ? _getEnum(obj.enums, '.functions.') : '-',
-            room: obj.enums && typeof obj.enums === 'object' ? _getEnum(obj.enums, '.rooms.') : '-',
-        };
-        await _calculateChannelAndDeviceName(tags, obj._id);
-        for (const key of Object.keys(tags)) {
-            tags[key] = (_d = tags[key]) !== null && _d !== void 0 ? _d : '-';
-            tags[key] = tags[key].replace(/\s/g, '_');
-        }
-        await _updateOnDB(tags);
-    }
+const getBucketWriteApi = async (adapter, bucketName) => {
+    if (!influxStatics.influxDBInstanceConfiguration || !influxStatics.influxDB)
+        return undefined;
+    return influxStatics.influxDB.getWriteApi(influxStatics.influxDBInstanceConfiguration.organization, bucketName);
 };
-const changeNameOnDBBucket = async (id) => {
-    _adapter.log.silly('InfluxDBHandlerAdapter::changeNameOnDBBucket - ' + id);
-    if (_adapter.config.InfluxDBHandlerAdapter_disabled)
-        return;
-    const tmpoAllObjects = await _adapter.getForeignObjectsAsync(id);
-    for (const obj of Object.values(tmpoAllObjects)) {
-        await _updateOneLablePerObj(obj);
-    }
-};
-const _updateAllLabels = async () => {
-    try {
-        const tmpoAllObjects = await _adapter.getForeignObjectsAsync('*');
-        for (const obj of Object.values(tmpoAllObjects)) {
-            await _updateOneLablePerObj(obj);
-        }
-    }
-    catch (error) {
-        console.log(error);
-        throw error;
-    }
-};
-const _initInfluxDBTags = async () => {
-    var _a, _b, _c;
+const _initInfluxDBTags = async (adapter) => {
     // get InfluxDB Adapter Configuration
-    const adapterName = 'influxdb';
-    const tempInstances = await _adapter.getObjectViewAsync('system', 'instance', {
-        startkey: `system.adapter.${adapterName ? adapterName + '.' : ''}`,
-        endkey: `system.adapter.${adapterName ? adapterName + '.' : ''}\u9999`,
-    });
-    _influxDBInstanceConfiguration = (_b = (_a = tempInstances.rows[0]) === null || _a === void 0 ? void 0 : _a.value) === null || _b === void 0 ? void 0 : _b.native;
-    const url = `${_influxDBInstanceConfiguration.protocol}://${_influxDBInstanceConfiguration.host}:${_influxDBInstanceConfiguration.port}`;
-    const token = _adapter.config.InfluxDBHandlerAdapter_token;
-    _influxDB = new influxdb_client_1.InfluxDB({
+    var _a;
+    influxStatics.influxDBInstanceConfiguration = await adapterUtilsFunctions_1.default.getInstanceNative(adapter, adapterName);
+    if (!influxStatics.influxDBInstanceConfiguration)
+        throw new Error('no influxdb instance configuration');
+    const url = `${influxStatics.influxDBInstanceConfiguration.protocol}://${influxStatics.influxDBInstanceConfiguration.host}:${influxStatics.influxDBInstanceConfiguration.port}`;
+    const token = adapter.config.InfluxDBHandlerAdapter_token;
+    influxStatics.influxDB = new influxdb_client_1.InfluxDB({
         url: url,
         token: token,
     });
-    _influxDBOrgBucketName = (_c = _influxDBInstanceConfiguration.bucket) !== null && _c !== void 0 ? _c : _influxDBInstanceConfiguration.dbname;
-    // init InfluxDB if needed
-    await _createLabelBucketIfNeeded();
-    await _updateAllLabels();
-    _adapter.log.silly('InfluxDBHandlerAdapter::_initInfluxDBTags - all Tags are up to date now on InfluxDB');
-};
-const onReady = async () => {
-    _adapter.log.silly('InfluxDBHandlerAdapter::onReady');
-    if (_adapter.config.InfluxDBHandlerAdapter_disabled)
-        return;
+    if (!influxStatics.influxDB)
+        throw new Error('no influxdb instance configuration');
     try {
-        _initInfluxDBTags();
+        influxStatics.queryAPI = influxStatics.influxDB.getQueryApi('swissglider');
+        influxStatics.orgsAPI = new influxdb_client_apis_1.OrgsAPI(influxStatics.influxDB);
+        influxStatics.labelsAPI = new influxdb_client_apis_1.LabelsAPI(influxStatics.influxDB);
+        influxStatics.bucketsAPI = new influxdb_client_apis_1.BucketsAPI(influxStatics.influxDB);
+        influxStatics.writeApiLabel = influxStatics.influxDB.getWriteApi(influxStatics.influxDBInstanceConfiguration.organization, adapter.config.InfluxDBHandlerAdapter_bucketLabels);
+        // get the organization
+        if (!influxStatics.influxDBInstanceConfiguration)
+            throw new Error(`No organization found!`);
+        const name = influxStatics.influxDBInstanceConfiguration.organization;
+        const apiResponse = await ((_a = influxStatics.orgsAPI) === null || _a === void 0 ? void 0 : _a.getOrgs({ org: name }));
+        if (apiResponse) {
+            if (!apiResponse.orgs || apiResponse.orgs.length === 0) {
+                throw new Error(`No organization named ${name} found!`);
+            }
+            influxStatics.organization = apiResponse.orgs[0];
+        }
+        else {
+            throw new Error('Something is wrong while getting the InfluxDB Organization');
+        }
+        influxStatics.influxName = await adapterUtilsFunctions_1.default.getAdapterPath(adapter, 'influxdb');
     }
     catch (error) {
-        _adapter.log.silly(`unknown error: ${error}`);
+        throw new Error(`something went wrong while establish the influxDB connection: ${error}`);
+    }
+    try {
+        await LabelBucketHandler_1.default.initInfluxDB(adapter, influxStatics.influxName);
+        await BatteryBucketHandler_1.default.initInfluxDB(adapter, influxStatics.influxName);
+    }
+    catch (error) {
+        throw new Error(`something went wrong while establish the influxDB connection: ${error}`);
     }
 };
-const onMessage = async (obj) => {
-    _adapter.log.silly('InfluxDBHandlerAdapter::onMessage');
-    if (typeof obj === 'object') {
-        if (obj.command == 'InfluxDBHandlerAdapter:refreshAllTagsOnInfluxDB' && obj.callback) {
-            try {
-                if (!_adapter.config.InfluxDBHandlerAdapter_disabled)
-                    await _initInfluxDBTags();
-                _adapter.sendTo(obj.from, obj.command, 'ok', obj.callback);
-            }
-            catch (error) {
-                _adapter.log.error(`unknown error on ${obj.command}: ${error}`);
-                _adapter.sendTo(obj.from, obj.command, `unknown error on ${obj.command}: ${error}`, obj.callback);
-            }
+const getHealthStati = async (adapter) => {
+    const singleAStates = await adapterUtilsFunctions_1.default.getAdapterSingleStates(adapter, 'influxdb');
+    const returnValue = { ...singleAStates, ...{ adapterFullReady: false } };
+    try {
+        await testInfluxDBConnectionWithToken(adapter, { token: adapter.config.InfluxDBHandlerAdapter_token });
+        returnValue.adapterFullReady = true;
+    }
+    catch (error) {
+        returnValue.adapterFullReady = false;
+    }
+    return returnValue;
+};
+const isHealth = async (adapter) => {
+    const returnValue = await getHealthStati(adapter);
+    return Object.values(returnValue).every((e) => e);
+};
+const rename = async () => {
+    const returnValue = { error: `Rename not available for ${name}` };
+    return returnValue;
+};
+const refreshAllTagsOnInfluxDB = async (adapter) => {
+    try {
+        if (adapter.config.InfluxDBHandlerAdapter_active) {
+            await LabelBucketHandler_1.default.updateAll(adapter);
         }
+        return 'ok';
+    }
+    catch (error) {
+        return { error: `${error}` };
     }
 };
-const onUnload = async () => {
-    _adapter.log.silly('InfluxDBHandlerAdapter::onUnload');
-};
-const init = (adapter) => {
-    _adapter = adapter;
-    if (_adapter.config.InfluxDBHandlerAdapter_disabled)
+const init = async (adapter) => {
+    await adapterUtilsFunctions_1.default.checkIFStartable(adapter);
+    if (!adapter.config.InfluxDBHandlerAdapter_active)
         return;
-    _adapter.on('ready', onReady);
-    _adapter.on('message', onMessage);
-    _adapter.on('unload', onUnload);
+    try {
+        await _initInfluxDBTags(adapter);
+    }
+    catch (error) {
+        adapter.log.silly(`unknown error: ${error}`);
+    }
 };
 const InfluxDBHandlerAdapter = {
+    name: name,
     init: init,
-    changeNameOnDBBucket: changeNameOnDBBucket,
+    deleteBucket: deleteBucket,
+    createBucketIfNeeded: createBucketIfNeeded,
+    getBucketWriteApi: getBucketWriteApi,
+    getHealthStati: getHealthStati,
+    isHealth: isHealth,
+    rename: rename,
+    refreshAllTagsOnInfluxDB: refreshAllTagsOnInfluxDB,
+    testInfluxDBConnectionWithToken: testInfluxDBConnectionWithToken,
 };
 exports.default = InfluxDBHandlerAdapter;
 //# sourceMappingURL=index.js.map

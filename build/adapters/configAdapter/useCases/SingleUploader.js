@@ -27,7 +27,7 @@ const E = __importStar(require("fp-ts/Either"));
 const batteryChecker_1 = __importDefault(require("../../../checker/batteryChecker"));
 const connectionChecker_1 = __importDefault(require("../../../checker/connectionChecker"));
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
-const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHelper"));
+const ioBrokerObjectHanlder_Name_Custom_1 = __importDefault(require("../../../utils/adapterUtils/ioBrokerObjectHanlder_Name_Custom"));
 const I_StateInformation_1 = require("../interfaces/I_StateInformation");
 const singleStateConfigUpload = async (adapter, stateConfig) => {
     // check config
@@ -40,8 +40,8 @@ const singleStateConfigUpload = async (adapter, stateConfig) => {
     // = remove state from all function and room enum
     try {
         await Promise.all([
-            batteryChecker_1.default.stopBatteryChecker(adapter),
-            connectionChecker_1.default.stopConnectionChecker(adapter),
+            batteryChecker_1.default.stopBatteryChecker(),
+            connectionChecker_1.default.stopConnectionChecker(),
             enumHandler_1.default.removeStateFromAllRoomFunctionEnums(adapter, stateConfig.stateID),
         ]);
     }
@@ -58,7 +58,7 @@ const singleStateConfigUpload = async (adapter, stateConfig) => {
     }
     // = change name and store2DB on Object
     try {
-        await nameHelper_1.default.changeStateNameAndStore2DB(adapter, stateConfig);
+        await ioBrokerObjectHanlder_Name_Custom_1.default.changeStateNameAndInfluxCustom(adapter, stateConfig);
     }
     catch (error) {
         return `unknown error while setting config name or store2DB: ${error}`;
@@ -67,10 +67,7 @@ const singleStateConfigUpload = async (adapter, stateConfig) => {
     // = new init BatteryChecker
     // = new init ConnectionChecker
     try {
-        await Promise.all([
-            batteryChecker_1.default.initBatteryChecker(adapter),
-            connectionChecker_1.default.initConnectionChecker(adapter),
-        ]);
+        await Promise.all([batteryChecker_1.default.initBatteryChecker(), connectionChecker_1.default.initConnectionChecker()]);
     }
     catch (error) {
         return `unknown error while init connection or battery checker: ${error}`;

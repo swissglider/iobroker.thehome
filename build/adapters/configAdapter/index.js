@@ -3,10 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const adapterUtilsFunctions_1 = __importDefault(require("../../utils/adapterUtils/adapterUtilsFunctions"));
 const useCases_1 = __importDefault(require("./useCases"));
 let _adapter;
 const onReady = async () => {
     _adapter.log.silly('ConfigAdapter::onReady');
+    await adapterUtilsFunctions_1.default.checkIFStartable(_adapter);
 };
 const onMessage = async (obj) => {
     _adapter.log.silly('ConfigAdapter::onMessage');

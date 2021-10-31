@@ -106,9 +106,14 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) Auto Change Name WIZARD
+-   (swissglider) Changed to Grommet
+
 ### 0.0.2-10 (2021-09-29)
 
--   (swissglider) ConfigChangeListener_disabled and InfluxDBHandlerAdapter_disabled on adapter and admin
+-   (swissglider) ConfigChangeListener_active and InfluxDBHandlerAdapter_active on adapter and admin
 
 ### 0.0.2-9 (2021-09-29)
 

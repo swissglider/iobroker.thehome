@@ -30,3 +30,6 @@ maintenance/**$
 
 admin/build
 build
+
+#parcel
+.parcel-cache

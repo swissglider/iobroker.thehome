@@ -4,9 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.statesConfigDownload = void 0;
+const configChangeListener_1 = __importDefault(require("../../../listener/configChangeListener"));
+const adapterUtilsFunctions_1 = __importDefault(require("../../../utils/adapterUtils/adapterUtilsFunctions"));
 const enumHandler_1 = __importDefault(require("../../../utils/adapterUtils/enumHandler"));
-const influxDBHelper_1 = __importDefault(require("../../../utils/adapterUtils/influxDBHelper"));
 const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHelper"));
+const getStateInfo = (adapter, obj, influxName) => {
+    var _a, _b, _c, _d, _e, _f;
+    return {
+        stateID: obj._id,
+        stateName: nameHelper_1.default.getName((_b = (_a = obj.common) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : '', (_d = (_c = adapter.systemConfig) === null || _c === void 0 ? void 0 : _c.language) !== null && _d !== void 0 ? _d : 'de'),
+        functions: obj.enums ? Object.keys(obj.enums).find((e) => e.startsWith('enum.functions.')) : undefined,
+        rooms: obj.enums ? Object.keys(obj.enums).find((e) => e.startsWith('enum.rooms.')) : undefined,
+        store2DB: (_f = (obj.common.custom && ((_e = obj.common.custom[influxName]) === null || _e === void 0 ? void 0 : _e.enabled) === true)) !== null && _f !== void 0 ? _f : false,
+    };
+};
 /**
  * Creates and returns an array of StateInformations with all states that contains function and/or room enums
  * @param adapter adapter Object
@@ -14,23 +25,26 @@ const nameHelper_1 = __importDefault(require("../../../utils/adapterUtils/nameHe
  * @returns
  */
 const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter, mandatoryEnums = 3) => {
-    const filteredStates = await enumHandler_1.default.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
-    const influxName = await influxDBHelper_1.default.getInfluxInstanceName(adapter);
-    const stateInfos = filteredStates.map((state) => {
-        var _a, _b, _c, _d;
-        return ({
-            stateID: state._id,
-            stateName: nameHelper_1.default.getName(state.common.name, (_b = (_a = adapter.systemConfig) === null || _a === void 0 ? void 0 : _a.language) !== null && _b !== void 0 ? _b : 'de'),
-            functions: state.enums
-                ? Object.keys(state.enums).find((e) => e.startsWith('enum.functions.'))
-                : undefined,
-            rooms: state.enums
-                ? Object.keys(state.enums).find((e) => e.startsWith('enum.rooms.'))
-                : undefined,
-            store2DB: (_d = (state.common.custom && ((_c = state.common.custom[influxName]) === null || _c === void 0 ? void 0 : _c.enabled) === true)) !== null && _d !== void 0 ? _d : false,
-        });
-    });
-    return stateInfos;
+    try {
+        const filteredObj = await enumHandler_1.default.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
+        const influxName = await adapterUtilsFunctions_1.default.getAdapterPath(adapter, 'influxdb');
+        const stateInfos = filteredObj.map((obj) => getStateInfo(adapter, obj, influxName));
+        const changedNameObjIDs = configChangeListener_1.default.getObjectIDsWithChangedNames();
+        const tmpAlreadyAddedStateIDs = stateInfos.map((e) => e.stateID);
+        for (const objID of changedNameObjIDs) {
+            if (!tmpAlreadyAddedStateIDs.includes(objID)) {
+                const tmpObj = await adapter.getForeignObjectAsync(objID);
+                if (tmpObj) {
+                    stateInfos.push(getStateInfo(adapter, tmpObj, influxName));
+                }
+            }
+        }
+        return stateInfos;
+    }
+    catch (error) {
+        console.error(error);
+        throw error;
+    }
 };
 const statesConfigDownload = async (adapter) => {
     const states = await getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation(adapter);

@@ -1,5 +1,4 @@
-import { StateInformation } from '../../adapters/configAdapter/interfaces/I_StateInformation';
-import InfluxDBHelper from './influxDBHelper';
+import { T_Object_Parent_Names } from '../types/T_Object_Parent_Names';
 
 const getName = (name: ioBroker.StringOrTranslated, systemLanguage: ioBroker.Languages = 'de'): string => {
 	if (typeof name === 'string') {
@@ -21,47 +20,69 @@ const getName = (name: ioBroker.StringOrTranslated, systemLanguage: ioBroker.Lan
 	}
 };
 
-const changeStateNameAndStore2DB = async (adapter: ioBroker.Adapter, stateConfig: StateInformation): Promise<void> => {
-	if (stateConfig.stateID && stateConfig.stateName) {
-		const ob = await adapter.getForeignObjectAsync(stateConfig.stateID, 'state');
-		if (ob) {
-			// change state name
-			ob.common.name = stateConfig.stateName;
-			delete ob.enums;
-			// save object
-			await adapter.setForeignObjectAsync(stateConfig.stateID, ob);
+/**
+ *
+ * @param enumObjects object from ioBorker.Object.enums
+ * @param filterEnumString string to find the right Enum i.e. '.rooms.'
+ * @param defaultString string to return if nothing found or enumObject is undefined of wrong..
+ * @returns name of the first found enum fitting the filterEnumString localized to the system language
+ */
+const getEnumNameFromObject = (
+	adapter: ioBroker.Adapter,
+	enumObjects: Record<string, ioBroker.StringOrTranslated> | undefined,
+	filterEnumString: string,
+	defaultString?: string | undefined,
+): string | undefined => {
+	if (enumObjects && typeof enumObjects === 'object') {
+		const tmp = Object.entries(enumObjects).find(([key]) => key.includes(filterEnumString));
+		return tmp ? getName(tmp[1], adapter.systemConfig?.language ?? 'de') : defaultString;
+	}
+	return defaultString;
+};
 
-			// activate / deactivate DB
-			const influxDBName = await InfluxDBHelper.getInfluxInstanceName(adapter);
-			if (stateConfig.store2DB) {
-				await adapter.sendToAsync(influxDBName, 'enableHistory', {
-					id: ob._id,
-					options: {
-						storageType: '',
-						aliasId: '',
-						changesOnly: false,
-						debounce: 1000,
-						changesRelogInterval: 0,
-						changesMinDelta: 0,
-					},
-				});
-			} else {
-				await adapter.sendToAsync(influxDBName, 'disableHistory', { id: ob._id });
+/**
+ *
+ * @param adapter ioBrokerAdapter
+ * @param id stateID
+ * @returns Promise of a Touple with [channelName | undefined, deviceName | undefined]
+ */
+const getObjectParentNames = async (adapter: ioBroker.Adapter, id: string): Promise<T_Object_Parent_Names> => {
+	const array = id.split('.');
+	const retrurnNames: T_Object_Parent_Names = {
+		adapterName: array[0],
+		instanceNumber: array[1],
+	};
+	if (!Array.isArray(array) || array.length < 2) return retrurnNames;
+	while (!(retrurnNames.channelName !== undefined && retrurnNames.deviceName !== undefined) && array.length > 1) {
+		array.pop();
+		const tempID = array.join('.');
+		const tempObj = await adapter.getForeignObjectAsync(tempID, '*');
+		if (tempObj) {
+			switch (tempObj.type) {
+				case 'channel': {
+					retrurnNames.channelName = getName(
+						tempObj?.common?.name ?? '',
+						adapter.systemConfig?.language ?? 'de',
+					);
+					break;
+				}
+				case 'device': {
+					retrurnNames.deviceName = getName(
+						tempObj?.common?.name ?? '',
+						adapter.systemConfig?.language ?? 'de',
+					);
+					break;
+				}
 			}
 		}
 	}
-};
-
-const changeAllStateNameAndStore2DBs = async (adapter: ioBroker.Adapter, config: StateInformation[]): Promise<void> => {
-	for (const stateConfig of config) {
-		await changeStateNameAndStore2DB(adapter, stateConfig);
-	}
+	return retrurnNames;
 };
 
 const NameHelper = {
-	changeStateNameAndStore2DB: changeStateNameAndStore2DB,
-	changeAllStateNameAndStore2DBs: changeAllStateNameAndStore2DBs,
 	getName: getName,
+	getEnumNameFromObject: getEnumNameFromObject,
+	getObjectParentNames: getObjectParentNames,
 };
 
 export default NameHelper;

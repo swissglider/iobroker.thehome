@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 import I18n from '@iobroker/adapter-react/i18n';
 import Helper from '../helper';

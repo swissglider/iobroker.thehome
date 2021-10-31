@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Checkbox, FormControlLabel } from '@material-ui/core';
+import { Checkbox, FormControlLabel } from '@mui/material';
 import { Controller, useFormContext } from 'react-hook-form';
 
 export interface I_CheckboxFormHook_Props {

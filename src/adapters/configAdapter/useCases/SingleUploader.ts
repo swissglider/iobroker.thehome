@@ -3,7 +3,7 @@ import * as D from 'io-ts/Decoder';
 import BatteryChecker from '../../../checker/batteryChecker';
 import ConnectionChecker from '../../../checker/connectionChecker';
 import EnumHandler from '../../../utils/adapterUtils/enumHandler';
-import NameHelper from '../../../utils/adapterUtils/nameHelper';
+import CustomHandler_InfluxDBAdapter from '../../../utils/adapterUtils/ioBrokerObjectHanlder_Name_Custom';
 import { StateInformation, stateInformation } from '../interfaces/I_StateInformation';
 
 export const singleStateConfigUpload = async (
@@ -20,8 +20,8 @@ export const singleStateConfigUpload = async (
 	// = remove state from all function and room enum
 	try {
 		await Promise.all([
-			BatteryChecker.stopBatteryChecker(adapter),
-			ConnectionChecker.stopConnectionChecker(adapter),
+			BatteryChecker.stopBatteryChecker(),
+			ConnectionChecker.stopConnectionChecker(),
 			EnumHandler.removeStateFromAllRoomFunctionEnums(adapter, stateConfig.stateID),
 		]);
 	} catch (error) {
@@ -37,7 +37,7 @@ export const singleStateConfigUpload = async (
 	}
 	// = change name and store2DB on Object
 	try {
-		await NameHelper.changeStateNameAndStore2DB(adapter, stateConfig);
+		await CustomHandler_InfluxDBAdapter.changeStateNameAndInfluxCustom(adapter, stateConfig);
 	} catch (error) {
 		return `unknown error while setting config name or store2DB: ${error}`;
 	}
@@ -46,10 +46,7 @@ export const singleStateConfigUpload = async (
 	// = new init BatteryChecker
 	// = new init ConnectionChecker
 	try {
-		await Promise.all([
-			BatteryChecker.initBatteryChecker(adapter),
-			ConnectionChecker.initConnectionChecker(adapter),
-		]);
+		await Promise.all([BatteryChecker.initBatteryChecker(), ConnectionChecker.initConnectionChecker()]);
 	} catch (error) {
 		return `unknown error while init connection or battery checker: ${error}`;
 	}

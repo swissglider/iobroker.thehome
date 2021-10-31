@@ -1,9 +1,11 @@
+import AdapterUtilsFunctions from '../../utils/adapterUtils/adapterUtilsFunctions';
 import ConfigAdapterUseCases from './useCases';
 
 let _adapter: ioBroker.Adapter;
 
 const onReady = async (): Promise<void> => {
 	_adapter.log.silly('ConfigAdapter::onReady');
+	await AdapterUtilsFunctions.checkIFStartable(_adapter);
 };
 
 const onMessage = async (obj: ioBroker.Message): Promise<void> => {

@@ -126,10 +126,10 @@ client -left..> adminSendTo
 adminSendTo -up-> ConfigUploader
 adminSendTo -up-> SingleUploader
 adminSendTo -up-> ConfigDownloader
-adminSendTo -up-> ConfigChangeListener  #F7B4C8
+adminSendTo -up-> ConfigChangeListener
 adminSendTo -up-> FrequenceBatteryChecker  #F7B4C8
 adminSendTo -up-> FrequenceConnectionChecker  #F7B4C8
-adminSendTo -up-> InfluxDBConverter  #F7B4C8
+adminSendTo -up-> InfluxDBConverter
 adminSendTo -down-> SwissgliderGeneralParameterGenerator  #F7B4C8
 adminSendTo -down-> SwissgliderGeneralParameterCleaner  #F7B4C8
 SwissgliderGeneralParameterGenerator -> SwissgliderGeneralParameterCleaner  #F7B4C8

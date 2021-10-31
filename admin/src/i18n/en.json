@@ -3,16 +3,30 @@
 	"option1": "option1",
 	"option2": "option2",
 	"options": "General Options",
+	"test":"HalloTest5",
 	"startConfigChangeListener": "Start Config Change Listener ?",
-	"ConfigChangeListener_disabled": "config change listener disabled",
-	"InfluxDBHandlerAdapter_disabled": "InfluxDB handler adapter disabled",
+	"ConfigChangeListener_active": "config change listener enabled",
+	"InfluxDBHandlerAdapter_active": "InfluxDB handler adapter enabled",
+	"BatteryChecker_active": "battery bhecker enabled",
+	"ConnectionChecker_disabled": "bonnection bhecker disabled",
+	"batteryChecker": "battery checker",
+	"MiNameAdapter": "Mi name adapter",
+	"batterStatus":"battery status",
+	"connectionStatus":"connection status",
+	"miNames":"Mi Home Names",
+	"netatmoReAranger":"rearange Netatmo",
+	"amoundMeHomeDevices":"Amount of Mi Home devices",
+	"miHomeRenameButton":"Rename selected Components on ioBroker with MiHome Name",
+	"loadingMIHomeNamesFromCloud":"Loading Mi Home Information from MI Home Cloud...",
 
 	"stateConfig": "State Config Up/Download",
 	"singleStateUpload": "Single State Upload",
 	"resetNames": "reset state names",
 	"resetName": "reset state name",
-	"influxDBHandler": "InfluxDB handler",
+	"InfluxDBHandlerAdapter": "InfluxDB handler",
 	"influxDBHandlerTitle":"InfluxDB handler parameters",
+	"Netatmo Names and Enums sucessfully rearanged":"Netatmo names and snums sucessfully rearanged",
+	"Rearange Netatmo Names and Enums":"rearange Netatmo names and enums",
 
 
 	"First Search the State": "First Search the State",
@@ -46,5 +60,10 @@
 	"Reset2DefaultName": "reset to default name",
 	"Single State Name sucessfully reseted": "Single State Name sucessfully reseted",
 	"Select State Name to reset":"select state name to reset",
-	"All State Names sucessfully reseted":"all state names are sucessfully reseted"
+	"All State Names sucessfully reseted":"all state names are sucessfully reseted",
+	"Battery Percentage that should be marked as low": "Battery Percentage that should be marked as low",
+	"Time to check regularly the batteries in ms": "Time to check regularly the batteries in ms",
+	
+	"Status Config": "Status Konfig",
+	"StatConfigHelperText": ""
 }

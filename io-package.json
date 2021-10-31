@@ -4,16 +4,16 @@
         "version": "0.0.2-10",
         "news": {
             "0.0.2-10": {
-                "en": "ConfigChangeListener_disabled and InfluxDBHandlerAdapter_disabled on adapter and admin",
-                "de": "ConfigChangeListener_disabled und InfluxDBHandlerAdapter_disabled auf Adapter und Admin",
-                "ru": "ConfigChangeListener_disabled и InfluxDBHandlerAdapter_disabled для адаптера и администратора",
-                "pt": "ConfigChangeListener_disabled e InfluxDBHandlerAdapter_disabled no adaptador e admin",
-                "nl": "ConfigChangeListener_disabled en InfluxDBHandlerAdapter_disabled op adapter en beheerder",
-                "fr": "ConfigChangeListener_disabled et InfluxDBHandlerAdapter_disabled sur l'adaptateur et l'administrateur",
-                "it": "ConfigChangeListener_disabled e InfluxDBHandlerAdapter_disabled su adapter e admin",
-                "es": "ConfigChangeListener_disabled e InfluxDBHandlerAdapter_disabled en el adaptador y el administrador",
-                "pl": "ConfigChangeListener_disabled i InfluxDBHandlerAdapter_disabled na karcie i administratorze",
-                "zh-cn": "适配器和管理员上的 ConfigChangeListener_disabled 和 InfluxDBHandlerAdapter_disabled"
+                "en": "ConfigChangeListener_active and InfluxDBHandlerAdapter_active on adapter and admin",
+                "de": "ConfigChangeListener_active und InfluxDBHandlerAdapter_active auf Adapter und Admin",
+                "ru": "ConfigChangeListener_active и InfluxDBHandlerAdapter_active для адаптера и администратора",
+                "pt": "ConfigChangeListener_active e InfluxDBHandlerAdapter_active no adaptador e admin",
+                "nl": "ConfigChangeListener_active en InfluxDBHandlerAdapter_active op adapter en beheerder",
+                "fr": "ConfigChangeListener_active et InfluxDBHandlerAdapter_active sur l'adaptateur et l'administrateur",
+                "it": "ConfigChangeListener_active e InfluxDBHandlerAdapter_active su adapter e admin",
+                "es": "ConfigChangeListener_active e InfluxDBHandlerAdapter_active en el adaptador y el administrador",
+                "pl": "ConfigChangeListener_active i InfluxDBHandlerAdapter_active na karcie i administratorze",
+                "zh-cn": "适配器和管理员上的 ConfigChangeListener_active 和 InfluxDBHandlerAdapter_active"
             },
             "0.0.2-9": {
                 "en": "some InfluxDBHandler Adapter topics fixed and swissglider native removed",
@@ -226,8 +226,8 @@
     "native": {
         "option1": true,
         "option2": "43",
-        "ConfigChangeListener_disabled": false,
-        "InfluxDBHandlerAdapter_disabled": false,
+        "ConfigChangeListener_active": true,
+        "InfluxDBHandlerAdapter_active": true,
         "InfluxDBHandlerAdapter_token": "12345",
         "InfluxDBHandlerAdapter_bucketLabels": "iobroker_labels_per_stateID",
         "InfluxDBHandlerAdapter_labels": [
@@ -248,13 +248,105 @@
                 "name": "transformed",
                 "description": "This is transformed for better us with Labels"
             }
-        ]
+        ],
+        "BatteryChecker_active": true,
+        "BatteryChecker_timerMS": 200000,
+        "BatteryChecker_roles": ["value.battery", "indicator.maintenance.lowbat","value.lowBatt", "battery.percent"],
+        "BatteryChecker_lowBatPercent_alert": 10,
+        "BatteryChecker_lowBatPercent_warning": 30,
+        "BatteryChecker_bucket": "iobroker_battery_stati_bucket",
+        "ConnectionChecker_disabled": false,
+        "ConnectionChecker_timerMS": 200000,
+        "MiNameAdapter_login": "--",
+        "MiNameAdapter_password":"--",
+        "MiNameAdapter_defaultCountry":"cn",
+        "MiNameAdapter_deviceTypeFunctionMappings":{
+            "Tor":{
+                "on":{"functionID":"enum.functions.Schalter"},
+                "volume":{"functionID":"enum.functions.Lautstärke"},
+                "rgb":{"functionID":"enum.functions.Farbe"},
+                "connected":{"functionID":"enum.functions.Verbunden"}
+            },
+            "Steckdose":{
+                "state":{"functionID":"enum.functions.Schalter"},
+                "load_power":{"functionID":"enum.functions.Leistung", "toInfluxDB":true},
+                "power_consumed":{"functionID":"enum.functions.Energie"}
+            },
+            "Bewegung":{
+                "lux":{"functionID":"enum.functions.Helligkeit", "toInfluxDB":true},
+                "percent":{"functionID":"enum.functions.BatteryStatus", "toInfluxDB":false},
+                "motion":{"functionID":"enum.functions.Bewegung", "toInfluxDB":true}
+            },
+            "Mobilerschalter":{
+                "percent":{"functionID":"enum.functions.BatterieStatus"}
+            },
+            "Wetter":{
+                "percent":{"functionID":"enum.functions.BatterieStatus"},
+                "doublePress":{"functionID":"enum.functions.Schalter"},
+                "humidity":{"functionID":"enum.functions.Luftfeuchtigkeit", "toInfluxDB":true},
+                "pressure":{"functionID":"enum.functions.Luftdruck", "toInfluxDB":true},
+                "temperature":{"functionID":"enum.functions.Temperatur", "toInfluxDB":true}
+            },
+            "Dachfenster":{
+                "percent":{"functionID":"enum.functions.BatterieStatus"},
+                "state":{"functionID":"enum.functions.Fenster", "toInfluxDB":true}
+            },
+            "Fenster":{
+                "percent":{"functionID":"enum.functions.BatterieStatus"},
+                "state":{"functionID":"enum.functions.Fenster", "toInfluxDB":true}
+            },
+            "Türe":{
+                "percent":{"functionID":"enum.functions.BatterieStatus"},
+                "state":{"functionID":"enum.functions.Türe", "toInfluxDB":true}
+            }
+
+        },
+        "NetatmoAdapter_deviceTypeFunctionMappings":{
+            "Wetter":{
+                "Humidity":{"functionID":"enum.functions.Luftfeuchtigkeit", "toInfluxDB":true},
+                "Temperature":{"functionID":"enum.functions.Temperatur", "toInfluxDB":true},
+                "DewPoint":{"functionID":"enum.functions.Taupunkt", "toInfluxDB":true},
+                "BatteryStatus":{"functionID":"enum.functions.BatterieStatus", "toInfluxDB":true},
+                "CO2":{"functionID":"enum.functions.CO2", "toInfluxDB":true},
+                "Noise":{"functionID":"enum.functions.Lärmpegel", "toInfluxDB":true},
+                "Pressure":{"functionID":"enum.functions.Luftdruck", "toInfluxDB":true}
+            }
+        },
+        "HomeMaticAdapter_deviceTypeFunctionMappings":{
+            "Tor":{
+                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false}
+            },
+            "Heizung":{
+                "lowbat":{"functionID":"enum.functions.NiedrigeBatterie", "toInfluxDB":false},
+                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false}
+            },
+            "Rauchwarnmelder":{
+                "lowbat":{"functionID":"enum.functions.NiedrigeBatterie", "toInfluxDB":false},
+                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false}
+            },
+            "Wetter":{
+                "lowbat":{"functionID":"enum.functions.NiedrigeBatterie", "toInfluxDB":false},
+                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false},
+                "humidity":{"functionID":"enum.functions.Luftfeuchtigkeit", "toInfluxDB":true},
+                "setPointTemperature":{"functionID":"enum.functions.GesetzteTemperatur", "toInfluxDB":false},
+                "actualTemperature":{"functionID":"enum.functions.Temperatur", "toInfluxDB":true},
+                "vaporAmount":{"functionID":"enum.functions.Dampfgehalt", "toInfluxDB":true}
+            },
+            "Steckdose":{
+                "energyCounter":{"functionID":"enum.functions.Leistung", "toInfluxDB":true},
+                "on":{"functionID":"enum.functions.Schalter"}
+            }
+        }
     },
     "protectedNative": [
-        "InfluxDBHandlerAdapter_token"
+        "InfluxDBHandlerAdapter_token",
+        "MiNameAdapter_login",
+        "MiNameAdapter_password"
     ],
     "encryptedNative": [
-        "InfluxDBHandlerAdapter_token"
+        "InfluxDBHandlerAdapter_token",
+        "MiNameAdapter_login",
+        "MiNameAdapter_password"
     ],
     "objects": [],
     "instanceObjects": []

@@ -1,144 +1,41 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
-import TextField from '@material-ui/core/TextField';
-import Input from '@material-ui/core/Input';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import React, { FC } from 'react';
 import I18n from '@iobroker/adapter-react/i18n';
+import { Box, Button, CheckBox } from 'grommet';
+import { T_General_Props } from '../tools/NavigationTabs/Types_States';
 
-const styles = (): Record<string, CreateCSSProperties> => ({
-	input: {
-		marginTop: 0,
-		minWidth: 400,
-	},
-	button: {
-		marginRight: 20,
-	},
-	card: {
-		maxWidth: 345,
-		textAlign: 'center',
-	},
-	media: {
-		height: 180,
-	},
-	column: {
-		display: 'inline-block',
-		verticalAlign: 'top',
-		marginRight: 20,
-	},
-	columnLogo: {
-		width: 350,
-		marginRight: 0,
-	},
-	columnSettings: {
-		width: 'calc(100% - 370px)',
-	},
-	controlElement: {
-		//background: "#d2d2d2",
-		marginBottom: 5,
-	},
-});
-
-interface SettingsProps {
-	classes: Record<string, string>;
-	native: Record<string, any>;
-
-	onChange: (attr: string, value: any) => void;
-}
-
-interface SettingsState {
-	// add your state properties here
-	dummy?: undefined;
-}
-
-class Settings extends React.Component<SettingsProps, SettingsState> {
-	constructor(props: SettingsProps) {
-		super(props);
-		this.state = {};
-	}
-
-	renderInput(title: AdminWord, attr: string, type: string) {
+const Settings: FC<T_General_Props> = (props: T_General_Props): JSX.Element => {
+	const renderCheckbox = (title: AdminWord, attr: string): JSX.Element => {
 		return (
-			<TextField
-				label={I18n.t(title)}
-				className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
-				value={this.props.native[attr]}
-				type={type || 'text'}
-				onChange={(e) => this.props.onChange(attr, e.target.value)}
-				margin="normal"
-			/>
-		);
-	}
-
-	renderSelect(
-		title: AdminWord,
-		attr: string,
-		options: { value: string; title: AdminWord }[],
-		style?: React.CSSProperties,
-	) {
-		return (
-			<FormControl
-				className={`${this.props.classes.input} ${this.props.classes.controlElement}`}
-				style={{
-					paddingTop: 5,
-					...style,
-				}}
-			>
-				<Select
-					value={this.props.native[attr] || '_'}
-					onChange={(e) => this.props.onChange(attr, e.target.value === '_' ? '' : e.target.value)}
-					input={<Input name={attr} id={attr + '-helper'} />}
-				>
-					{options.map((item) => (
-						<MenuItem key={'key-' + item.value} value={item.value || '_'}>
-							{I18n.t(item.title)}
-						</MenuItem>
-					))}
-				</Select>
-				<FormHelperText>{I18n.t(title)}</FormHelperText>
-			</FormControl>
-		);
-	}
-
-	renderCheckbox(title: AdminWord, attr: string, style?: React.CSSProperties) {
-		return (
-			<FormControlLabel
-				key={attr}
-				style={{
-					paddingTop: 5,
-					...style,
-				}}
-				className={this.props.classes.controlElement}
-				control={
-					<Checkbox
-						checked={this.props.native[attr]}
-						onChange={() => this.props.onChange(attr, !this.props.native[attr])}
-						color="primary"
-					/>
-				}
+			<CheckBox
+				checked={props.native[attr]}
+				onChange={() => props.onChange(attr, !props.native[attr])}
 				label={I18n.t(title)}
 			/>
 		);
-	}
+	};
 
-	render() {
-		return (
-			<form className={this.props.classes.tab}>
-				{this.renderCheckbox('option1', 'option1')}
-				<br />
-				{this.renderInput('option2', 'option2', 'text')}
-				<br />
-				{this.renderCheckbox('ConfigChangeListener_disabled', 'ConfigChangeListener_disabled')}
-				<br />
-				{this.renderCheckbox('InfluxDBHandlerAdapter_disabled', 'InfluxDBHandlerAdapter_disabled')}
+	const onClick = () => {
+		// props.onToast({ title: 'Hallo Toast', text: 'this is the text' });
+		props.onToast('this is the text');
+	};
+
+	const onClickError = () => {
+		props.onError({ title: 'Hallo Error', text: 'this is the error' });
+	};
+
+	return (
+		<Box fill="horizontal" justify="center">
+			<form>
+				<Box direction="row" justify="center">
+					{renderCheckbox('ConnectionChecker_disabled', 'ConnectionChecker_disabled')}
+				</Box>
 			</form>
-		);
-	}
-}
+			<Box align="center" justify="center" direction="row" pad="medium" gap="medium" fill>
+				<Button label="Toast" onClick={() => onClick()} />
+				<Button secondary label="Error" onClick={() => onClickError()} />
+			</Box>
+		</Box>
+	);
+};
 
-export default withStyles(styles)(Settings);
+export default Settings;
