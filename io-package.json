@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-10",
+        "version": "0.0.2-11",
         "news": {
+            "0.0.2-11": {
+                "en": "Auto Change Name WIZARD\nChanged to Grommet",
+                "de": "Assistent zur automatischen Namensänderung\nIn Tülle geändert",
+                "ru": "Автоматическое изменение имени WIZARD\nИзменен на втулку",
+                "pt": "Mudança automática de nome ASSISTENTE\nAlterado para Grommet",
+                "nl": "Naam automatisch wijzigen WIZARD\nGewijzigd in doorvoertule",
+                "fr": "ASSISTANT de changement automatique de nom\nChangé en passe-fil",
+                "it": "Procedura guidata per la modifica automatica del nome\nCambiato in Grommet",
+                "es": "Asistente para cambio automático de nombre\nCambiado a Grommet",
+                "pl": "KREATOR automatycznej zmiany nazwy\nZmieniono na przelotkę",
+                "zh-cn": "自动更改名称向导\n更改为扣眼"
+            },
             "0.0.2-10": {
                 "en": "ConfigChangeListener_active and InfluxDBHandlerAdapter_active on adapter and admin",
                 "de": "ConfigChangeListener_active und InfluxDBHandlerAdapter_active auf Adapter und Admin",
@@ -251,90 +263,207 @@
         ],
         "BatteryChecker_active": true,
         "BatteryChecker_timerMS": 200000,
-        "BatteryChecker_roles": ["value.battery", "indicator.maintenance.lowbat","value.lowBatt", "battery.percent"],
+        "BatteryChecker_roles": [
+            "value.battery",
+            "indicator.maintenance.lowbat",
+            "value.lowBatt",
+            "battery.percent"
+        ],
         "BatteryChecker_lowBatPercent_alert": 10,
         "BatteryChecker_lowBatPercent_warning": 30,
         "BatteryChecker_bucket": "iobroker_battery_stati_bucket",
         "ConnectionChecker_disabled": false,
         "ConnectionChecker_timerMS": 200000,
         "MiNameAdapter_login": "--",
-        "MiNameAdapter_password":"--",
-        "MiNameAdapter_defaultCountry":"cn",
-        "MiNameAdapter_deviceTypeFunctionMappings":{
-            "Tor":{
-                "on":{"functionID":"enum.functions.Schalter"},
-                "volume":{"functionID":"enum.functions.Lautstärke"},
-                "rgb":{"functionID":"enum.functions.Farbe"},
-                "connected":{"functionID":"enum.functions.Verbunden"}
+        "MiNameAdapter_password": "--",
+        "MiNameAdapter_defaultCountry": "cn",
+        "MiNameAdapter_deviceTypeFunctionMappings": {
+            "Tor": {
+                "on": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "volume": {
+                    "functionID": "enum.functions.Lautstärke"
+                },
+                "rgb": {
+                    "functionID": "enum.functions.Farbe"
+                },
+                "connected": {
+                    "functionID": "enum.functions.Verbunden"
+                }
             },
-            "Steckdose":{
-                "state":{"functionID":"enum.functions.Schalter"},
-                "load_power":{"functionID":"enum.functions.Leistung", "toInfluxDB":true},
-                "power_consumed":{"functionID":"enum.functions.Energie"}
+            "Steckdose": {
+                "state": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "load_power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                },
+                "power_consumed": {
+                    "functionID": "enum.functions.Energie"
+                }
             },
-            "Bewegung":{
-                "lux":{"functionID":"enum.functions.Helligkeit", "toInfluxDB":true},
-                "percent":{"functionID":"enum.functions.BatteryStatus", "toInfluxDB":false},
-                "motion":{"functionID":"enum.functions.Bewegung", "toInfluxDB":true}
+            "Bewegung": {
+                "lux": {
+                    "functionID": "enum.functions.Helligkeit",
+                    "toInfluxDB": true
+                },
+                "percent": {
+                    "functionID": "enum.functions.BatteryStatus",
+                    "toInfluxDB": false
+                },
+                "motion": {
+                    "functionID": "enum.functions.Bewegung",
+                    "toInfluxDB": true
+                }
             },
-            "Mobilerschalter":{
-                "percent":{"functionID":"enum.functions.BatterieStatus"}
+            "Mobilerschalter": {
+                "percent": {
+                    "functionID": "enum.functions.BatterieStatus"
+                }
             },
-            "Wetter":{
-                "percent":{"functionID":"enum.functions.BatterieStatus"},
-                "doublePress":{"functionID":"enum.functions.Schalter"},
-                "humidity":{"functionID":"enum.functions.Luftfeuchtigkeit", "toInfluxDB":true},
-                "pressure":{"functionID":"enum.functions.Luftdruck", "toInfluxDB":true},
-                "temperature":{"functionID":"enum.functions.Temperatur", "toInfluxDB":true}
+            "Wetter": {
+                "percent": {
+                    "functionID": "enum.functions.BatterieStatus"
+                },
+                "doublePress": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "humidity": {
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "pressure": {
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                },
+                "temperature": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                }
             },
-            "Dachfenster":{
-                "percent":{"functionID":"enum.functions.BatterieStatus"},
-                "state":{"functionID":"enum.functions.Fenster", "toInfluxDB":true}
+            "Dachfenster": {
+                "percent": {
+                    "functionID": "enum.functions.BatterieStatus"
+                },
+                "state": {
+                    "functionID": "enum.functions.Fenster",
+                    "toInfluxDB": true
+                }
             },
-            "Fenster":{
-                "percent":{"functionID":"enum.functions.BatterieStatus"},
-                "state":{"functionID":"enum.functions.Fenster", "toInfluxDB":true}
+            "Fenster": {
+                "percent": {
+                    "functionID": "enum.functions.BatterieStatus"
+                },
+                "state": {
+                    "functionID": "enum.functions.Fenster",
+                    "toInfluxDB": true
+                }
             },
-            "Türe":{
-                "percent":{"functionID":"enum.functions.BatterieStatus"},
-                "state":{"functionID":"enum.functions.Türe", "toInfluxDB":true}
+            "Türe": {
+                "percent": {
+                    "functionID": "enum.functions.BatterieStatus"
+                },
+                "state": {
+                    "functionID": "enum.functions.Türe",
+                    "toInfluxDB": true
+                }
             }
-
         },
-        "NetatmoAdapter_deviceTypeFunctionMappings":{
-            "Wetter":{
-                "Humidity":{"functionID":"enum.functions.Luftfeuchtigkeit", "toInfluxDB":true},
-                "Temperature":{"functionID":"enum.functions.Temperatur", "toInfluxDB":true},
-                "DewPoint":{"functionID":"enum.functions.Taupunkt", "toInfluxDB":true},
-                "BatteryStatus":{"functionID":"enum.functions.BatterieStatus", "toInfluxDB":true},
-                "CO2":{"functionID":"enum.functions.CO2", "toInfluxDB":true},
-                "Noise":{"functionID":"enum.functions.Lärmpegel", "toInfluxDB":true},
-                "Pressure":{"functionID":"enum.functions.Luftdruck", "toInfluxDB":true}
+        "NetatmoAdapter_deviceTypeFunctionMappings": {
+            "Wetter": {
+                "Humidity": {
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "Temperature": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "DewPoint": {
+                    "functionID": "enum.functions.Taupunkt",
+                    "toInfluxDB": true
+                },
+                "BatteryStatus": {
+                    "functionID": "enum.functions.BatterieStatus",
+                    "toInfluxDB": true
+                },
+                "CO2": {
+                    "functionID": "enum.functions.CO2",
+                    "toInfluxDB": true
+                },
+                "Noise": {
+                    "functionID": "enum.functions.Lärmpegel",
+                    "toInfluxDB": true
+                },
+                "Pressure": {
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                }
             }
         },
-        "HomeMaticAdapter_deviceTypeFunctionMappings":{
-            "Tor":{
-                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false}
+        "HomeMaticAdapter_deviceTypeFunctionMappings": {
+            "Tor": {
+                "unreach": {
+                    "functionID": "enum.functions.Unerreichbar",
+                    "toInfluxDB": false
+                }
             },
-            "Heizung":{
-                "lowbat":{"functionID":"enum.functions.NiedrigeBatterie", "toInfluxDB":false},
-                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false}
+            "Heizung": {
+                "lowbat": {
+                    "functionID": "enum.functions.NiedrigeBatterie",
+                    "toInfluxDB": false
+                },
+                "unreach": {
+                    "functionID": "enum.functions.Unerreichbar",
+                    "toInfluxDB": false
+                }
             },
-            "Rauchwarnmelder":{
-                "lowbat":{"functionID":"enum.functions.NiedrigeBatterie", "toInfluxDB":false},
-                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false}
+            "Rauchwarnmelder": {
+                "lowbat": {
+                    "functionID": "enum.functions.NiedrigeBatterie",
+                    "toInfluxDB": false
+                },
+                "unreach": {
+                    "functionID": "enum.functions.Unerreichbar",
+                    "toInfluxDB": false
+                }
             },
-            "Wetter":{
-                "lowbat":{"functionID":"enum.functions.NiedrigeBatterie", "toInfluxDB":false},
-                "unreach":{"functionID":"enum.functions.Unerreichbar", "toInfluxDB":false},
-                "humidity":{"functionID":"enum.functions.Luftfeuchtigkeit", "toInfluxDB":true},
-                "setPointTemperature":{"functionID":"enum.functions.GesetzteTemperatur", "toInfluxDB":false},
-                "actualTemperature":{"functionID":"enum.functions.Temperatur", "toInfluxDB":true},
-                "vaporAmount":{"functionID":"enum.functions.Dampfgehalt", "toInfluxDB":true}
+            "Wetter": {
+                "lowbat": {
+                    "functionID": "enum.functions.NiedrigeBatterie",
+                    "toInfluxDB": false
+                },
+                "unreach": {
+                    "functionID": "enum.functions.Unerreichbar",
+                    "toInfluxDB": false
+                },
+                "humidity": {
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "setPointTemperature": {
+                    "functionID": "enum.functions.GesetzteTemperatur",
+                    "toInfluxDB": false
+                },
+                "actualTemperature": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "vaporAmount": {
+                    "functionID": "enum.functions.Dampfgehalt",
+                    "toInfluxDB": true
+                }
             },
-            "Steckdose":{
-                "energyCounter":{"functionID":"enum.functions.Leistung", "toInfluxDB":true},
-                "on":{"functionID":"enum.functions.Schalter"}
+            "Steckdose": {
+                "energyCounter": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                },
+                "on": {
+                    "functionID": "enum.functions.Schalter"
+                }
             }
         }
     },

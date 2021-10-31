@@ -1,6 +1,6 @@
 {
   "name": "iobroker.thehome",
-  "version": "0.0.2-10",
+  "version": "0.0.2-11",
   "description": "Configure ioBroker for Swissglider --> upload/download deviceConfiguration / set Swissglider Tags / change influxDB names",
   "author": {
     "name": "Swissglider",
