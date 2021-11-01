@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-11",
+        "version": "0.0.2-12",
         "news": {
+            "0.0.2-12": {
+                "en": "Bugfixing",
+                "de": "Bugfixing",
+                "ru": "Исправление ошибок",
+                "pt": "Corrigindo erro",
+                "nl": "Bugfixing",
+                "fr": "Correction de bugs",
+                "it": "Correzione di bug",
+                "es": "Corrección de errores",
+                "pl": "Naprawa błędów",
+                "zh-cn": "错误修正"
+            },
             "0.0.2-11": {
                 "en": "Auto Change Name WIZARD\nChanged to Grommet",
                 "de": "Assistent zur automatischen Namensänderung\nIn Tülle geändert",
@@ -499,7 +511,7 @@
                     "functionID": "enum.functions.Schalter",
                     "toInfluxDB": true
                 },
-                "hmip.0.devices.3014F711A000101BE9935D00.channels.1.currentPowerConsumption":{
+                "hmip.0.devices.3014F711A000101BE9935D00.channels.1.currentPowerConsumption": {
                     "functionID": "enum.functions.AktuelleLeistung",
                     "toInfluxDB": true
                 }
