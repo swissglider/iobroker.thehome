@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) Bugfixing
+
 ### 0.0.2-11 (2021-10-31)
 
 -   (swissglider) Auto Change Name WIZARD

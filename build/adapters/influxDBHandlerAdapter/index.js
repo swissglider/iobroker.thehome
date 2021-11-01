@@ -11,14 +11,23 @@ const LabelBucketHandler_1 = __importDefault(require("./LabelBucketHandler"));
 const name = 'InfluxDBHandlerAdapter';
 const adapterName = 'influxdb';
 const influxStatics = {};
+const _getToken = (adapter) => {
+    const token = adapter.config.InfluxDBHandlerAdapter_token;
+    if (token === '') {
+        adapter.log.silly('token not yet set');
+        throw new Error('token not yet set');
+    }
+    return token;
+};
 const _getOrganization = () => {
     if (!influxStatics.organization)
         throw new Error('Organization not set');
     return influxStatics.organization;
 };
-const _getInfluxName = () => {
-    if (!influxStatics.influxName)
-        throw new Error('InfluxName not set');
+const _getInfluxName = async (adapter) => {
+    if (!influxStatics.influxName) {
+        influxStatics.influxName = await adapterUtilsFunctions_1.default.getAdapterPath(adapter, 'influxdb');
+    }
     return influxStatics.influxName;
 };
 const _createLabel = async (adapter, labelStruct) => {
@@ -77,8 +86,9 @@ const testInfluxDBConnectionWithToken = async (adapter, { token: token }) => {
     };
     const usedParams = ['port', 'host', 'dbversion', 'protocol', 'organization', 'dbname', 'token'];
     const subset = Object.fromEntries(Object.entries(tmpConfig).filter(([key]) => usedParams.includes(key)));
+    const influxName = await _getInfluxName(adapter);
     const testResult = await adapter
-        .sendToAsync(_getInfluxName(), 'test', { config: subset })
+        .sendToAsync(influxName, 'test', { config: subset })
         .catch((reason) => {
         console.log('hallo', 1, reason);
         throw new Error(reason);
@@ -144,7 +154,7 @@ const _initInfluxDBTags = async (adapter) => {
     if (!influxStatics.influxDBInstanceConfiguration)
         throw new Error('no influxdb instance configuration');
     const url = `${influxStatics.influxDBInstanceConfiguration.protocol}://${influxStatics.influxDBInstanceConfiguration.host}:${influxStatics.influxDBInstanceConfiguration.port}`;
-    const token = adapter.config.InfluxDBHandlerAdapter_token;
+    const token = _getToken(adapter);
     influxStatics.influxDB = new influxdb_client_1.InfluxDB({
         url: url,
         token: token,
@@ -171,9 +181,10 @@ const _initInfluxDBTags = async (adapter) => {
         else {
             throw new Error('Something is wrong while getting the InfluxDB Organization');
         }
-        influxStatics.influxName = await adapterUtilsFunctions_1.default.getAdapterPath(adapter, 'influxdb');
+        influxStatics.influxName = await _getInfluxName(adapter);
     }
     catch (error) {
+        console.error(error);
         throw new Error(`something went wrong while establish the influxDB connection: ${error}`);
     }
     try {
@@ -188,7 +199,7 @@ const getHealthStati = async (adapter) => {
     const singleAStates = await adapterUtilsFunctions_1.default.getAdapterSingleStates(adapter, 'influxdb');
     const returnValue = { ...singleAStates, ...{ adapterFullReady: false } };
     try {
-        await testInfluxDBConnectionWithToken(adapter, { token: adapter.config.InfluxDBHandlerAdapter_token });
+        await testInfluxDBConnectionWithToken(adapter, { token: _getToken(adapter) });
         returnValue.adapterFullReady = true;
     }
     catch (error) {
@@ -223,7 +234,7 @@ const init = async (adapter) => {
         await _initInfluxDBTags(adapter);
     }
     catch (error) {
-        adapter.log.silly(`unknown error: ${error}`);
+        adapter.log.error(`unknown error: ${error}`);
     }
 };
 const InfluxDBHandlerAdapter = {

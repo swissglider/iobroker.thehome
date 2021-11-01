@@ -25,12 +25,23 @@ const influxStatics: T_APIS = {};
 
 type T_LABEL_STRUCT = { name: string; color?: string; description?: string };
 
+const _getToken = (adapter: ioBroker.Adapter): string => {
+	const token = adapter.config.InfluxDBHandlerAdapter_token;
+	if (token === '') {
+		adapter.log.silly('token not yet set');
+		throw new Error('token not yet set');
+	}
+	return token;
+};
+
 const _getOrganization = (): Organization => {
 	if (!influxStatics.organization) throw new Error('Organization not set');
 	return influxStatics.organization;
 };
-const _getInfluxName = (): string => {
-	if (!influxStatics.influxName) throw new Error('InfluxName not set');
+const _getInfluxName = async (adapter: ioBroker.Adapter): Promise<string> => {
+	if (!influxStatics.influxName) {
+		influxStatics.influxName = await AdapterUtilsFunctions.getAdapterPath(adapter, 'influxdb');
+	}
 	return influxStatics.influxName;
 };
 
@@ -91,9 +102,10 @@ const testInfluxDBConnectionWithToken = async (
 	};
 	const usedParams = ['port', 'host', 'dbversion', 'protocol', 'organization', 'dbname', 'token'];
 	const subset = Object.fromEntries(Object.entries(tmpConfig).filter(([key]) => usedParams.includes(key)));
+	const influxName = await _getInfluxName(adapter);
 
 	const testResult: ioBroker.Message | undefined = await adapter
-		.sendToAsync(_getInfluxName(), 'test', { config: subset })
+		.sendToAsync(influxName, 'test', { config: subset })
 		.catch((reason) => {
 			console.log('hallo', 1, reason);
 			throw new Error(reason);
@@ -163,7 +175,7 @@ const _initInfluxDBTags = async (adapter: ioBroker.Adapter): Promise<void> => {
 	if (!influxStatics.influxDBInstanceConfiguration) throw new Error('no influxdb instance configuration');
 
 	const url = `${influxStatics.influxDBInstanceConfiguration.protocol}://${influxStatics.influxDBInstanceConfiguration.host}:${influxStatics.influxDBInstanceConfiguration.port}`;
-	const token = adapter.config.InfluxDBHandlerAdapter_token;
+	const token = _getToken(adapter);
 	influxStatics.influxDB = new InfluxDB({
 		url: url,
 		token: token,
@@ -191,8 +203,9 @@ const _initInfluxDBTags = async (adapter: ioBroker.Adapter): Promise<void> => {
 		} else {
 			throw new Error('Something is wrong while getting the InfluxDB Organization');
 		}
-		influxStatics.influxName = await AdapterUtilsFunctions.getAdapterPath(adapter, 'influxdb');
+		influxStatics.influxName = await _getInfluxName(adapter);
 	} catch (error) {
+		console.error(error);
 		throw new Error(`something went wrong while establish the influxDB connection: ${error}`);
 	}
 	try {
@@ -207,7 +220,7 @@ const getHealthStati = async (adapter: ioBroker.Adapter): Promise<T_AdapterState
 	const singleAStates = await AdapterUtilsFunctions.getAdapterSingleStates(adapter, 'influxdb');
 	const returnValue = { ...singleAStates, ...{ adapterFullReady: false } };
 	try {
-		await testInfluxDBConnectionWithToken(adapter, { token: adapter.config.InfluxDBHandlerAdapter_token });
+		await testInfluxDBConnectionWithToken(adapter, { token: _getToken(adapter) });
 		returnValue.adapterFullReady = true;
 	} catch (error) {
 		returnValue.adapterFullReady = false;
@@ -242,7 +255,7 @@ const init = async (adapter: ioBroker.Adapter): Promise<void> => {
 	try {
 		await _initInfluxDBTags(adapter);
 	} catch (error) {
-		adapter.log.silly(`unknown error: ${error}`);
+		adapter.log.error(`unknown error: ${error}`);
 	}
 };
 

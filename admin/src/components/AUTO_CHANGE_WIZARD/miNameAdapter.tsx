@@ -39,8 +39,8 @@ const MiNameAdapter: FC<T_General_Props> = (props: T_General_Props): JSX.Element
 
 	const testConnection = async () => {
 		const values = methods.getValues();
-		props.socket
-			.sendTo(props.adapterInstanceName, 'testConnectionWithNewParameter', {
+		props
+			.sendToWithWaitModul(props.adapterInstanceName, 'testConnectionWithNewParameter', {
 				adapterName: 'MiNameAdapter',
 				// config: {
 				login: values.MiNameAdapter_login,
@@ -68,8 +68,8 @@ const MiNameAdapter: FC<T_General_Props> = (props: T_General_Props): JSX.Element
 
 	const getGatewayToken = async () => {
 		const values = methods.getValues();
-		props.socket
-			.sendTo(props.adapterInstanceName, 'getGatewayToken', {
+		props
+			.sendToWithWaitModul(props.adapterInstanceName, 'getGatewayToken', {
 				adapterName: 'MiNameAdapter',
 				login: values.MiNameAdapter_login,
 				password: values.MiNameAdapter_password,
@@ -97,8 +97,8 @@ const MiNameAdapter: FC<T_General_Props> = (props: T_General_Props): JSX.Element
 
 	useEffect(() => {
 		try {
-			props.socket
-				.sendTo(props.adapterInstanceName, 'isAdapterConnected', { adapterName: 'mihome' })
+			props
+				.sendToWithWaitModul(props.adapterInstanceName, 'isAdapterConnected', { adapterName: 'mihome' })
 				.then((result: ioBroker.Message | undefined) => {
 					if (typeof result === 'string' && result === 'ok') {
 						setIsMiHomeDBAdapterConnected(true);

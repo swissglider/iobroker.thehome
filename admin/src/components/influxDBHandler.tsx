@@ -40,8 +40,8 @@ const InfluxDBHandler: FC<T_General_Props> = (props: T_General_Props): JSX.Eleme
 
 	useEffect(() => {
 		try {
-			props.socket
-				.sendTo(props.adapterInstanceName, 'isAdapterConnected', { adapterName: 'influxdb' })
+			props
+				.sendToWithWaitModul(props.adapterInstanceName, 'isAdapterConnected', { adapterName: 'influxdb' })
 				.then((result: ioBroker.Message | undefined) => {
 					if (typeof result === 'string' && result === 'ok') {
 						setIsInfluxDBAdapterOK(true);
@@ -67,8 +67,8 @@ const InfluxDBHandler: FC<T_General_Props> = (props: T_General_Props): JSX.Eleme
 
 	const testConnection = async () => {
 		const values = methods.getValues();
-		props.socket
-			.sendTo(props.adapterInstanceName, 'testInfluxDBConnectionWithToken', {
+		props
+			.sendToWithWaitModul(props.adapterInstanceName, 'testInfluxDBConnectionWithToken', {
 				adapterName: adapterName,
 				token: values.InfluxDBHandlerAdapter_token,
 			})
@@ -92,8 +92,8 @@ const InfluxDBHandler: FC<T_General_Props> = (props: T_General_Props): JSX.Eleme
 
 	const refreshAllTagsOnInfluxDB = async () => {
 		setIncativeRefreshButton(true);
-		props.socket
-			.sendTo(props.adapterInstanceName, 'refreshAllTagsOnInfluxDB', {
+		props
+			.sendToWithWaitModul(props.adapterInstanceName, 'refreshAllTagsOnInfluxDB', {
 				adapterName: adapterName,
 			})
 			.then((result: ioBroker.Message | undefined) => {

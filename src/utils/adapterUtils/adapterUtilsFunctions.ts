@@ -7,7 +7,7 @@ const _getInstance = async (adapter: ioBroker.Adapter, adapterName: string): Pro
 		endkey: `system.adapter.${adapterName ? adapterName + '.' : ''}\u9999`,
 	});
 	if (!(instances && instances.rows && instances.rows[0])) {
-		Promise.reject(`There is no ${adapterName} Adapter`);
+		throw new Error(`There is no ${adapterName} Adapter`);
 	}
 	return instances.rows[0];
 };

@@ -8,11 +8,12 @@
 import * as utils from '@iobroker/adapter-core';
 import ConfigAdapter from './adapters/configAdapter';
 import InfluxDBHandlerAdapter from './adapters/influxDBHandlerAdapter';
-import MiNameAdapter from './adapters/miNameAdapter';
-import NetatmoAdapter from './adapters/netatmoAdapter';
 import BatteryChecker from './checker/batteryChecker';
 import ConnectionChecker from './checker/connectionChecker';
 import ConfigChangeListener from './listener/configChangeListener';
+import HMIPAdapter from './renameAdapter/hmipAdapter';
+import MiNameAdapter from './renameAdapter/miNameAdapter';
+import NetatmoAdapter from './renameAdapter/netatmoAdapter';
 import AdapterUtilsFunctions from './utils/adapterUtils/adapterUtilsFunctions';
 import { T_Rename_Adapter } from './utils/types/T_Rename_Adapter';
 
@@ -24,6 +25,7 @@ const renameAdapters: Record<string, T_Rename_Adapter> = {
 	[InfluxDBHandlerAdapter.name]: InfluxDBHandlerAdapter,
 	[MiNameAdapter.name]: MiNameAdapter,
 	[NetatmoAdapter.name]: NetatmoAdapter,
+	[HMIPAdapter.name]: HMIPAdapter,
 };
 
 class Thehome extends utils.Adapter {
@@ -151,8 +153,18 @@ class Thehome extends utils.Adapter {
 							const adaptName = msg.adapterName;
 							const adpater = renameAdapters[adaptName];
 							if (adpater && obj.command in adpater) {
-								const returnResult = await adpater[obj.command](this, msg);
-								this.sendTo(obj.from, obj.command, returnResult, obj.callback);
+								try {
+									const returnResult = await adpater[obj.command](this, msg);
+									this.sendTo(obj.from, obj.command, returnResult, obj.callback);
+								} catch (error) {
+									let errorMsg = '';
+									if ((error as any).message) {
+										errorMsg = (error as any).message;
+									} else {
+										errorMsg = `${error}`;
+									}
+									this.sendTo(obj.from, obj.command, { error: errorMsg }, obj.callback);
+								}
 							} else {
 								this.sendTo(obj.from, obj.command, errMsgAdaptNotInit, obj.callback);
 							}
@@ -161,9 +173,8 @@ class Thehome extends utils.Adapter {
 						}
 				}
 			} catch (error) {
-				console.error(`${error}`);
 				this.log.error(`${error}`);
-				this.sendTo(obj.from, obj.command, `${error}`, obj.callback);
+				this.sendTo(obj.from, obj.command, { error: `${error}` }, obj.callback);
 			}
 		}
 	}

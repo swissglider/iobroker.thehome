@@ -80,6 +80,8 @@ const TheHomeAdminApp: FC<T_General_Props_T> = (props: T_General_Props_T): JSX.E
 	const [visibleError, setVisibleError] = useState<boolean>(false);
 	const [textError, setTextError] = useState<{ title: string; text: string }>({ title: '', text: '' });
 	const [isInfluxDBInstalled, setIsInfluxDBInstalled] = useState<boolean>(false);
+	const [theHomeAlive, setTheHomeAlive] = useState<boolean>(false);
+	const [theHomeConnected, setTheHomeConnected] = useState<boolean>(false);
 	const [openSendToWithWaitModul, setOpenSendToWithWaitModul] = React.useState<boolean>(false);
 
 	const hasSubTabs = (): boolean => {
@@ -93,7 +95,7 @@ const TheHomeAdminApp: FC<T_General_Props_T> = (props: T_General_Props_T): JSX.E
 
 	const onToast = (message: { title: string; text: string } | string): void => {
 		if (typeof message === 'string') {
-			setTextToast({ title: '', text: message });
+			setTextToast({ title: 'New Message', text: message });
 		} else {
 			setTextToast(message);
 		}
@@ -102,7 +104,7 @@ const TheHomeAdminApp: FC<T_General_Props_T> = (props: T_General_Props_T): JSX.E
 
 	const onError = (message: { title: string; text: string } | string): void => {
 		if (typeof message === 'string') {
-			setTextError({ title: '', text: message });
+			setTextError({ title: 'Error', text: message });
 		} else {
 			setTextError(message);
 		}
@@ -159,6 +161,12 @@ const TheHomeAdminApp: FC<T_General_Props_T> = (props: T_General_Props_T): JSX.E
 
 	useEffect(() => {
 		setAllTabs(defaultTabs);
+		props.socket.getState(props.instanceId + '.alive').then((e) => {
+			setTheHomeAlive(e && e.val && e.val === true ? true : false);
+		});
+		props.socket.getState(props.instanceId + '.connected').then((e) => {
+			setTheHomeConnected(e && e.val && e.val === true ? true : false);
+		});
 		props.socket
 			.sendTo(props.adapterInstanceName, 'isAdapterInstalled', { adapterName: 'influxdb' })
 			.then((result: ioBroker.Message | undefined) => {
@@ -210,7 +218,7 @@ const TheHomeAdminApp: FC<T_General_Props_T> = (props: T_General_Props_T): JSX.E
 
 	return (
 		<>
-			{!isInfluxDBInstalled ? (
+			{!(theHomeAlive && theHomeConnected) ? (
 				<Grommet theme={props.theme} themeMode={props.state.themeType as 'dark' | 'light'}>
 					<Box fill pad="large">
 						<Box
@@ -219,7 +227,22 @@ const TheHomeAdminApp: FC<T_General_Props_T> = (props: T_General_Props_T): JSX.E
 							align="center"
 						>
 							<Heading level="2" color="status-error">
-								{I18n.t('Influxdb Adapter must be installed!')}
+								{I18n.t('- install Influxdb adapter')} <br />
+								{I18n.t('- start TheHome adapter')}
+							</Heading>
+						</Box>
+					</Box>
+				</Grommet>
+			) : !isInfluxDBInstalled ? (
+				<Grommet theme={props.theme} themeMode={props.state.themeType as 'dark' | 'light'}>
+					<Box fill pad="large">
+						<Box
+							border={{ style: 'solid', color: 'status-error', size: 'large' }}
+							pad="large"
+							align="center"
+						>
+							<Heading level="2" color="status-error">
+								{I18n.t('Influxdb adapter must be installed!')}
 							</Heading>
 						</Box>
 					</Box>

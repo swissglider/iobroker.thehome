@@ -240,7 +240,7 @@
         "option2": "43",
         "ConfigChangeListener_active": true,
         "InfluxDBHandlerAdapter_active": true,
-        "InfluxDBHandlerAdapter_token": "12345",
+        "InfluxDBHandlerAdapter_token": "",
         "InfluxDBHandlerAdapter_bucketLabels": "iobroker_labels_per_stateID",
         "InfluxDBHandlerAdapter_labels": [
             {
@@ -310,7 +310,7 @@
                     "toInfluxDB": true
                 },
                 "percent": {
-                    "functionID": "enum.functions.BatteryStatus",
+                    "functionID": "enum.functions.BatterieStatus",
                     "toInfluxDB": false
                 },
                 "motion": {
@@ -321,6 +321,36 @@
             "Mobilerschalter": {
                 "percent": {
                     "functionID": "enum.functions.BatterieStatus"
+                },
+                "click": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "double": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "long": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "channel_0": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "channel_0_double": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "channel_0_long": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "channel_1": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "channel_1_double": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "channel_1_long": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "dual_channel": {
+                    "functionID": "enum.functions.Schalter"
                 }
             },
             "Wetter": {
@@ -403,7 +433,7 @@
                 }
             }
         },
-        "HomeMaticAdapter_deviceTypeFunctionMappings": {
+        "HMIPAdapter_deviceTypeFunctionMappings": {
             "Tor": {
                 "unreach": {
                     "functionID": "enum.functions.Unerreichbar",
@@ -411,17 +441,21 @@
                 }
             },
             "Heizung": {
-                "lowbat": {
+                "lowBat": {
                     "functionID": "enum.functions.NiedrigeBatterie",
                     "toInfluxDB": false
                 },
                 "unreach": {
                     "functionID": "enum.functions.Unerreichbar",
                     "toInfluxDB": false
+                },
+                "valveActualTemperature": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
                 }
             },
             "Rauchwarnmelder": {
-                "lowbat": {
+                "lowBat": {
                     "functionID": "enum.functions.NiedrigeBatterie",
                     "toInfluxDB": false
                 },
@@ -431,7 +465,7 @@
                 }
             },
             "Wetter": {
-                "lowbat": {
+                "lowBat": {
                     "functionID": "enum.functions.NiedrigeBatterie",
                     "toInfluxDB": false
                 },
@@ -462,7 +496,12 @@
                     "toInfluxDB": true
                 },
                 "on": {
-                    "functionID": "enum.functions.Schalter"
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": true
+                },
+                "hmip.0.devices.3014F711A000101BE9935D00.channels.1.currentPowerConsumption":{
+                    "functionID": "enum.functions.AktuelleLeistung",
+                    "toInfluxDB": true
                 }
             }
         }

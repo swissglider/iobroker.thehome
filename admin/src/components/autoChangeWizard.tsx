@@ -36,8 +36,12 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 			generalProps
 				.sendToWithWaitModul(generalProps.adapterInstanceName, 'rename', { adapterName: tabTitle })
 				.then((result: ioBroker.Message | undefined) => {
-					console.log(tabTitle, result);
-					generalProps.onToast('Successfully renamed');
+					if ((result as any).error) {
+						setErrorStatus((result as any).error);
+						generalProps.onError({ title: 'Error on rename', text: (result as any).error });
+					} else {
+						generalProps.onToast('Successfully renamed');
+					}
 				});
 		} catch (error) {
 			setErrorStatus(error);
@@ -59,11 +63,6 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 					} else {
 						setErrorStatus(result ? result.toString() : 'Unknown Error');
 					}
-				});
-			generalProps.socket
-				.sendTo(generalProps.adapterInstanceName, 'hallo', { adapterName: tabTitle, test: 'wie gahts ?' })
-				.then((result: ioBroker.Message | undefined) => {
-					console.log(tabTitle, result);
 				});
 		} catch (error) {
 			setErrorStatus(error);

@@ -37,6 +37,8 @@ const _updateAllLabels = async (adapter: ioBroker.Adapter): Promise<void> => {
 const updateAll = async (adapter: ioBroker.Adapter): Promise<void> => {
 	if (await InfluxDBHandlerAdapter.isHealth(adapter)) {
 		await _updateAllLabels(adapter);
+	} else {
+		throw new Error('InfluxDB Adapter not correct initialized: do you have set the Toker and saved ?');
 	}
 };
 

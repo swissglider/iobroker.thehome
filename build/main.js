@@ -30,11 +30,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const utils = __importStar(require("@iobroker/adapter-core"));
 const configAdapter_1 = __importDefault(require("./adapters/configAdapter"));
 const influxDBHandlerAdapter_1 = __importDefault(require("./adapters/influxDBHandlerAdapter"));
-const miNameAdapter_1 = __importDefault(require("./adapters/miNameAdapter"));
-const netatmoAdapter_1 = __importDefault(require("./adapters/netatmoAdapter"));
 const batteryChecker_1 = __importDefault(require("./checker/batteryChecker"));
 const connectionChecker_1 = __importDefault(require("./checker/connectionChecker"));
 const configChangeListener_1 = __importDefault(require("./listener/configChangeListener"));
+const hmipAdapter_1 = __importDefault(require("./renameAdapter/hmipAdapter"));
+const miNameAdapter_1 = __importDefault(require("./renameAdapter/miNameAdapter"));
+const netatmoAdapter_1 = __importDefault(require("./renameAdapter/netatmoAdapter"));
 const adapterUtilsFunctions_1 = __importDefault(require("./utils/adapterUtils/adapterUtilsFunctions"));
 const errMsgNoAdaptName = { error: 'no adapter mentioned' };
 const errMsgAdaptNotInit = { error: 'adapter not correct initialized' };
@@ -43,6 +44,7 @@ const renameAdapters = {
     [influxDBHandlerAdapter_1.default.name]: influxDBHandlerAdapter_1.default,
     [miNameAdapter_1.default.name]: miNameAdapter_1.default,
     [netatmoAdapter_1.default.name]: netatmoAdapter_1.default,
+    [hmipAdapter_1.default.name]: hmipAdapter_1.default,
 };
 class Thehome extends utils.Adapter {
     constructor(options = {}) {
@@ -166,8 +168,20 @@ class Thehome extends utils.Adapter {
                             const adaptName = msg.adapterName;
                             const adpater = renameAdapters[adaptName];
                             if (adpater && obj.command in adpater) {
-                                const returnResult = await adpater[obj.command](this, msg);
-                                this.sendTo(obj.from, obj.command, returnResult, obj.callback);
+                                try {
+                                    const returnResult = await adpater[obj.command](this, msg);
+                                    this.sendTo(obj.from, obj.command, returnResult, obj.callback);
+                                }
+                                catch (error) {
+                                    let errorMsg = '';
+                                    if (error.message) {
+                                        errorMsg = error.message;
+                                    }
+                                    else {
+                                        errorMsg = `${error}`;
+                                    }
+                                    this.sendTo(obj.from, obj.command, { error: errorMsg }, obj.callback);
+                                }
                             }
                             else {
                                 this.sendTo(obj.from, obj.command, errMsgAdaptNotInit, obj.callback);
@@ -179,9 +193,8 @@ class Thehome extends utils.Adapter {
                 }
             }
             catch (error) {
-                console.error(`${error}`);
                 this.log.error(`${error}`);
-                this.sendTo(obj.from, obj.command, `${error}`, obj.callback);
+                this.sendTo(obj.from, obj.command, { error: `${error}` }, obj.callback);
             }
         }
     }

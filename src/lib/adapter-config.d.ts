@@ -26,6 +26,7 @@ declare global {
 			MiNameAdapter_defaultCountry: string;
 			MiNameAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
 			NetatmoAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
+			HMIPAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
 		}
 	}
 }
