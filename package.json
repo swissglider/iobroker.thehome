@@ -26,7 +26,7 @@
     "@influxdata/influxdb-client": "^1.18.0",
     "@influxdata/influxdb-client-apis": "^1.18.0",
     "@iobroker/adapter-core": "^2.5.1",
-    "@iobroker/adapter-react": "2.0.13",
+    "@iobroker/adapter-react": "2.0.14",
     "@mui/icons-material": "^5.0.1",
     "@mui/material": "^5.0.3",
     "@mui/styles": "^5.0.1",
