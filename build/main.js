@@ -36,6 +36,7 @@ const configChangeListener_1 = __importDefault(require("./listener/configChangeL
 const hmipAdapter_1 = __importDefault(require("./renameAdapter/hmipAdapter"));
 const miNameAdapter_1 = __importDefault(require("./renameAdapter/miNameAdapter"));
 const netatmoAdapter_1 = __importDefault(require("./renameAdapter/netatmoAdapter"));
+const shellyAdapter_1 = __importDefault(require("./renameAdapter/shellyAdapter"));
 const adapterUtilsFunctions_1 = __importDefault(require("./utils/adapterUtils/adapterUtilsFunctions"));
 const errMsgNoAdaptName = { error: 'no adapter mentioned' };
 const errMsgAdaptNotInit = { error: 'adapter not correct initialized' };
@@ -45,6 +46,7 @@ const renameAdapters = {
     [miNameAdapter_1.default.name]: miNameAdapter_1.default,
     [netatmoAdapter_1.default.name]: netatmoAdapter_1.default,
     [hmipAdapter_1.default.name]: hmipAdapter_1.default,
+    [shellyAdapter_1.default.name]: shellyAdapter_1.default,
 };
 class Thehome extends utils.Adapter {
     constructor(options = {}) {

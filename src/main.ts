@@ -14,6 +14,7 @@ import ConfigChangeListener from './listener/configChangeListener';
 import HMIPAdapter from './renameAdapter/hmipAdapter';
 import MiNameAdapter from './renameAdapter/miNameAdapter';
 import NetatmoAdapter from './renameAdapter/netatmoAdapter';
+import ShellyAdapter from './renameAdapter/shellyAdapter';
 import AdapterUtilsFunctions from './utils/adapterUtils/adapterUtilsFunctions';
 import { T_Rename_Adapter } from './utils/types/T_Rename_Adapter';
 
@@ -26,6 +27,7 @@ const renameAdapters: Record<string, T_Rename_Adapter> = {
 	[MiNameAdapter.name]: MiNameAdapter,
 	[NetatmoAdapter.name]: NetatmoAdapter,
 	[HMIPAdapter.name]: HMIPAdapter,
+	[ShellyAdapter.name]: ShellyAdapter,
 };
 
 class Thehome extends utils.Adapter {

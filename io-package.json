@@ -521,10 +521,131 @@
                 },
                 "on": {
                     "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": true
+                    "toInfluxDB": false
                 },
                 "hmip.0.devices.3014F711A000101BE9935D00.channels.1.currentPowerConsumption": {
                     "functionID": "enum.functions.AktuelleLeistung",
+                    "toInfluxDB": true
+                }
+            }
+        },
+        "ShellyAdapter_deviceTypeFunctionMappings": {
+            "Shelly":{
+                "firmware": {
+                    "functionID": "enum.functions.FirmwareUpdate",
+                    "toInfluxDB": true
+                },
+                "online": {
+                    "functionID": "enum.functions.Verbunden",
+                    "toInfluxDB": true
+                }
+            },
+            "Storen":{
+                "ButtonType": {
+                    "functionID": "enum.functions.StorenCommand",
+                    "toInfluxDB": false
+                },
+                "state": {
+                    "functionID": "enum.functions.StorenState",
+                    "toInfluxDB": false
+                },
+                "Close": {
+                    "functionID": "enum.functions.StorenClose",
+                    "toInfluxDB": false
+                },
+                "Open": {
+                    "functionID": "enum.functions.StorenOpen",
+                    "toInfluxDB": false
+                },
+                "Pause": {
+                    "functionID": "enum.functions.StorenPause",
+                    "toInfluxDB": false
+                },
+                "Position": {
+                    "functionID": "enum.functions.StorenPosition",
+                    "toInfluxDB": false
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie",
+                    "toInfluxDB": false
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                }},
+            "Wandschalter":{
+                "Switch":{
+                    "functionID": "enum.functions.Wandschalter",
+                    "toInfluxDB": false
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie",
+                    "toInfluxDB": false
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                }
+            },
+            "Lichtschalter":{
+                "Switch":{
+                    "functionID": "enum.functions.Lichtschalter",
+                    "toInfluxDB": false
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie",
+                    "toInfluxDB": false
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                }
+            },
+            "Sonnenstoren":{
+                "ButtonType": {
+                    "functionID": "enum.functions.StorenCommand",
+                    "toInfluxDB": false
+                },
+                "state": {
+                    "functionID": "enum.functions.StorenState",
+                    "toInfluxDB": false
+                },
+                "Close": {
+                    "functionID": "enum.functions.StorenClose",
+                    "toInfluxDB": false
+                },
+                "Open": {
+                    "functionID": "enum.functions.StorenOpen",
+                    "toInfluxDB": false
+                },
+                "Pause": {
+                    "functionID": "enum.functions.StorenPause",
+                    "toInfluxDB": false
+                },
+                "Position": {
+                    "functionID": "enum.functions.StorenPosition",
+                    "toInfluxDB": false
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie",
+                    "toInfluxDB": false
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                }
+            },
+            "Steckdose":{
+                "Switch":{
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": false
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie",
+                    "toInfluxDB": false
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
                     "toInfluxDB": true
                 }
             }

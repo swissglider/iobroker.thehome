@@ -11,10 +11,13 @@ import { defaultAdapterSingleStates, T_AdapterSingleStates } from '../tools/Adap
 import Circle from '../tools/Circle';
 import { Configure, Update } from 'grommet-icons';
 import I18n from '@iobroker/adapter-react/i18n';
+import getRandomString from '../helper/GetRandomKey';
 
-type T_GridComponent_Type = { tabTitle: string; generalProps: T_General_Props };
+type T_GridComponent_Type = { adapterName: string; generalProps: T_General_Props };
 
-const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_GridComponent_Type): JSX.Element => {
+const adapterNames = ['MiNameAdapter', 'NetatmoAdapter', 'HMIPAdapter', 'ShellyAdapter'];
+
+const GridComponent: FC<T_GridComponent_Type> = ({ adapterName, generalProps }: T_GridComponent_Type): JSX.Element => {
 	const setSelectedTabTitle = useSetRecoilState(selectedTabTitle_State);
 	const setSelectedSubTabTitle = useSetRecoilState(selectedSubTabTitle_State);
 	const selectedTab = useRecoilValue(selectedTab_State);
@@ -31,10 +34,10 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 		}
 	};
 
-	const rename = (tabTitle: string): void => {
+	const rename = (adapterName: string): void => {
 		try {
 			generalProps
-				.sendToWithWaitModul(generalProps.adapterInstanceName, 'rename', { adapterName: tabTitle })
+				.sendToWithWaitModul(generalProps.adapterInstanceName, 'rename', { adapterName: adapterName })
 				.then((result: ioBroker.Message | undefined) => {
 					if ((result as any).error) {
 						setErrorStatus((result as any).error);
@@ -52,11 +55,11 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 	useEffect(() => {
 		try {
 			generalProps.socket
-				.sendTo(generalProps.adapterInstanceName, 'getHealthStati', { adapterName: tabTitle })
+				.sendTo(generalProps.adapterInstanceName, 'getHealthStati', { adapterName: adapterName })
 				.then((result: ioBroker.Message | undefined) => {
 					if (result as unknown as T_AdapterSingleStates) {
 						setSingleAdapterState(result as unknown as T_AdapterSingleStates);
-						if (result && tabTitle !== 'InfluxDBHandlerAdapter') {
+						if (result && adapterName !== 'InfluxDBHandlerAdapter') {
 							setCanUpdate(Object.values(result).every((e) => e === true));
 						}
 						setErrorStatus(result && 'error' in result ? (result as any).error : '');
@@ -67,11 +70,11 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 		} catch (error) {
 			setErrorStatus(error);
 		}
-		if (tabTitle === 'InfluxDBHandlerAdapter') {
+		if (adapterName === 'InfluxDBHandlerAdapter') {
 			setHasConfigSite(true);
 		} else {
 			if (selectedTab && selectedTab.subTabs) {
-				setHasConfigSite(selectedTab.subTabs.some((e) => e.title === tabTitle));
+				setHasConfigSite(selectedTab.subTabs.some((e) => e.title === adapterName));
 			} else {
 				setHasConfigSite(false);
 			}
@@ -108,7 +111,7 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 				]}
 			>
 				<Box align="start" gridArea="titel">
-					{tabTitle}
+					{adapterName}
 				</Box>
 				<Box align="end" gridArea="status">
 					{status === 'loading...' ? (
@@ -132,7 +135,7 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 							icon={<Update color={canUpdate ? undefined : getStatusColor()} />}
 							size="small"
 							plain
-							onClick={() => (canUpdate ? rename(tabTitle) : undefined)}
+							onClick={() => (canUpdate ? rename(adapterName) : undefined)}
 						/>
 						<Button
 							tip={I18n.t('GoTo Configuration')}
@@ -140,7 +143,7 @@ const GridComponent: FC<T_GridComponent_Type> = ({ tabTitle, generalProps }: T_G
 							icon={<Configure color={hasConfigSite ? undefined : getStatusColor()} />}
 							size="small"
 							plain
-							onClick={() => (hasConfigSite ? goto(tabTitle) : undefined)}
+							onClick={() => (hasConfigSite ? goto(adapterName) : undefined)}
 						/>
 					</Box>
 				</Box>
@@ -165,7 +168,7 @@ const AutoChangeNameWizard: FC<T_General_Props> = (props: T_General_Props): JSX.
 				margin={{ vertical: 'small', horizontal: 'large' }}
 			>
 				<Text>DB Status:</Text>
-				<GridComponent tabTitle="InfluxDBHandlerAdapter" generalProps={props} />
+				<GridComponent adapterName="InfluxDBHandlerAdapter" generalProps={props} />
 			</Box>
 			<Box
 				border={{ style: 'dotted' }}
@@ -174,9 +177,11 @@ const AutoChangeNameWizard: FC<T_General_Props> = (props: T_General_Props): JSX.
 				margin={{ vertical: 'small', horizontal: 'large' }}
 			>
 				<Text>Adapter Status:</Text>
-				<GridComponent tabTitle="MiNameAdapter" generalProps={props} />
-				<GridComponent tabTitle="NetatmoAdapter" generalProps={props} />
-				<GridComponent tabTitle="HMIPAdapter" generalProps={props} />
+				{adapterNames.map((adapterName) => (
+					<React.Fragment key={getRandomString(adapterName)}>
+						<GridComponent adapterName={adapterName} generalProps={props} />
+					</React.Fragment>
+				))}
 			</Box>
 			<Box
 				// border={{ style: 'dotted' }}
