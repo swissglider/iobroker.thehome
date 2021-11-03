@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-13",
+        "version": "0.0.2-14",
         "news": {
+            "0.0.2-14": {
+                "en": "Shelly Rename Adapter implemented",
+                "de": "Shelly Rename Adapter implementiert",
+                "ru": "Реализован адаптер переименования Shelly",
+                "pt": "Adaptador Shelly Rename implementado",
+                "nl": "Shelly Rename Adapter geïmplementeerd",
+                "fr": "Shelly Rename Adapter implémenté",
+                "it": "Shelly Rename Adapter implementato",
+                "es": "Adaptador de cambio de nombre de Shelly implementado",
+                "pl": "Zaimplementowany adapter Shelly Rename",
+                "zh-cn": "已实现 Shelly 重命名适配器"
+            },
             "0.0.2-13": {
                 "en": "Bugfixing",
                 "de": "Bugfixing",
@@ -530,7 +542,7 @@
             }
         },
         "ShellyAdapter_deviceTypeFunctionMappings": {
-            "Shelly":{
+            "Shelly": {
                 "firmware": {
                     "functionID": "enum.functions.FirmwareUpdate",
                     "toInfluxDB": true
@@ -540,7 +552,7 @@
                     "toInfluxDB": true
                 }
             },
-            "Storen":{
+            "Storen": {
                 "ButtonType": {
                     "functionID": "enum.functions.StorenCommand",
                     "toInfluxDB": false
@@ -572,9 +584,10 @@
                 "Power": {
                     "functionID": "enum.functions.Leistung",
                     "toInfluxDB": true
-                }},
-            "Wandschalter":{
-                "Switch":{
+                }
+            },
+            "Wandschalter": {
+                "Switch": {
                     "functionID": "enum.functions.Wandschalter",
                     "toInfluxDB": false
                 },
@@ -587,8 +600,8 @@
                     "toInfluxDB": true
                 }
             },
-            "Lichtschalter":{
-                "Switch":{
+            "Lichtschalter": {
+                "Switch": {
                     "functionID": "enum.functions.Lichtschalter",
                     "toInfluxDB": false
                 },
@@ -601,7 +614,7 @@
                     "toInfluxDB": true
                 }
             },
-            "Sonnenstoren":{
+            "Sonnenstoren": {
                 "ButtonType": {
                     "functionID": "enum.functions.StorenCommand",
                     "toInfluxDB": false
@@ -635,8 +648,8 @@
                     "toInfluxDB": true
                 }
             },
-            "Steckdose":{
-                "Switch":{
+            "Steckdose": {
+                "Switch": {
                     "functionID": "enum.functions.Schalter",
                     "toInfluxDB": false
                 },

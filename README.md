@@ -106,7 +106,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
-### **WORK IN PROGRESS**
+### 0.0.2-14 (2021-11-03)
 
 -   (swissglider) Shelly Rename Adapter implemented
 
