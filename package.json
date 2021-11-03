@@ -50,7 +50,7 @@
     "regenerator-runtime": "^0.13.9",
     "styled-components": "^5.3.3",
     "yaml": "2.0.0-7",
-    "yup": "^0.32.9"
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^2.2.1",
