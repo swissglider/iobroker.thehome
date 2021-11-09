@@ -1,6 +1,11 @@
 import AdapterUtilsFunctions from '../../utils/adapterUtils/adapterUtilsFunctions';
 import { rearangeDeviceAndStates } from '../../utils/adapterUtils/RearangeDeviceAndStates';
-import { T_AdapterStates, T_RearangeDeviceAndStates_Props, T_Rename_Adapter } from '../../utils/types/T_Rename_Adapter';
+import {
+	T_AdapterStates,
+	T_IOBAdapter_Handler,
+	// eslint-disable-next-line prettier/prettier
+	T_RearangeDeviceAndStates_Props
+} from '../../utils/types/T_IOBAdapter_Handler';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { AuthMiIO, ApiMiIO } = require('miio-token-extractor');
@@ -129,14 +134,16 @@ const rename = async (adapter: ioBroker.Adapter): Promise<string | { error: stri
 	);
 };
 
-const MiNameAdapter: T_Rename_Adapter = {
+const MiNameAdapter: T_IOBAdapter_Handler = {
 	name: name,
-	getHealthStati: getHealthStati,
 	isHealth: isHealth,
-	rename: rename,
-	getGatewayToken: getGatewayToken,
-	testConnectionWithNewParameter: testConnectionWithNewParameter,
-	getMiTokenList: getMiTokenList,
+	onMessageFunc: {
+		getHealthStati: getHealthStati,
+		rename: rename,
+		getGatewayToken: getGatewayToken,
+		testConnectionWithNewParameter: testConnectionWithNewParameter,
+		getMiTokenList: getMiTokenList,
+	},
 };
 
 export default MiNameAdapter;

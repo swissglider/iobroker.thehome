@@ -1,6 +1,11 @@
 import AdapterUtilsFunctions from '../../utils/adapterUtils/adapterUtilsFunctions';
 import { rearangeDeviceAndStates } from '../../utils/adapterUtils/RearangeDeviceAndStates';
-import { T_AdapterStates, T_RearangeDeviceAndStates_Props, T_Rename_Adapter } from '../../utils/types/T_Rename_Adapter';
+import {
+	T_AdapterStates,
+	T_IOBAdapter_Handler,
+	// eslint-disable-next-line prettier/prettier
+	T_RearangeDeviceAndStates_Props
+} from '../../utils/types/T_IOBAdapter_Handler';
 
 const name = 'NetatmoAdapter';
 const adapterName = 'netatmo';
@@ -42,11 +47,10 @@ const rename = async (adapter: ioBroker.Adapter): Promise<string | { error: stri
 	);
 };
 
-const NetatmoAdapter: T_Rename_Adapter = {
+const NetatmoAdapter: T_IOBAdapter_Handler = {
 	name: name,
-	getHealthStati: getHealthStati,
 	isHealth: isHealth,
-	rename: rename,
+	onMessageFunc: { getHealthStati: getHealthStati, rename: rename },
 };
 
 export default NetatmoAdapter;

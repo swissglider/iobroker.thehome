@@ -15,19 +15,29 @@ import HMIPAdapter from './renameAdapter/hmipAdapter';
 import MiNameAdapter from './renameAdapter/miNameAdapter';
 import NetatmoAdapter from './renameAdapter/netatmoAdapter';
 import ShellyAdapter from './renameAdapter/shellyAdapter';
+import SonoffAdapter from './renameAdapter/sonoffAdapter';
 import AdapterUtilsFunctions from './utils/adapterUtils/adapterUtilsFunctions';
-import { T_Rename_Adapter } from './utils/types/T_Rename_Adapter';
+import { T_IOBAdapter_Handler } from './utils/types/T_IOBAdapter_Handler';
+import { T_SubAdapter } from './utils/types/T_SubAdapter';
 
 const errMsgNoAdaptName = { error: 'no adapter mentioned' };
 const errMsgAdaptNotInit = { error: 'adapter not correct initialized' };
 const errMsgStringAndID = { error: 'config must be a id on the object' };
 
-const renameAdapters: Record<string, T_Rename_Adapter> = {
+const renameAdapters: Record<string, T_IOBAdapter_Handler> = {
 	[InfluxDBHandlerAdapter.name]: InfluxDBHandlerAdapter,
 	[MiNameAdapter.name]: MiNameAdapter,
 	[NetatmoAdapter.name]: NetatmoAdapter,
 	[HMIPAdapter.name]: HMIPAdapter,
 	[ShellyAdapter.name]: ShellyAdapter,
+	[SonoffAdapter.name]: SonoffAdapter,
+};
+
+const subAdapters: Record<string, T_SubAdapter> = {
+	[ConfigChangeListener.name]: ConfigChangeListener,
+	[ConfigAdapter.name]: ConfigAdapter,
+	[BatteryChecker.name]: BatteryChecker,
+	[ConnectionChecker.name]: ConnectionChecker,
 };
 
 class Thehome extends utils.Adapter {
@@ -38,12 +48,14 @@ class Thehome extends utils.Adapter {
 		});
 		this.on('message', this.onMessage.bind(this));
 		this.on('ready', this.onReady.bind(this));
-
-		ConfigChangeListener.init(this);
-		ConfigAdapter.init(this);
-		BatteryChecker.init(this);
-		ConnectionChecker.init(this);
 		this.on('unload', this.onUnload.bind(this));
+
+		// init all the subAdapters
+		for (const subAdapter of Object.values(subAdapters)) {
+			if (subAdapter.init) {
+				subAdapter.init(this);
+			}
+		}
 	}
 
 	/**
@@ -124,6 +136,16 @@ class Thehome extends utils.Adapter {
 				this.sendTo(obj.from, obj.command, errMsgNoAdaptName, obj.callback);
 			}
 		};
+		const handleError = (error: any): void => {
+			let errorMsg = '';
+			if ((error as any).message) {
+				errorMsg = (error as any).message;
+			} else {
+				errorMsg = `${error}`;
+			}
+			this.sendTo(obj.from, obj.command, { error: errorMsg }, obj.callback);
+		};
+
 		const msg = obj.message as any;
 		if (typeof obj === 'object') {
 			try {
@@ -154,18 +176,12 @@ class Thehome extends utils.Adapter {
 						if (typeof obj.message !== 'string' && 'adapterName' in obj.message) {
 							const adaptName = msg.adapterName;
 							const adpater = renameAdapters[adaptName];
-							if (adpater && obj.command in adpater) {
+							if (adpater && adpater.onMessageFunc && obj.command in adpater.onMessageFunc) {
 								try {
-									const returnResult = await adpater[obj.command](this, msg);
+									const returnResult = await adpater.onMessageFunc[obj.command](this, msg);
 									this.sendTo(obj.from, obj.command, returnResult, obj.callback);
 								} catch (error) {
-									let errorMsg = '';
-									if ((error as any).message) {
-										errorMsg = (error as any).message;
-									} else {
-										errorMsg = `${error}`;
-									}
-									this.sendTo(obj.from, obj.command, { error: errorMsg }, obj.callback);
+									handleError(error);
 								}
 							} else {
 								this.sendTo(obj.from, obj.command, errMsgAdaptNotInit, obj.callback);

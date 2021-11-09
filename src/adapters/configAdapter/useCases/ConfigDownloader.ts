@@ -31,7 +31,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (
 		);
 		const influxName = await AdapterUtilsFunctions.getAdapterPath(adapter, 'influxdb');
 		const stateInfos: StateInformation[] = filteredObj.map((obj) => getStateInfo(adapter, obj, influxName));
-		const changedNameObjIDs = ConfigChangeListener.getObjectIDsWithChangedNames();
+		const changedNameObjIDs = ConfigChangeListener.exportFunc.getObjectIDsWithChangedNames();
 		const tmpAlreadyAddedStateIDs = stateInfos.map((e) => e.stateID);
 		for (const objID of changedNameObjIDs) {
 			if (!tmpAlreadyAddedStateIDs.includes(objID)) {

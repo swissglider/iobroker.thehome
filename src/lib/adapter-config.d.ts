@@ -28,6 +28,7 @@ declare global {
 			NetatmoAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
 			HMIPAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
 			ShellyAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
+			SonoffAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
 		}
 	}
 }

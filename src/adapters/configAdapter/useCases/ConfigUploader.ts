@@ -18,8 +18,8 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 	// = remove states from all function and room enum
 	try {
 		await Promise.all([
-			BatteryChecker.stopBatteryChecker(),
-			ConnectionChecker.stopConnectionChecker(),
+			BatteryChecker.exportFunc.stopBatteryChecker(),
+			ConnectionChecker.exportFunc.stopConnectionChecker(),
 			EnumHandler.removeAllStatesFromAllRoomFunctionEnums(adapter),
 		]);
 	} catch (error) {
@@ -44,7 +44,10 @@ export const statesConfigUpload = async (adapter: ioBroker.Adapter, config: Stat
 	// = new init BatteryChecker
 	// = new init ConnectionChecker
 	try {
-		await Promise.all([BatteryChecker.initBatteryChecker(), ConnectionChecker.initConnectionChecker()]);
+		await Promise.all([
+			BatteryChecker.exportFunc.initBatteryChecker(),
+			ConnectionChecker.exportFunc.initConnectionChecker(),
+		]);
 	} catch (error) {
 		return `unknown error while init connection or battery checker: ${error}`;
 	}

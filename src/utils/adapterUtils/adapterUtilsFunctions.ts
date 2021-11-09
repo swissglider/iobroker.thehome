@@ -1,5 +1,5 @@
 import * as utils from '@iobroker/adapter-core';
-import { T_AdapterSingleStates } from '../types/T_Rename_Adapter';
+import { T_AdapterSingleStates } from '../types/T_IOBAdapter_Handler';
 
 const _getInstance = async (adapter: ioBroker.Adapter, adapterName: string): Promise<ioBroker.GetObjectViewItem> => {
 	const instances = await adapter.getObjectViewAsync('system', 'instance', {
@@ -97,29 +97,28 @@ const getAdapterSingleStates = async (
 	returnResult.isAdapterConnected =
 		(returnResult.isAdapterRunning &&
 			`${instancePath}.info.connection` in results[2] &&
-			results[2][`${instancePath}.info.connection`].val === true) ||
+			(results[2][`${instancePath}.info.connection`].val === true ||
+				(typeof results[2][`${instancePath}.info.connection`].val === 'string' &&
+					results[2][`${instancePath}.info.connection`].val !== ''))) ||
 		(returnResult.isAdapterRunning && Object.keys(results[2]).length === 0);
 	return returnResult;
 };
 
 const checkIFStartable = async (adapter: ioBroker.Adapter): Promise<void> => {
+	const error = 'Influxdb adapter needs to be installed on ioBroker';
 	isAdapterInstalled(adapter, 'influxdb')
 		.then((e) => {
-			if (e) {
-				// console.info('Influxdb installed ;-)');
-				// adapter.log.info('Influxdb installed ;-)');
-			} else {
-				const error = 'Influxdb adapter needs to be installed';
+			if (!e) {
 				adapter.log.error(error);
 				console.error(error);
 				adapter.terminate(error, utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
 			}
 		})
 		.catch((reason) => {
-			const error = `Influxdb adapter needs to be installed - ${reason}`;
-			adapter.log.error(error);
-			console.error(error);
-			adapter.terminate(error, utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
+			const _error = `${error} - ${reason}`;
+			adapter.log.error(_error);
+			console.error(_error);
+			adapter.terminate(_error, utils.EXIT_CODES.ADAPTER_REQUESTED_TERMINATION);
 		});
 };
 

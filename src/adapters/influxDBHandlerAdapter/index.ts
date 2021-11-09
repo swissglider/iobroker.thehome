@@ -1,7 +1,8 @@
 import { InfluxDB, QueryApi, WriteApi } from '@influxdata/influxdb-client';
 import { BucketsAPI, Label, LabelsAPI, Organization, OrgsAPI } from '@influxdata/influxdb-client-apis';
 import AdapterUtilsFunctions from '../../utils/adapterUtils/adapterUtilsFunctions';
-import { T_AdapterStates, T_Rename_Adapter } from '../../utils/types/T_Rename_Adapter';
+import * as checkInitReadyUtil from '../../utils/adapterUtils/checkInitReady';
+import { T_AdapterStates, T_IOBAdapter_Handler, T_STATUS } from '../../utils/types/T_IOBAdapter_Handler';
 import BatteryBucketHandler from './BatteryBucketHandler';
 import LabelBucketHandler from './LabelBucketHandler';
 
@@ -21,9 +22,14 @@ type T_APIS = {
 	writeApiConnection?: WriteApi | undefined;
 };
 
-const influxStatics: T_APIS = {};
-
 type T_LABEL_STRUCT = { name: string; color?: string; description?: string };
+
+const _STATUS: T_STATUS = {
+	_isReady: 'nok',
+	_name: 'InfluxDBHandlerAdapter',
+};
+
+const influxStatics: T_APIS = {};
 
 const _getToken = (adapter: ioBroker.Adapter): string => {
 	const token = adapter.config.InfluxDBHandlerAdapter_token;
@@ -87,89 +93,9 @@ const _addAllLabelsToTheBucket = async (adapter: ioBroker.Adapter, bucketID: str
 	}
 };
 
-const testInfluxDBConnectionWithToken = async (
-	adapter: ioBroker.Adapter,
-	{ token: token }: Record<string, any>,
-): Promise<string | { error: string }> => {
-	// create config object for influxDB Test call
-	const isAdapterConnected = await AdapterUtilsFunctions.isAdapterConnected(adapter, 'influxdb');
-	if (!isAdapterConnected) throw new Error('Influxdb adapter is not running correct');
-	const tmpConfig = {
-		...influxStatics.influxDBInstanceConfiguration,
-		...{
-			token: token,
-		},
-	};
-	const usedParams = ['port', 'host', 'dbversion', 'protocol', 'organization', 'dbname', 'token'];
-	const subset = Object.fromEntries(Object.entries(tmpConfig).filter(([key]) => usedParams.includes(key)));
-	const influxName = await _getInfluxName(adapter);
-
-	const testResult: ioBroker.Message | undefined = await adapter
-		.sendToAsync(influxName, 'test', { config: subset })
-		.catch((reason) => {
-			console.log('hallo', 1, reason);
-			throw new Error(reason);
-		});
-
-	if ((testResult as any).error) {
-		throw (testResult as any).error;
-	}
-	return 'ok';
-};
-
-const createBucketIfNeeded = async (adapter: ioBroker.Adapter, name: string, description: string): Promise<void> => {
-	const { id: orgID } = _getOrganization();
-	const temp = await influxStatics.bucketsAPI?.getBuckets({
-		orgID,
-	});
-	if (temp && temp.buckets && influxStatics.influxDBInstanceConfiguration) {
-		let tmpRetentionRules;
-		for (const bucket of temp.buckets) {
-			const influxDBOrgBucketName =
-				influxStatics.influxDBInstanceConfiguration.bucket ??
-				influxStatics.influxDBInstanceConfiguration.dbname;
-			if (bucket.name === influxDBOrgBucketName) {
-				tmpRetentionRules = bucket.retentionRules;
-			}
-			if (bucket.name === name) {
-				return;
-			}
-		}
-		const tmpBucket = await influxStatics.bucketsAPI?.postBuckets({
-			body: {
-				name: name,
-				description: description,
-				retentionRules: tmpRetentionRules ?? [],
-				orgID: orgID as string,
-			},
-		});
-		if (tmpBucket && tmpBucket.id) {
-			await _addAllLabelsToTheBucket(adapter, tmpBucket.id);
-		}
-	}
-};
-
-const deleteBucket = async (adapter: ioBroker.Adapter, bucketName: string): Promise<void> => {
-	const { id: orgID } = _getOrganization();
-	const temp = await influxStatics.bucketsAPI?.getBuckets({
-		orgID,
-	});
-	if (temp && temp.buckets) {
-		for (const bucket of temp.buckets) {
-			if (bucket.name === bucketName && bucket.id) {
-				await influxStatics.bucketsAPI?.deleteBucketsID({ bucketID: bucket.id });
-			}
-		}
-	}
-};
-
-const getBucketWriteApi = async (adapter: ioBroker.Adapter, bucketName: string): Promise<WriteApi | undefined> => {
-	if (!influxStatics.influxDBInstanceConfiguration || !influxStatics.influxDB) return undefined;
-	return influxStatics.influxDB.getWriteApi(influxStatics.influxDBInstanceConfiguration.organization, bucketName);
-};
-
 const _initInfluxDBTags = async (adapter: ioBroker.Adapter): Promise<void> => {
 	// get InfluxDB Adapter Configuration
+	_STATUS._isReady = 'processing';
 
 	influxStatics.influxDBInstanceConfiguration = await AdapterUtilsFunctions.getInstanceNative(adapter, adapterName);
 	if (!influxStatics.influxDBInstanceConfiguration) throw new Error('no influxdb instance configuration');
@@ -203,20 +129,128 @@ const _initInfluxDBTags = async (adapter: ioBroker.Adapter): Promise<void> => {
 		} else {
 			throw new Error('Something is wrong while getting the InfluxDB Organization');
 		}
-		influxStatics.influxName = await _getInfluxName(adapter);
 	} catch (error) {
 		console.error(error);
 		throw new Error(`something went wrong while establish the influxDB connection: ${error}`);
 	}
 	try {
-		await LabelBucketHandler.initInfluxDB(adapter, influxStatics.influxName);
-		await BatteryBucketHandler.initInfluxDB(adapter, influxStatics.influxName);
+		// get InfluxName
+		const _influxName = await _getInfluxName(adapter);
+		_STATUS._isReady = 'ok';
+		await LabelBucketHandler.initInfluxDB(adapter, _influxName);
+		await BatteryBucketHandler.initInfluxDB(adapter, _influxName);
 	} catch (error) {
 		throw new Error(`something went wrong while establish the influxDB connection: ${error}`);
 	}
 };
 
+const _init = async (adapter: ioBroker.Adapter): Promise<void> => {
+	if (!adapter.config.InfluxDBHandlerAdapter_active) {
+		_STATUS._isReady = 'ok';
+		return;
+	}
+	try {
+		await _initInfluxDBTags(adapter);
+	} catch (error) {
+		_STATUS._isReady = 'nok';
+		adapter.log.error(`unknown error: ${error}`);
+	}
+};
+
+const checkInitReady = async (adapter: ioBroker.Adapter): Promise<void> => {
+	await checkInitReadyUtil.default(adapter, _STATUS, _init);
+};
+
+const init = async (adapter: ioBroker.Adapter): Promise<void> => {
+	await checkInitReady(adapter);
+};
+
+const testInfluxDBConnectionWithToken = async (
+	adapter: ioBroker.Adapter,
+	{ token: token }: Record<string, any>,
+): Promise<string | { error: string }> => {
+	await checkInitReady(adapter);
+	// create config object for influxDB Test call
+	const isAdapterConnected = await AdapterUtilsFunctions.isAdapterConnected(adapter, 'influxdb');
+	if (!isAdapterConnected) throw new Error('Influxdb adapter is not running correct');
+	const tmpConfig = {
+		...influxStatics.influxDBInstanceConfiguration,
+		...{
+			token: token,
+		},
+	};
+	const usedParams = ['port', 'host', 'dbversion', 'protocol', 'organization', 'dbname', 'token'];
+	const subset = Object.fromEntries(Object.entries(tmpConfig).filter(([key]) => usedParams.includes(key)));
+	const influxName = await _getInfluxName(adapter);
+
+	const testResult: ioBroker.Message | undefined = await adapter
+		.sendToAsync(influxName, 'test', { config: subset })
+		.catch((reason) => {
+			throw new Error(reason);
+		});
+
+	if ((testResult as any).error) {
+		throw (testResult as any).error;
+	}
+	return 'ok';
+};
+
+const createBucketIfNeeded = async (adapter: ioBroker.Adapter, name: string, description: string): Promise<void> => {
+	await checkInitReady(adapter);
+	const { id: orgID } = _getOrganization();
+	const temp = await influxStatics.bucketsAPI?.getBuckets({
+		orgID,
+	});
+	if (temp && temp.buckets && influxStatics.influxDBInstanceConfiguration) {
+		let tmpRetentionRules;
+		for (const bucket of temp.buckets) {
+			const influxDBOrgBucketName =
+				influxStatics.influxDBInstanceConfiguration.bucket ??
+				influxStatics.influxDBInstanceConfiguration.dbname;
+			if (bucket.name === influxDBOrgBucketName) {
+				tmpRetentionRules = bucket.retentionRules;
+			}
+			if (bucket.name === name) {
+				return;
+			}
+		}
+		const tmpBucket = await influxStatics.bucketsAPI?.postBuckets({
+			body: {
+				name: name,
+				description: description,
+				retentionRules: tmpRetentionRules ?? [],
+				orgID: orgID as string,
+			},
+		});
+		if (tmpBucket && tmpBucket.id) {
+			await _addAllLabelsToTheBucket(adapter, tmpBucket.id);
+		}
+	}
+};
+
+const deleteBucket = async (adapter: ioBroker.Adapter, bucketName: string): Promise<void> => {
+	await checkInitReady(adapter);
+	const { id: orgID } = _getOrganization();
+	const temp = await influxStatics.bucketsAPI?.getBuckets({
+		orgID,
+	});
+	if (temp && temp.buckets) {
+		for (const bucket of temp.buckets) {
+			if (bucket.name === bucketName && bucket.id) {
+				await influxStatics.bucketsAPI?.deleteBucketsID({ bucketID: bucket.id });
+			}
+		}
+	}
+};
+
+const getBucketWriteApi = async (adapter: ioBroker.Adapter, bucketName: string): Promise<WriteApi | undefined> => {
+	await checkInitReady(adapter);
+	if (!influxStatics.influxDBInstanceConfiguration || !influxStatics.influxDB) return undefined;
+	return influxStatics.influxDB.getWriteApi(influxStatics.influxDBInstanceConfiguration.organization, bucketName);
+};
+
 const getHealthStati = async (adapter: ioBroker.Adapter): Promise<T_AdapterStates> => {
+	await checkInitReady(adapter);
 	const singleAStates = await AdapterUtilsFunctions.getAdapterSingleStates(adapter, 'influxdb');
 	const returnValue = { ...singleAStates, ...{ adapterFullReady: false } };
 	try {
@@ -229,16 +263,19 @@ const getHealthStati = async (adapter: ioBroker.Adapter): Promise<T_AdapterState
 };
 
 const isHealth = async (adapter: ioBroker.Adapter): Promise<boolean> => {
+	await checkInitReady(adapter);
 	const returnValue = await getHealthStati(adapter);
 	return Object.values(returnValue).every((e) => e);
 };
 
-const rename = async (): Promise<string | { error: string }> => {
+const rename = async (adapter: ioBroker.Adapter): Promise<string | { error: string }> => {
+	await checkInitReady(adapter);
 	const returnValue = { error: `Rename not available for ${name}` };
 	return returnValue;
 };
 
 const refreshAllTagsOnInfluxDB = async (adapter: ioBroker.Adapter): Promise<string | { error: string }> => {
+	await checkInitReady(adapter);
 	try {
 		if (adapter.config.InfluxDBHandlerAdapter_active) {
 			await LabelBucketHandler.updateAll(adapter);
@@ -249,27 +286,26 @@ const refreshAllTagsOnInfluxDB = async (adapter: ioBroker.Adapter): Promise<stri
 	}
 };
 
-const init = async (adapter: ioBroker.Adapter): Promise<void> => {
-	await AdapterUtilsFunctions.checkIFStartable(adapter);
-	if (!adapter.config.InfluxDBHandlerAdapter_active) return;
-	try {
-		await _initInfluxDBTags(adapter);
-	} catch (error) {
-		adapter.log.error(`unknown error: ${error}`);
-	}
-};
-
-const InfluxDBHandlerAdapter: T_Rename_Adapter = {
+const InfluxDBHandlerAdapter: T_IOBAdapter_Handler & { influxDBExportFunc: { [x: string]: any } } = {
 	name: name,
 	init: init,
-	deleteBucket: deleteBucket,
-	createBucketIfNeeded: createBucketIfNeeded,
-	getBucketWriteApi: getBucketWriteApi,
-	getHealthStati: getHealthStati,
 	isHealth: isHealth,
-	rename: rename,
-	refreshAllTagsOnInfluxDB: refreshAllTagsOnInfluxDB,
-	testInfluxDBConnectionWithToken: testInfluxDBConnectionWithToken,
+
+	onMessageFunc: {
+		rename: rename,
+		refreshAllTagsOnInfluxDB: refreshAllTagsOnInfluxDB,
+		testInfluxDBConnectionWithToken: testInfluxDBConnectionWithToken,
+		getHealthStati: getHealthStati,
+	},
+
+	influxDBExportFunc: {
+		deleteBucket: deleteBucket,
+		createBucketIfNeeded: createBucketIfNeeded,
+		getBucketWriteApi: getBucketWriteApi,
+		writeBatteryPoints: BatteryBucketHandler.writePoints,
+		getHealthStati: getHealthStati,
+		checkInitReady: checkInitReady,
+	},
 };
 
 export default InfluxDBHandlerAdapter;

@@ -1,24 +1,30 @@
-import { Point, WriteApi } from '@influxdata/influxdb-client';
+import { Point } from '@influxdata/influxdb-client';
 import InfluxDBHandlerAdapter from '.';
 import InfluxDBPointsHelper from '../../utils/adapterUtils/InfluxDBPointsHelper';
+import { T_STATUS } from '../../utils/types/T_IOBAdapter_Handler';
 import { T_TAGS_TYPE } from '../../utils/types/T_TAGS_TYPE';
 
-let _writeApi: WriteApi | undefined;
-let _influxName: string;
+const _STATUS: T_STATUS = {
+	writeApi: undefined,
+	influxName: '',
+	_isReady: 'nok',
+	_name: 'BatteryBucketHandler',
+};
 
 const writePoints = async (
 	adapter: ioBroker.Adapter,
 	input: { tags: T_TAGS_TYPE; value: boolean | number | string }[],
 ): Promise<void> => {
+	await InfluxDBHandlerAdapter.influxDBExportFunc.checkInitReady(adapter);
 	if (!(await InfluxDBHandlerAdapter.isHealth(adapter))) return;
 	if (!adapter.config.InfluxDBHandlerAdapter_active) return;
 	const points: Point[] = [];
 	for (const { tags, value } of input) {
 		points.push(InfluxDBPointsHelper.createPointFromTags(tags, value));
 	}
-	_writeApi?.writePoints(points);
+	_STATUS.writeApi?.writePoints(points);
 	try {
-		await _writeApi?.flush();
+		await _STATUS.writeApi?.flush();
 		// await _writeApiBattery?.close();
 	} catch (error) {
 		console.error('WRITE FAILED', error);
@@ -27,18 +33,23 @@ const writePoints = async (
 };
 
 const initInfluxDB = async (adapter: ioBroker.Adapter, influxName: string): Promise<void> => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_influxName = influxName;
-	await InfluxDBHandlerAdapter.createBucketIfNeeded(
+	_STATUS._isReady = 'processing';
+	_STATUS.influxName = influxName;
+	await InfluxDBHandlerAdapter.influxDBExportFunc.createBucketIfNeeded(
 		adapter,
 		adapter.config.BatteryChecker_bucket,
 		'Created by Swissglider:TheHome Adapter for batteryStati Measurements',
 	);
-	_writeApi = await InfluxDBHandlerAdapter.getBucketWriteApi(adapter, adapter.config.BatteryChecker_bucket);
+	_STATUS.writeApi = await InfluxDBHandlerAdapter.influxDBExportFunc.getBucketWriteApi(
+		adapter,
+		adapter.config.BatteryChecker_bucket,
+	);
+	_STATUS._isReady = 'ok';
 };
 
 const deleteBucket = async (adapter: ioBroker.Adapter): Promise<void> => {
-	await InfluxDBHandlerAdapter.deleteBucket(adapter.config.BatteryChecker_bucket);
+	await InfluxDBHandlerAdapter.influxDBExportFunc.checkInitReady(adapter);
+	await InfluxDBHandlerAdapter.influxDBExportFunc.deleteBucket(adapter.config.BatteryChecker_bucket);
 };
 
 const BatteryBucketHandler = {

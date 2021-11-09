@@ -37,6 +37,7 @@ const hmipAdapter_1 = __importDefault(require("./renameAdapter/hmipAdapter"));
 const miNameAdapter_1 = __importDefault(require("./renameAdapter/miNameAdapter"));
 const netatmoAdapter_1 = __importDefault(require("./renameAdapter/netatmoAdapter"));
 const shellyAdapter_1 = __importDefault(require("./renameAdapter/shellyAdapter"));
+const sonoffAdapter_1 = __importDefault(require("./renameAdapter/sonoffAdapter"));
 const adapterUtilsFunctions_1 = __importDefault(require("./utils/adapterUtils/adapterUtilsFunctions"));
 const errMsgNoAdaptName = { error: 'no adapter mentioned' };
 const errMsgAdaptNotInit = { error: 'adapter not correct initialized' };
@@ -47,6 +48,13 @@ const renameAdapters = {
     [netatmoAdapter_1.default.name]: netatmoAdapter_1.default,
     [hmipAdapter_1.default.name]: hmipAdapter_1.default,
     [shellyAdapter_1.default.name]: shellyAdapter_1.default,
+    [sonoffAdapter_1.default.name]: sonoffAdapter_1.default,
+};
+const subAdapters = {
+    [configChangeListener_1.default.name]: configChangeListener_1.default,
+    [configAdapter_1.default.name]: configAdapter_1.default,
+    [batteryChecker_1.default.name]: batteryChecker_1.default,
+    [connectionChecker_1.default.name]: connectionChecker_1.default,
 };
 class Thehome extends utils.Adapter {
     constructor(options = {}) {
@@ -56,11 +64,13 @@ class Thehome extends utils.Adapter {
         });
         this.on('message', this.onMessage.bind(this));
         this.on('ready', this.onReady.bind(this));
-        configChangeListener_1.default.init(this);
-        configAdapter_1.default.init(this);
-        batteryChecker_1.default.init(this);
-        connectionChecker_1.default.init(this);
         this.on('unload', this.onUnload.bind(this));
+        // init all the subAdapters
+        for (const subAdapter of Object.values(subAdapters)) {
+            if (subAdapter.init) {
+                subAdapter.init(this);
+            }
+        }
     }
     /**
      * Is called when databases are connected and adapter received configuration.
@@ -139,6 +149,16 @@ class Thehome extends utils.Adapter {
                 this.sendTo(obj.from, obj.command, errMsgNoAdaptName, obj.callback);
             }
         };
+        const handleError = (error) => {
+            let errorMsg = '';
+            if (error.message) {
+                errorMsg = error.message;
+            }
+            else {
+                errorMsg = `${error}`;
+            }
+            this.sendTo(obj.from, obj.command, { error: errorMsg }, obj.callback);
+        };
         const msg = obj.message;
         if (typeof obj === 'object') {
             try {
@@ -169,20 +189,13 @@ class Thehome extends utils.Adapter {
                         if (typeof obj.message !== 'string' && 'adapterName' in obj.message) {
                             const adaptName = msg.adapterName;
                             const adpater = renameAdapters[adaptName];
-                            if (adpater && obj.command in adpater) {
+                            if (adpater && adpater.onMessageFunc && obj.command in adpater.onMessageFunc) {
                                 try {
-                                    const returnResult = await adpater[obj.command](this, msg);
+                                    const returnResult = await adpater.onMessageFunc[obj.command](this, msg);
                                     this.sendTo(obj.from, obj.command, returnResult, obj.callback);
                                 }
                                 catch (error) {
-                                    let errorMsg = '';
-                                    if (error.message) {
-                                        errorMsg = error.message;
-                                    }
-                                    else {
-                                        errorMsg = `${error}`;
-                                    }
-                                    this.sendTo(obj.from, obj.command, { error: errorMsg }, obj.callback);
+                                    handleError(error);
                                 }
                             }
                             else {

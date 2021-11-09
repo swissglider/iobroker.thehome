@@ -1,5 +1,5 @@
 import InfluxDBHandlerAdapter from '../../adapters/influxDBHandlerAdapter';
-import { T_RearangeDeviceAndStates_Props } from '../types/T_Rename_Adapter';
+import { T_RearangeDeviceAndStates_Props } from '../types/T_IOBAdapter_Handler';
 import EnumHandler from './enumHandler';
 import IOBrokerObjectHanlder_Name_Custom from './ioBrokerObjectHanlder_Name_Custom';
 
@@ -11,7 +11,7 @@ export const rearangeDeviceAndStates = async (
 ): Promise<string | { error: string }> => {
 	try {
 		// check if influxdb adapter is installed running connected and ready
-		const statiInfluxdb = await InfluxDBHandlerAdapter.getHealthStati(adapter);
+		const statiInfluxdb = await InfluxDBHandlerAdapter.influxDBExportFunc.getHealthStati(adapter);
 		if (Object.values(statiInfluxdb).some((e) => !e)) return { error: 'influxdb not fully running' };
 
 		// check if local adapter is installed running connected and ready
@@ -20,7 +20,7 @@ export const rearangeDeviceAndStates = async (
 
 		// rename
 		const rootLevelElemets = await rootLevelElementsCreator(adapter);
-		for (const { deviceType, room, additionalNames, rootObj } of rootLevelElemets) {
+		for (const { deviceType, room, additionalNames, rootObj, funcID2NameMap } of rootLevelElemets) {
 			// await rearangeDeviceAndStates(rootLevelElemen);
 			const elementInfos = { deviceType, room, additionalNames: additionalNames ?? [] };
 
@@ -41,7 +41,10 @@ export const rearangeDeviceAndStates = async (
 				) {
 					const func = configMapping[elementInfos.deviceType][obj_id_name].functionID;
 					const func_name = func.substr(func.lastIndexOf('.') + 1);
-					obj.common.name = newName + ' ' + func_name;
+					obj.common.name =
+						funcID2NameMap && funcID2NameMap[obj_id_name]
+							? funcID2NameMap[obj_id_name]
+							: newName + ' ' + func_name;
 					delete obj.enums;
 					await adapter.setForeignObjectAsync(obj._id, obj);
 					if (func) {

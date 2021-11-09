@@ -602,7 +602,7 @@
             },
             "Lichtschalter": {
                 "Switch": {
-                    "functionID": "enum.functions.Lichtschalter",
+                    "functionID": "enum.functions.LichtOnOff",
                     "toInfluxDB": false
                 },
                 "Energy": {
@@ -660,6 +660,40 @@
                 "Power": {
                     "functionID": "enum.functions.Leistung",
                     "toInfluxDB": true
+                }
+            }
+        },
+        "SonoffAdapter_deviceTypeFunctionMappings": {
+            "Switch": {
+                "POWER":{
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": false
+                },
+                "alive":{
+                    "functionID": "enum.functions.Verbunden",
+                    "toInfluxDB": false
+                }
+            },
+            "4CH": {
+                "POWER1":{
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": false
+                },
+                "POWER2":{
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": false
+                },
+                "POWER3":{
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": false
+                },
+                "POWER4":{
+                    "functionID": "enum.functions.Schalter",
+                    "toInfluxDB": false
+                },
+                "alive":{
+                    "functionID": "enum.functions.Verbunden",
+                    "toInfluxDB": false
                 }
             }
         }

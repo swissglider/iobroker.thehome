@@ -40,8 +40,8 @@ const singleStateConfigUpload = async (adapter, stateConfig) => {
     // = remove state from all function and room enum
     try {
         await Promise.all([
-            batteryChecker_1.default.stopBatteryChecker(),
-            connectionChecker_1.default.stopConnectionChecker(),
+            batteryChecker_1.default.exportFunc.stopBatteryChecker(),
+            connectionChecker_1.default.exportFunc.stopConnectionChecker(),
             enumHandler_1.default.removeStateFromAllRoomFunctionEnums(adapter, stateConfig.stateID),
         ]);
     }
@@ -67,7 +67,10 @@ const singleStateConfigUpload = async (adapter, stateConfig) => {
     // = new init BatteryChecker
     // = new init ConnectionChecker
     try {
-        await Promise.all([batteryChecker_1.default.initBatteryChecker(), connectionChecker_1.default.initConnectionChecker()]);
+        await Promise.all([
+            batteryChecker_1.default.exportFunc.initBatteryChecker(),
+            connectionChecker_1.default.exportFunc.initConnectionChecker(),
+        ]);
     }
     catch (error) {
         return `unknown error while init connection or battery checker: ${error}`;

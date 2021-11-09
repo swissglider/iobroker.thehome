@@ -29,7 +29,7 @@ const getAllStatesWithFunctionAndOrRoomEnumsAsStateInformation = async (adapter,
         const filteredObj = await enumHandler_1.default.getAllStatesWithFunctionAndOrRoomEnumsAsIoBObject(adapter, mandatoryEnums);
         const influxName = await adapterUtilsFunctions_1.default.getAdapterPath(adapter, 'influxdb');
         const stateInfos = filteredObj.map((obj) => getStateInfo(adapter, obj, influxName));
-        const changedNameObjIDs = configChangeListener_1.default.getObjectIDsWithChangedNames();
+        const changedNameObjIDs = configChangeListener_1.default.exportFunc.getObjectIDsWithChangedNames();
         const tmpAlreadyAddedStateIDs = stateInfos.map((e) => e.stateID);
         for (const objID of changedNameObjIDs) {
             if (!tmpAlreadyAddedStateIDs.includes(objID)) {

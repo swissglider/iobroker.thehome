@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) Sonoff Rename Adapter implemented (Basic, 4CH)
+
 ### 0.0.2-14 (2021-11-03)
 
 -   (swissglider) Shelly Rename Adapter implemented
