@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "thehome",
-        "version": "0.0.2-14",
+        "version": "0.0.2-15",
         "news": {
+            "0.0.2-15": {
+                "en": "Sonoff iobAdapterHandler implemented (Basic, 4CH)\nJeeLink iobAdapterHandler implemented (not yet testet)\nHue iobAdapterHandler implemented",
+                "de": "Sonoff iobAdapterHandler implementiert (Basic, 4CH)\nJeeLink iobAdapterHandler implementiert (noch nicht getestet)\nHue iobAdapterHandler implementiert",
+                "ru": "Реализован Sonoff iobAdapterHandler (Basic, 4CH)\nJeeLink iobAdapterHandler реализован (пока не тестируется)\nРеализован Hue iobAdapterHandler",
+                "pt": "Sonoff iobAdapterHandler implementado (Basic, 4CH)\nJeeLink iobAdapterHandler implementado (ainda não testado)\nHue iobAdapterHandler implementado",
+                "nl": "Sonoff iobAdapterHandler geïmplementeerd (Basic, 4CH)\nJeeLink iobAdapterHandler geïmplementeerd (nog niet getest)\nHue iobAdapterHandler geïmplementeerd",
+                "fr": "Sonoff iobAdapterHandler implémenté (Basic, 4CH)\nJeeLink iobAdapterHandler implémenté (pas encore testé)\nHue iobAdapterHandler implémenté",
+                "it": "Sonoff iobAdapterHandler implementato (Basic, 4CH)\nJeeLink iobAdapterHandler implementato (non ancora testato)\nHue iobAdapterHandler implementato",
+                "es": "Sonoff iobAdapterHandler implementado (Basic, 4CH)\nJeeLink iobAdapterHandler implementado (aún no probado)\nHue iobAdapterHandler implementado",
+                "pl": "Zaimplementowano Sonoff iobAdapterHandler (Basic, 4CH)\nZaimplementowano JeeLink iobAdapterHandler (jeszcze nie testet)\nZaimplementowano Hue iobAdapterHandler",
+                "zh-cn": "Sonoff iobAdapterHandler 已实现（基本，4CH）\nJeeLink iobAdapterHandler 已实现（尚未测试）\nHue iobAdapterHandler 实现"
+            },
             "0.0.2-14": {
                 "en": "Shelly Rename Adapter implemented",
                 "de": "Shelly Rename Adapter implementiert",
@@ -413,10 +425,10 @@
                 "dual_channel": {
                     "functionID": "enum.functions.Schalter"
                 },
-                "on":{
+                "on": {
                     "functionID": "enum.functions.Schalter"
                 },
-                "buttonevent":{
+                "buttonevent": {
                     "functionID": "enum.functions.ButtonEventHue"
                 }
             },
@@ -622,226 +634,226 @@
                 }
             },
             "Switch": {
-                "POWER":{
+                "POWER": {
                     "functionID": "enum.functions.Relais"
                 },
-                "alive":{
+                "alive": {
                     "functionID": "enum.functions.Verbunden"
                 }
             },
             "4CH": {
-                "POWER1":{
+                "POWER1": {
                     "functionID": "enum.functions.Relais"
                 },
-                "POWER2":{
+                "POWER2": {
                     "functionID": "enum.functions.Relais"
                 },
-                "POWER3":{
+                "POWER3": {
                     "functionID": "enum.functions.Relais"
                 },
-                "POWER4":{
+                "POWER4": {
                     "functionID": "enum.functions.Relais"
                 },
-                "alive":{
+                "alive": {
                     "functionID": "enum.functions.Verbunden"
                 }
             },
             "Aktualles_Wetter": {
-                "UV":{
+                "UV": {
                     "functionID": "enum.functions.UV",
                     "toInfluxDB": true
                 },
-                "dewPoint":{
+                "dewPoint": {
                     "functionID": "enum.functions.Taupunkt",
                     "toInfluxDB": true
                 },
-                "feelsLike":{
+                "feelsLike": {
                     "functionID": "enum.functions.GefühlteTemperatur",
                     "toInfluxDB": true
                 },
-                "precipitationDay":{
+                "precipitationDay": {
                     "functionID": "enum.functions.NiederschlagProTag",
                     "toInfluxDB": true
                 },
-                "precipitationHour":{
+                "precipitationHour": {
                     "functionID": "enum.functions.NiederschlagProStund",
                     "toInfluxDB": true
                 },
-                "pressure":{
+                "pressure": {
                     "functionID": "enum.functions.Luftdruck",
                     "toInfluxDB": true
                 },
-                "relativeHumidity":{
+                "relativeHumidity": {
                     "functionID": "enum.functions.Luftfeuchtigkeit",
                     "toInfluxDB": true
                 },
-                "solarRadiation":{
+                "solarRadiation": {
                     "functionID": "enum.functions.Sonnenstrahlung",
                     "toInfluxDB": true
                 },
-                "temp":{
+                "temp": {
                     "functionID": "enum.functions.Temperatur",
                     "toInfluxDB": true
                 },
-                "windChill":{
+                "windChill": {
                     "functionID": "enum.functions.WindChill",
                     "toInfluxDB": true
                 },
-                "wind":{
+                "wind": {
                     "functionID": "enum.functions.Wind",
                     "toInfluxDB": true
                 },
-                "windDegrees":{
+                "windDegrees": {
                     "functionID": "enum.functions.WindRichtung",
                     "toInfluxDB": true
                 },
-                "windGust":{
+                "windGust": {
                     "functionID": "enum.functions.WindSpitze",
                     "toInfluxDB": true
                 },
-                "clouds_value":{
+                "clouds_value": {
                     "functionID": "enum.functions.Bedeckt",
                     "toInfluxDB": true
                 },
-                "humidity_value":{
+                "humidity_value": {
                     "functionID": "enum.functions.Luftfeuchtigkeit",
                     "toInfluxDB": true
                 },
-                "pressure_value":{
+                "pressure_value": {
                     "functionID": "enum.functions.Luftdruck",
                     "toInfluxDB": true
                 },
-                "rain_value":{
+                "rain_value": {
                     "functionID": "enum.functions.NiederschlagProStund",
                     "toInfluxDB": true
                 },
-                "snowline_value":{
+                "snowline_value": {
                     "functionID": "enum.functions.Schnefall",
                     "toInfluxDB": true
                 },
-                "temp_value":{
+                "temp_value": {
                     "functionID": "enum.functions.Temperatur",
                     "toInfluxDB": true
                 },
-                "windchill_value":{
+                "windchill_value": {
                     "functionID": "enum.functions.WindChill",
                     "toInfluxDB": true
                 },
-                "windgusts_value":{
+                "windgusts_value": {
                     "functionID": "enum.functions.WindSpitze",
                     "toInfluxDB": true
                 },
-                "wind_value":{
+                "wind_value": {
                     "functionID": "enum.functions.Wind",
                     "toInfluxDB": true
                 }
             },
             "ForecastNächsteStunde_Wetter": {
-                "feelsLike":{
+                "feelsLike": {
                     "functionID": "enum.functions.GefühlteTemperatur",
                     "toInfluxDB": true
                 },
-                "humidity":{
+                "humidity": {
                     "functionID": "enum.functions.Luftfeuchtigkeit",
                     "toInfluxDB": true
                 },
-                "mslp":{
+                "mslp": {
                     "functionID": "enum.functions.Luftdruck",
                     "toInfluxDB": true
                 },
-                "precipitation":{
+                "precipitation": {
                     "functionID": "enum.functions.NiederschlagProStund",
                     "toInfluxDB": true
                 },
-                "precipitationChance":{
+                "precipitationChance": {
                     "functionID": "enum.functions.NiederschlagWahrscheinlichkeit",
                     "toInfluxDB": true
                 },
-                "sky":{
+                "sky": {
                     "functionID": "enum.functions.Bedeckt",
                     "toInfluxDB": true
                 },
-                "snow":{
+                "snow": {
                     "functionID": "enum.functions.Schnefall",
                     "toInfluxDB": true
                 },
-                "temp":{
+                "temp": {
                     "functionID": "enum.functions.Temperatur",
                     "toInfluxDB": true
                 },
-                "uv":{
+                "uv": {
                     "functionID": "enum.functions.UV",
                     "toInfluxDB": true
                 },
-                "windDirection":{
+                "windDirection": {
                     "functionID": "enum.functions.WindRichtung",
                     "toInfluxDB": true
                 },
-                "windSpeed":{
+                "windSpeed": {
                     "functionID": "enum.functions.Wind",
                     "toInfluxDB": true
                 },
-                "visibility":{
+                "visibility": {
                     "functionID": "enum.functions.Sicht",
                     "toInfluxDB": true
                 },
-                "PROBPCP_PERCENT":{
+                "PROBPCP_PERCENT": {
                     "functionID": "enum.functions.NiederschlagWahrscheinlichkeit",
                     "toInfluxDB": true
                 },
-                "DD_DEG":{
+                "DD_DEG": {
                     "functionID": "enum.functions.WindRichtung",
                     "toInfluxDB": true
                 },
-                "FF_KMH":{
+                "FF_KMH": {
                     "functionID": "enum.functions.Wind",
                     "toInfluxDB": true
                 },
-                "FX_KMH":{
+                "FX_KMH": {
                     "functionID": "enum.functions.WindSpitze",
                     "toInfluxDB": true
                 },
-                "RRR_MM":{
+                "RRR_MM": {
                     "functionID": "enum.functions.NiederschlagProStund",
                     "toInfluxDB": true
                 },
-                "TTT_C":{
+                "TTT_C": {
                     "functionID": "enum.functions.Temperatur",
                     "toInfluxDB": true
                 },
-                "clouds_value":{
+                "clouds_value": {
                     "functionID": "enum.functions.Bedeckt",
                     "toInfluxDB": true
                 },
-                "humidity_value":{
+                "humidity_value": {
                     "functionID": "enum.functions.Luftfeuchtigkeit",
                     "toInfluxDB": true
                 },
-                "pressure_value":{
+                "pressure_value": {
                     "functionID": "enum.functions.Luftdruck",
                     "toInfluxDB": true
                 },
-                "rain_value":{
+                "rain_value": {
                     "functionID": "enum.functions.NiederschlagProStund",
                     "toInfluxDB": true
                 },
-                "snowline_value":{
+                "snowline_value": {
                     "functionID": "enum.functions.Schnefall",
                     "toInfluxDB": true
                 },
-                "temp_value":{
+                "temp_value": {
                     "functionID": "enum.functions.Temperatur",
                     "toInfluxDB": true
                 },
-                "windchill_value":{
+                "windchill_value": {
                     "functionID": "enum.functions.WindChill",
                     "toInfluxDB": true
                 },
-                "windgusts_value":{
+                "windgusts_value": {
                     "functionID": "enum.functions.WindSpitze",
                     "toInfluxDB": true
                 },
-                "wind_value":{
+                "wind_value": {
                     "functionID": "enum.functions.Wind",
                     "toInfluxDB": true
                 }

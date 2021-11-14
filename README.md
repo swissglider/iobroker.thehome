@@ -106,7 +106,7 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
-### **WORK IN PROGRESS**
+### 0.0.2-15 (2021-11-14)
 
 -   (swissglider) Sonoff iobAdapterHandler implemented (Basic, 4CH)
 -   (swissglider) JeeLink iobAdapterHandler implemented (not yet testet)
