@@ -313,7 +313,9 @@
         "MiNameAdapter_login": "--",
         "MiNameAdapter_password": "--",
         "MiNameAdapter_defaultCountry": "cn",
-        "MiNameAdapter_deviceTypeFunctionMappings": {
+        "WeatherundergroundAdapter_lastObeserveTimeSinceMinutes": 30,
+        "DasWetterAdapter_lastObeserveTimeSinceMinutes": 30,
+        "DeviceTypeFunctionMappings": {
             "Tor": {
                 "on": {
                     "functionID": "enum.functions.Schalter"
@@ -326,6 +328,9 @@
                 },
                 "connected": {
                     "functionID": "enum.functions.Verbunden"
+                },
+                "unreach": {
+                    "functionID": "enum.functions.Unerreichbar"
                 }
             },
             "Steckdose": {
@@ -338,16 +343,36 @@
                 },
                 "power_consumed": {
                     "functionID": "enum.functions.Energie"
+                },
+                "energyCounter": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                },
+                "on": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "currentPowerConsumption": {
+                    "functionID": "enum.functions.AktuelleLeistung",
+                    "toInfluxDB": true
+                },
+                "Switch": {
+                    "functionID": "enum.functions.Schalter"
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie"
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
                 }
             },
             "Bewegung": {
                 "lux": {
-                    "functionID": "enum.functions.Helligkeit",
+                    "functionID": "enum.functions.Beleuchtungsstärke",
                     "toInfluxDB": true
                 },
                 "percent": {
-                    "functionID": "enum.functions.BatterieStatus",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.BatterieStatus"
                 },
                 "motion": {
                     "functionID": "enum.functions.Bewegung",
@@ -387,6 +412,12 @@
                 },
                 "dual_channel": {
                     "functionID": "enum.functions.Schalter"
+                },
+                "on":{
+                    "functionID": "enum.functions.Schalter"
+                },
+                "buttonevent":{
+                    "functionID": "enum.functions.ButtonEventHue"
                 }
             },
             "Wetter": {
@@ -406,6 +437,78 @@
                 },
                 "temperature": {
                     "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "Humidity": {
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "Temperature": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "DewPoint": {
+                    "functionID": "enum.functions.Taupunkt",
+                    "toInfluxDB": true
+                },
+                "BatteryStatus": {
+                    "functionID": "enum.functions.BatterieStatus"
+                },
+                "CO2": {
+                    "functionID": "enum.functions.CO2",
+                    "toInfluxDB": true
+                },
+                "Noise": {
+                    "functionID": "enum.functions.Lärmpegel",
+                    "toInfluxDB": true
+                },
+                "Pressure": {
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                },
+                "lowBat": {
+                    "functionID": "enum.functions.NiedrigeBatterie"
+                },
+                "unreach": {
+                    "functionID": "enum.functions.Unerreichbar"
+                },
+                "setPointTemperature": {
+                    "functionID": "enum.functions.GesetzteTemperatur"
+                },
+                "actualTemperature": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "vaporAmount": {
+                    "functionID": "enum.functions.Dampfgehalt",
+                    "toInfluxDB": true
+                },
+                "dewpoint": {
+                    "functionID": "enum.functions.Taupunkt",
+                    "toInfluxDB": true
+                },
+                "humid": {
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "lowBatt": {
+                    "functionID": "enum.functions.NiedrigeBatterie",
+                    "toInfluxDB": true
+                },
+                "temp": {
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "rain": {
+                    "functionID": "enum.functions.NiederschlagTotal",
+                    "toInfluxDB": true
+                },
+                "wdir": {
+                    "functionID": "enum.functions.WindRichtung",
+                    "toInfluxDB": true
+                },
+                "wspeed2": {
+                    "functionID": "enum.functions.Wind",
                     "toInfluxDB": true
                 }
             },
@@ -435,55 +538,13 @@
                     "functionID": "enum.functions.Türe",
                     "toInfluxDB": true
                 }
-            }
-        },
-        "NetatmoAdapter_deviceTypeFunctionMappings": {
-            "Wetter": {
-                "Humidity": {
-                    "functionID": "enum.functions.Luftfeuchtigkeit",
-                    "toInfluxDB": true
-                },
-                "Temperature": {
-                    "functionID": "enum.functions.Temperatur",
-                    "toInfluxDB": true
-                },
-                "DewPoint": {
-                    "functionID": "enum.functions.Taupunkt",
-                    "toInfluxDB": true
-                },
-                "BatteryStatus": {
-                    "functionID": "enum.functions.BatterieStatus",
-                    "toInfluxDB": true
-                },
-                "CO2": {
-                    "functionID": "enum.functions.CO2",
-                    "toInfluxDB": true
-                },
-                "Noise": {
-                    "functionID": "enum.functions.Lärmpegel",
-                    "toInfluxDB": true
-                },
-                "Pressure": {
-                    "functionID": "enum.functions.Luftdruck",
-                    "toInfluxDB": true
-                }
-            }
-        },
-        "HMIPAdapter_deviceTypeFunctionMappings": {
-            "Tor": {
-                "unreach": {
-                    "functionID": "enum.functions.Unerreichbar",
-                    "toInfluxDB": false
-                }
             },
             "Heizung": {
                 "lowBat": {
-                    "functionID": "enum.functions.NiedrigeBatterie",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.NiedrigeBatterie"
                 },
                 "unreach": {
-                    "functionID": "enum.functions.Unerreichbar",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Unerreichbar"
                 },
                 "valveActualTemperature": {
                     "functionID": "enum.functions.Temperatur",
@@ -492,122 +553,41 @@
             },
             "Rauchwarnmelder": {
                 "lowBat": {
-                    "functionID": "enum.functions.NiedrigeBatterie",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.NiedrigeBatterie"
                 },
                 "unreach": {
-                    "functionID": "enum.functions.Unerreichbar",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Unerreichbar"
                 }
             },
-            "Wetter": {
-                "lowBat": {
-                    "functionID": "enum.functions.NiedrigeBatterie",
-                    "toInfluxDB": false
-                },
-                "unreach": {
-                    "functionID": "enum.functions.Unerreichbar",
-                    "toInfluxDB": false
-                },
-                "humidity": {
-                    "functionID": "enum.functions.Luftfeuchtigkeit",
-                    "toInfluxDB": true
-                },
-                "setPointTemperature": {
-                    "functionID": "enum.functions.GesetzteTemperatur",
-                    "toInfluxDB": false
-                },
-                "actualTemperature": {
-                    "functionID": "enum.functions.Temperatur",
-                    "toInfluxDB": true
-                },
-                "vaporAmount": {
-                    "functionID": "enum.functions.Dampfgehalt",
-                    "toInfluxDB": true
-                }
-            },
-            "Steckdose": {
-                "energyCounter": {
-                    "functionID": "enum.functions.Leistung",
-                    "toInfluxDB": true
-                },
-                "on": {
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
-                },
-                "hmip.0.devices.3014F711A000101BE9935D00.channels.1.currentPowerConsumption": {
-                    "functionID": "enum.functions.AktuelleLeistung",
-                    "toInfluxDB": true
-                }
-            }
-        },
-        "ShellyAdapter_deviceTypeFunctionMappings": {
             "Shelly": {
                 "firmware": {
-                    "functionID": "enum.functions.FirmwareUpdate",
-                    "toInfluxDB": true
+                    "functionID": "enum.functions.FirmwareUpdate"
                 },
                 "online": {
-                    "functionID": "enum.functions.Verbunden",
-                    "toInfluxDB": true
+                    "functionID": "enum.functions.Verbunden"
                 }
             },
             "Storen": {
                 "ButtonType": {
-                    "functionID": "enum.functions.StorenCommand",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenCommand"
                 },
                 "state": {
-                    "functionID": "enum.functions.StorenState",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenState"
                 },
                 "Close": {
-                    "functionID": "enum.functions.StorenClose",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenClose"
                 },
                 "Open": {
-                    "functionID": "enum.functions.StorenOpen",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenOpen"
                 },
                 "Pause": {
-                    "functionID": "enum.functions.StorenPause",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenPause"
                 },
                 "Position": {
-                    "functionID": "enum.functions.StorenPosition",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenPosition"
                 },
                 "Energy": {
-                    "functionID": "enum.functions.Energie",
-                    "toInfluxDB": false
-                },
-                "Power": {
-                    "functionID": "enum.functions.Leistung",
-                    "toInfluxDB": true
-                }
-            },
-            "Wandschalter": {
-                "Switch": {
-                    "functionID": "enum.functions.Wandschalter",
-                    "toInfluxDB": false
-                },
-                "Energy": {
-                    "functionID": "enum.functions.Energie",
-                    "toInfluxDB": false
-                },
-                "Power": {
-                    "functionID": "enum.functions.Leistung",
-                    "toInfluxDB": true
-                }
-            },
-            "Lichtschalter": {
-                "Switch": {
-                    "functionID": "enum.functions.LichtOnOff",
-                    "toInfluxDB": false
-                },
-                "Energy": {
-                    "functionID": "enum.functions.Energie",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Energie"
                 },
                 "Power": {
                     "functionID": "enum.functions.Leistung",
@@ -616,84 +596,475 @@
             },
             "Sonnenstoren": {
                 "ButtonType": {
-                    "functionID": "enum.functions.StorenCommand",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenCommand"
                 },
                 "state": {
-                    "functionID": "enum.functions.StorenState",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenState"
                 },
                 "Close": {
-                    "functionID": "enum.functions.StorenClose",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenClose"
                 },
                 "Open": {
-                    "functionID": "enum.functions.StorenOpen",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenOpen"
                 },
                 "Pause": {
-                    "functionID": "enum.functions.StorenPause",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenPause"
                 },
                 "Position": {
-                    "functionID": "enum.functions.StorenPosition",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.StorenPosition"
                 },
                 "Energy": {
-                    "functionID": "enum.functions.Energie",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Energie"
                 },
                 "Power": {
                     "functionID": "enum.functions.Leistung",
                     "toInfluxDB": true
                 }
             },
-            "Steckdose": {
-                "Switch": {
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
-                },
-                "Energy": {
-                    "functionID": "enum.functions.Energie",
-                    "toInfluxDB": false
-                },
-                "Power": {
-                    "functionID": "enum.functions.Leistung",
-                    "toInfluxDB": true
-                }
-            }
-        },
-        "SonoffAdapter_deviceTypeFunctionMappings": {
             "Switch": {
                 "POWER":{
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Relais"
                 },
                 "alive":{
-                    "functionID": "enum.functions.Verbunden",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Verbunden"
                 }
             },
             "4CH": {
                 "POWER1":{
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Relais"
                 },
                 "POWER2":{
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Relais"
                 },
                 "POWER3":{
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Relais"
                 },
                 "POWER4":{
-                    "functionID": "enum.functions.Schalter",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Relais"
                 },
                 "alive":{
-                    "functionID": "enum.functions.Verbunden",
-                    "toInfluxDB": false
+                    "functionID": "enum.functions.Verbunden"
+                }
+            },
+            "Aktualles_Wetter": {
+                "UV":{
+                    "functionID": "enum.functions.UV",
+                    "toInfluxDB": true
+                },
+                "dewPoint":{
+                    "functionID": "enum.functions.Taupunkt",
+                    "toInfluxDB": true
+                },
+                "feelsLike":{
+                    "functionID": "enum.functions.GefühlteTemperatur",
+                    "toInfluxDB": true
+                },
+                "precipitationDay":{
+                    "functionID": "enum.functions.NiederschlagProTag",
+                    "toInfluxDB": true
+                },
+                "precipitationHour":{
+                    "functionID": "enum.functions.NiederschlagProStund",
+                    "toInfluxDB": true
+                },
+                "pressure":{
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                },
+                "relativeHumidity":{
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "solarRadiation":{
+                    "functionID": "enum.functions.Sonnenstrahlung",
+                    "toInfluxDB": true
+                },
+                "temp":{
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "windChill":{
+                    "functionID": "enum.functions.WindChill",
+                    "toInfluxDB": true
+                },
+                "wind":{
+                    "functionID": "enum.functions.Wind",
+                    "toInfluxDB": true
+                },
+                "windDegrees":{
+                    "functionID": "enum.functions.WindRichtung",
+                    "toInfluxDB": true
+                },
+                "windGust":{
+                    "functionID": "enum.functions.WindSpitze",
+                    "toInfluxDB": true
+                },
+                "clouds_value":{
+                    "functionID": "enum.functions.Bedeckt",
+                    "toInfluxDB": true
+                },
+                "humidity_value":{
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "pressure_value":{
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                },
+                "rain_value":{
+                    "functionID": "enum.functions.NiederschlagProStund",
+                    "toInfluxDB": true
+                },
+                "snowline_value":{
+                    "functionID": "enum.functions.Schnefall",
+                    "toInfluxDB": true
+                },
+                "temp_value":{
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "windchill_value":{
+                    "functionID": "enum.functions.WindChill",
+                    "toInfluxDB": true
+                },
+                "windgusts_value":{
+                    "functionID": "enum.functions.WindSpitze",
+                    "toInfluxDB": true
+                },
+                "wind_value":{
+                    "functionID": "enum.functions.Wind",
+                    "toInfluxDB": true
+                }
+            },
+            "ForecastNächsteStunde_Wetter": {
+                "feelsLike":{
+                    "functionID": "enum.functions.GefühlteTemperatur",
+                    "toInfluxDB": true
+                },
+                "humidity":{
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "mslp":{
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                },
+                "precipitation":{
+                    "functionID": "enum.functions.NiederschlagProStund",
+                    "toInfluxDB": true
+                },
+                "precipitationChance":{
+                    "functionID": "enum.functions.NiederschlagWahrscheinlichkeit",
+                    "toInfluxDB": true
+                },
+                "sky":{
+                    "functionID": "enum.functions.Bedeckt",
+                    "toInfluxDB": true
+                },
+                "snow":{
+                    "functionID": "enum.functions.Schnefall",
+                    "toInfluxDB": true
+                },
+                "temp":{
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "uv":{
+                    "functionID": "enum.functions.UV",
+                    "toInfluxDB": true
+                },
+                "windDirection":{
+                    "functionID": "enum.functions.WindRichtung",
+                    "toInfluxDB": true
+                },
+                "windSpeed":{
+                    "functionID": "enum.functions.Wind",
+                    "toInfluxDB": true
+                },
+                "visibility":{
+                    "functionID": "enum.functions.Sicht",
+                    "toInfluxDB": true
+                },
+                "PROBPCP_PERCENT":{
+                    "functionID": "enum.functions.NiederschlagWahrscheinlichkeit",
+                    "toInfluxDB": true
+                },
+                "DD_DEG":{
+                    "functionID": "enum.functions.WindRichtung",
+                    "toInfluxDB": true
+                },
+                "FF_KMH":{
+                    "functionID": "enum.functions.Wind",
+                    "toInfluxDB": true
+                },
+                "FX_KMH":{
+                    "functionID": "enum.functions.WindSpitze",
+                    "toInfluxDB": true
+                },
+                "RRR_MM":{
+                    "functionID": "enum.functions.NiederschlagProStund",
+                    "toInfluxDB": true
+                },
+                "TTT_C":{
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "clouds_value":{
+                    "functionID": "enum.functions.Bedeckt",
+                    "toInfluxDB": true
+                },
+                "humidity_value":{
+                    "functionID": "enum.functions.Luftfeuchtigkeit",
+                    "toInfluxDB": true
+                },
+                "pressure_value":{
+                    "functionID": "enum.functions.Luftdruck",
+                    "toInfluxDB": true
+                },
+                "rain_value":{
+                    "functionID": "enum.functions.NiederschlagProStund",
+                    "toInfluxDB": true
+                },
+                "snowline_value":{
+                    "functionID": "enum.functions.Schnefall",
+                    "toInfluxDB": true
+                },
+                "temp_value":{
+                    "functionID": "enum.functions.Temperatur",
+                    "toInfluxDB": true
+                },
+                "windchill_value":{
+                    "functionID": "enum.functions.WindChill",
+                    "toInfluxDB": true
+                },
+                "windgusts_value":{
+                    "functionID": "enum.functions.WindSpitze",
+                    "toInfluxDB": true
+                },
+                "wind_value":{
+                    "functionID": "enum.functions.Wind",
+                    "toInfluxDB": true
+                }
+            },
+            "Wandschalter": {
+                "Switch": {
+                    "functionID": "enum.functions.Wandschalter"
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie"
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                }
+            },
+            "Lichtschalter": {
+                "Switch": {
+                    "functionID": "enum.functions.LichtOnOff"
+                },
+                "Energy": {
+                    "functionID": "enum.functions.Energie"
+                },
+                "Power": {
+                    "functionID": "enum.functions.Leistung",
+                    "toInfluxDB": true
+                }
+            },
+            "Lampe_Color": {
+                "reachable": {
+                    "functionID": "enum.functions.Verbunden"
+                },
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                },
+                "bri": {
+                    "functionID": "enum.functions.Helligkeit"
+                },
+                "level": {
+                    "functionID": "enum.functions.Dimmer"
+                },
+                "colormode": {
+                    "functionID": "enum.functions.FarbModus"
+                },
+                "r": {
+                    "functionID": "enum.functions.FarbeRot"
+                },
+                "g": {
+                    "functionID": "enum.functions.FarbeGrün"
+                },
+                "b": {
+                    "functionID": "enum.functions.FarbeBlau"
+                },
+                "ct": {
+                    "functionID": "enum.functions.FarbTemperatur"
+                },
+                "xy": {
+                    "functionID": "enum.functions.FarbXY"
+                },
+                "hue": {
+                    "functionID": "enum.functions.Hue"
+                },
+                "sat": {
+                    "functionID": "enum.functions.FarbSättigung"
+                }
+            },
+            "Lampe_Dimmer": {
+                "reachable": {
+                    "functionID": "enum.functions.Verbunden"
+                },
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                },
+                "bri": {
+                    "functionID": "enum.functions.Helligkeit"
+                },
+                "level": {
+                    "functionID": "enum.functions.Dimmer"
+                }
+            },
+            "Lampe_Switch": {
+                "reachable": {
+                    "functionID": "enum.functions.Verbunden"
+                },
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                }
+            },
+            "RelaisSchalter": {
+                "reachable": {
+                    "functionID": "enum.functions.Verbunden"
+                },
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                }
+            },
+            "Zimmer": {
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                },
+                "allOn": {
+                    "functionID": "enum.functions.AlleLichterAn"
+                },
+                "anyOn": {
+                    "functionID": "enum.functions.EinigeLichterAn"
+                },
+                "bri": {
+                    "functionID": "enum.functions.Helligkeit"
+                },
+                "level": {
+                    "functionID": "enum.functions.Dimmer"
+                },
+                "colormode": {
+                    "functionID": "enum.functions.FarbModus"
+                },
+                "r": {
+                    "functionID": "enum.functions.FarbeRot"
+                },
+                "g": {
+                    "functionID": "enum.functions.FarbeGrün"
+                },
+                "b": {
+                    "functionID": "enum.functions.FarbeBlau"
+                },
+                "ct": {
+                    "functionID": "enum.functions.FarbTemperatur"
+                },
+                "xy": {
+                    "functionID": "enum.functions.FarbXY"
+                },
+                "hue": {
+                    "functionID": "enum.functions.Hue"
+                },
+                "sat": {
+                    "functionID": "enum.functions.FarbSättigung"
+                },
+                "scene_*": {
+                    "functionID": "enum.functions.Szene"
+                }
+            },
+            "Zone": {
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                },
+                "allOn": {
+                    "functionID": "enum.functions.AlleLichterAn"
+                },
+                "anyOn": {
+                    "functionID": "enum.functions.EinigeLichterAn"
+                },
+                "bri": {
+                    "functionID": "enum.functions.Helligkeit"
+                },
+                "level": {
+                    "functionID": "enum.functions.Dimmer"
+                },
+                "colormode": {
+                    "functionID": "enum.functions.FarbModus"
+                },
+                "r": {
+                    "functionID": "enum.functions.FarbeRot"
+                },
+                "g": {
+                    "functionID": "enum.functions.FarbeGrün"
+                },
+                "b": {
+                    "functionID": "enum.functions.FarbeBlau"
+                },
+                "ct": {
+                    "functionID": "enum.functions.FarbTemperatur"
+                },
+                "xy": {
+                    "functionID": "enum.functions.FarbXY"
+                },
+                "hue": {
+                    "functionID": "enum.functions.Hue"
+                },
+                "sat": {
+                    "functionID": "enum.functions.FarbSättigung"
+                },
+                "scene_*": {
+                    "functionID": "enum.functions.Szene"
+                }
+            },
+            "All": {
+                "on": {
+                    "functionID": "enum.functions.LichtOnOff"
+                },
+                "allOn": {
+                    "functionID": "enum.functions.AlleLichterAn"
+                },
+                "anyOn": {
+                    "functionID": "enum.functions.EinigeLichterAn"
+                },
+                "bri": {
+                    "functionID": "enum.functions.Helligkeit"
+                },
+                "level": {
+                    "functionID": "enum.functions.Dimmer"
+                },
+                "colormode": {
+                    "functionID": "enum.functions.FarbModus"
+                },
+                "r": {
+                    "functionID": "enum.functions.FarbeRot"
+                },
+                "g": {
+                    "functionID": "enum.functions.FarbeGrün"
+                },
+                "b": {
+                    "functionID": "enum.functions.FarbeBlau"
+                },
+                "ct": {
+                    "functionID": "enum.functions.FarbTemperatur"
+                },
+                "xy": {
+                    "functionID": "enum.functions.FarbXY"
+                },
+                "hue": {
+                    "functionID": "enum.functions.Hue"
+                },
+                "sat": {
+                    "functionID": "enum.functions.FarbSättigung"
                 }
             }
         }

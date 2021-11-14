@@ -22,7 +22,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const influxDBHandlerAdapter_1 = __importDefault(require("../../adapters/influxDBHandlerAdapter"));
+const influxDBHandlerAdapter_1 = __importDefault(require("../../iobAdapterHandler/influxDBHandlerAdapter"));
 const checkerTimer_1 = __importDefault(require("../../utils/adapterUtils/checkerTimer"));
 const checkInitReadyUtil = __importStar(require("../../utils/adapterUtils/checkInitReady"));
 const InfluxDBPointsHelper_1 = __importDefault(require("../../utils/adapterUtils/InfluxDBPointsHelper"));

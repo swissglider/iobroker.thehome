@@ -1,5 +1,5 @@
 import { Point } from '@influxdata/influxdb-client';
-import InfluxDBHandlerAdapter from '../../adapters/influxDBHandlerAdapter';
+import InfluxDBHandlerAdapter from '../../iobAdapterHandler/influxDBHandlerAdapter';
 import { T_Object_Parent_Names } from '../types/T_Object_Parent_Names';
 import { T_TAGS_TYPE } from '../types/T_TAGS_TYPE';
 import NameHelper from './nameHelper';
@@ -10,7 +10,9 @@ const createTagType = async (adapter: ioBroker.Adapter, obj: ioBroker.Object): P
 	const parentNames: T_Object_Parent_Names = await NameHelper.getObjectParentNames(adapter, obj._id);
 	const tags: T_TAGS_TYPE = {
 		id: obj._id,
-		name: NameHelper.getName(obj.common?.name ?? '', adapter.systemConfig?.language ?? 'de'),
+		name: obj.native?.swissglider?.stateName
+			? obj.native.swissglider.stateName
+			: NameHelper.getName(obj.common?.name ?? '', adapter.systemConfig?.language ?? 'de'),
 		channelName: parentNames.channelName ?? '-',
 		deviceName: parentNames.deviceName ?? '-',
 		adapterName: parentNames.adapterName,

@@ -1,4 +1,4 @@
-import InfluxDBHandlerAdapter from '../../adapters/influxDBHandlerAdapter';
+import InfluxDBHandlerAdapter from '../../iobAdapterHandler/influxDBHandlerAdapter';
 import CheckerTimer from '../../utils/adapterUtils/checkerTimer';
 import * as checkInitReadyUtil from '../../utils/adapterUtils/checkInitReady';
 import InfluxDBPointsHelper from '../../utils/adapterUtils/InfluxDBPointsHelper';

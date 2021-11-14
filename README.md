@@ -108,11 +108,13 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ### **WORK IN PROGRESS**
 
--   (swissglider) Sonoff Rename Adapter implemented (Basic, 4CH)
+-   (swissglider) Sonoff iobAdapterHandler implemented (Basic, 4CH)
+-   (swissglider) JeeLink iobAdapterHandler implemented (not yet testet)
+-   (swissglider) Hue iobAdapterHandler implemented
 
 ### 0.0.2-14 (2021-11-03)
 
--   (swissglider) Shelly Rename Adapter implemented
+-   (swissglider) Shelly iobAdapterHandler implemented
 
 ### 0.0.2-13 (2021-11-01)
 

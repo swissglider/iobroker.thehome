@@ -7,15 +7,20 @@
 
 import * as utils from '@iobroker/adapter-core';
 import ConfigAdapter from './adapters/configAdapter';
-import InfluxDBHandlerAdapter from './adapters/influxDBHandlerAdapter';
 import BatteryChecker from './checker/batteryChecker';
 import ConnectionChecker from './checker/connectionChecker';
+import DasWetterAdapter from './iobAdapterHandler/dasWetterAdapter';
+import HMIPAdapter from './iobAdapterHandler/hmipAdapter';
+import HueAdapter from './iobAdapterHandler/hueAdapter';
+import InfluxDBHandlerAdapter from './iobAdapterHandler/influxDBHandlerAdapter';
+import JeelinkAdapter from './iobAdapterHandler/jeelinkAdapter';
+import MiNameAdapter from './iobAdapterHandler/miNameAdapter';
+import NetatmoAdapter from './iobAdapterHandler/netatmoAdapter';
+import ShellyAdapter from './iobAdapterHandler/shellyAdapter';
+import SonoffAdapter from './iobAdapterHandler/sonoffAdapter';
+import SwissWeahterApiAdapter from './iobAdapterHandler/swissWeahterApiAdapter';
+import WeatherundergroundAdapter from './iobAdapterHandler/weatherUndergroundAdapter';
 import ConfigChangeListener from './listener/configChangeListener';
-import HMIPAdapter from './renameAdapter/hmipAdapter';
-import MiNameAdapter from './renameAdapter/miNameAdapter';
-import NetatmoAdapter from './renameAdapter/netatmoAdapter';
-import ShellyAdapter from './renameAdapter/shellyAdapter';
-import SonoffAdapter from './renameAdapter/sonoffAdapter';
 import AdapterUtilsFunctions from './utils/adapterUtils/adapterUtilsFunctions';
 import { T_IOBAdapter_Handler } from './utils/types/T_IOBAdapter_Handler';
 import { T_SubAdapter } from './utils/types/T_SubAdapter';
@@ -24,13 +29,18 @@ const errMsgNoAdaptName = { error: 'no adapter mentioned' };
 const errMsgAdaptNotInit = { error: 'adapter not correct initialized' };
 const errMsgStringAndID = { error: 'config must be a id on the object' };
 
-const renameAdapters: Record<string, T_IOBAdapter_Handler> = {
+const iobAdapterHandler: Record<string, T_IOBAdapter_Handler> = {
 	[InfluxDBHandlerAdapter.name]: InfluxDBHandlerAdapter,
 	[MiNameAdapter.name]: MiNameAdapter,
 	[NetatmoAdapter.name]: NetatmoAdapter,
 	[HMIPAdapter.name]: HMIPAdapter,
 	[ShellyAdapter.name]: ShellyAdapter,
 	[SonoffAdapter.name]: SonoffAdapter,
+	[WeatherundergroundAdapter.name]: WeatherundergroundAdapter,
+	[SwissWeahterApiAdapter.name]: SwissWeahterApiAdapter,
+	[DasWetterAdapter.name]: DasWetterAdapter,
+	[JeelinkAdapter.name]: JeelinkAdapter,
+	[HueAdapter.name]: HueAdapter,
 };
 
 const subAdapters: Record<string, T_SubAdapter> = {
@@ -63,7 +73,7 @@ class Thehome extends utils.Adapter {
 	 */
 	private async onReady(): Promise<void> {
 		await AdapterUtilsFunctions.checkIFStartable(this);
-		for (const adapt of Object.values(renameAdapters)) {
+		for (const adapt of Object.values(iobAdapterHandler)) {
 			if (adapt.init) {
 				await adapt.init(this);
 			}
@@ -80,7 +90,7 @@ class Thehome extends utils.Adapter {
 		this.unsubscribeForeignObjects('*', 'state');
 		this.unsubscribeForeignObjects('*', 'channel');
 		this.unsubscribeForeignObjects('*', 'device');
-		for (const adapt of Object.values(renameAdapters)) {
+		for (const adapt of Object.values(iobAdapterHandler)) {
 			if (adapt.destroy) {
 				await adapt.destroy(this);
 			}
@@ -175,7 +185,7 @@ class Thehome extends utils.Adapter {
 					default:
 						if (typeof obj.message !== 'string' && 'adapterName' in obj.message) {
 							const adaptName = msg.adapterName;
-							const adpater = renameAdapters[adaptName];
+							const adpater = iobAdapterHandler[adaptName];
 							if (adpater && adpater.onMessageFunc && obj.command in adpater.onMessageFunc) {
 								try {
 									const returnResult = await adpater.onMessageFunc[obj.command](this, msg);

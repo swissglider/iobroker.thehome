@@ -15,7 +15,18 @@ import getRandomString from '../helper/GetRandomKey';
 
 type T_GridComponent_Type = { adapterName: string; generalProps: T_General_Props };
 
-const adapterNames = ['MiNameAdapter', 'NetatmoAdapter', 'HMIPAdapter', 'ShellyAdapter', 'SonoffAdapter'];
+const adapterNames = [
+	'MiNameAdapter',
+	'NetatmoAdapter',
+	'HMIPAdapter',
+	'ShellyAdapter',
+	'SonoffAdapter',
+	'WeatherundergroundAdapter',
+	'SwissWeahterApiAdapter',
+	'DasWetterAdapter',
+	'JeelinkAdapter',
+	'HueAdapter',
+];
 
 const GridComponent: FC<T_GridComponent_Type> = ({ adapterName, generalProps }: T_GridComponent_Type): JSX.Element => {
 	const setSelectedTabTitle = useSetRecoilState(selectedTabTitle_State);

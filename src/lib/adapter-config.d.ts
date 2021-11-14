@@ -24,11 +24,9 @@ declare global {
 			MiNameAdapter_login: string;
 			MiNameAdapter_password: string;
 			MiNameAdapter_defaultCountry: string;
-			MiNameAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
-			NetatmoAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
-			HMIPAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
-			ShellyAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
-			SonoffAdapter_deviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
+			DeviceTypeFunctionMappings: Record<string, Record<string, Record<string, any>>>;
+			WeatherundergroundAdapter_lastObeserveTimeSinceMinutes: number;
+			DasWetterAdapter_lastObeserveTimeSinceMinutes: number;
 		}
 	}
 }
