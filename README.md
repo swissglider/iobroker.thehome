@@ -106,6 +106,10 @@ Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+
+-   (swissglider) AutoChangeWizard finished
+
 ### 0.0.2-15 (2021-11-14)
 
 -   (swissglider) Sonoff iobAdapterHandler implemented (Basic, 4CH)

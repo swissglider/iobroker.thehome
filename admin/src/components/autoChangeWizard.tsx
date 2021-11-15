@@ -12,8 +12,11 @@ import Circle from '../tools/Circle';
 import { Configure, Update } from 'grommet-icons';
 import I18n from '@iobroker/adapter-react/i18n';
 import getRandomString from '../helper/GetRandomKey';
+import AutoChangeWizardStepper from './AUTO_CHANGE_WIZARD/stepperWizard';
 
 type T_GridComponent_Type = { adapterName: string; generalProps: T_General_Props };
+
+const influxDBAdapterName = 'InfluxDBHandlerAdapter';
 
 const adapterNames = [
 	'MiNameAdapter',
@@ -38,7 +41,7 @@ const GridComponent: FC<T_GridComponent_Type> = ({ adapterName, generalProps }: 
 	const [canUpdate, setCanUpdate] = useState<boolean>(false);
 
 	const goto = (tabTitle: string): void => {
-		if (tabTitle === 'InfluxDBHandlerAdapter') {
+		if (tabTitle === influxDBAdapterName) {
 			setSelectedTabTitle(tabTitle);
 		} else {
 			setSelectedSubTabTitle(tabTitle);
@@ -70,7 +73,7 @@ const GridComponent: FC<T_GridComponent_Type> = ({ adapterName, generalProps }: 
 				.then((result: ioBroker.Message | undefined) => {
 					if (result as unknown as T_AdapterSingleStates) {
 						setSingleAdapterState(result as unknown as T_AdapterSingleStates);
-						if (result && adapterName !== 'InfluxDBHandlerAdapter') {
+						if (result && adapterName !== influxDBAdapterName) {
 							setCanUpdate(Object.values(result).every((e) => e === true));
 						}
 						setErrorStatus(result && 'error' in result ? (result as any).error : '');
@@ -81,7 +84,7 @@ const GridComponent: FC<T_GridComponent_Type> = ({ adapterName, generalProps }: 
 		} catch (error) {
 			setErrorStatus(error);
 		}
-		if (adapterName === 'InfluxDBHandlerAdapter') {
+		if (adapterName === influxDBAdapterName) {
 			setHasConfigSite(true);
 		} else {
 			if (selectedTab && selectedTab.subTabs) {
@@ -164,47 +167,88 @@ const GridComponent: FC<T_GridComponent_Type> = ({ adapterName, generalProps }: 
 };
 
 const AutoChangeNameWizard: FC<T_General_Props> = (props: T_General_Props): JSX.Element => {
+	const setSelectedTabTitle = useSetRecoilState(selectedTabTitle_State);
+	const [showSearchDialog, setShowSearchDialog] = useState<boolean>(false);
+	const [dbOK, setDBOK] = useState<boolean>(false);
+
+	const handleClose = () => {
+		setShowSearchDialog(false);
+	};
+
 	useEffect(() => {
-		return () => {
-			t: 't';
-		};
+		try {
+			props.socket
+				.sendTo(props.adapterInstanceName, 'getHealthStati', { adapterName: influxDBAdapterName })
+				.then((result: ioBroker.Message | undefined) => {
+					const _result = result as unknown as T_AdapterSingleStates;
+					setDBOK(Object.values(_result).every((e) => e === true));
+				});
+		} catch (error) {
+			setDBOK(false);
+		}
 	}, []);
 
 	return (
-		<Box fill="horizontal">
-			<Box
-				border={{ style: 'dotted' }}
-				gap="xsmall"
-				pad="small"
-				margin={{ vertical: 'small', horizontal: 'large' }}
-			>
-				<Text>DB Status:</Text>
-				<GridComponent adapterName="InfluxDBHandlerAdapter" generalProps={props} />
-			</Box>
-			<Box
-				border={{ style: 'dotted' }}
-				gap="xsmall"
-				pad="small"
-				margin={{ vertical: 'small', horizontal: 'large' }}
-			>
-				<Text>Adapter Status:</Text>
-				{adapterNames.map((adapterName) => (
-					<React.Fragment key={getRandomString(adapterName)}>
-						<GridComponent adapterName={adapterName} generalProps={props} />
-					</React.Fragment>
-				))}
-			</Box>
-			<Box
-				// border={{ style: 'dotted' }}
-				gap="xsmall"
-				pad="small"
-				margin={{ vertical: 'xsmall', horizontal: 'large' }}
-			>
-				<Box align="end">
-					<Button size="small" label="start Wizard" />
+		<>
+			<Box fill="horizontal">
+				<Box
+					border={{ style: 'dotted' }}
+					gap="xsmall"
+					pad="small"
+					margin={{ vertical: 'small', horizontal: 'large' }}
+				>
+					<Text>DB Status:</Text>
+					<GridComponent adapterName={influxDBAdapterName} generalProps={props} />
 				</Box>
+				{dbOK ? (
+					<>
+						<Box
+							border={{ style: 'dotted' }}
+							gap="xsmall"
+							pad="small"
+							margin={{ vertical: 'small', horizontal: 'large' }}
+						>
+							<Text>Adapter Status:</Text>
+							{adapterNames.map((adapterName) => (
+								<React.Fragment key={getRandomString(adapterName)}>
+									<GridComponent adapterName={adapterName} generalProps={props} />
+								</React.Fragment>
+							))}
+						</Box>
+						<Box gap="xsmall" pad="small" margin={{ vertical: 'xsmall', horizontal: 'large' }}>
+							<Box align="end">
+								<Button size="small" label="start Wizard" onClick={() => setShowSearchDialog(true)} />
+							</Box>
+						</Box>
+					</>
+				) : (
+					<Box
+						border={{ style: 'dotted' }}
+						gap="xsmall"
+						pad="small"
+						margin={{ vertical: 'small', horizontal: 'large' }}
+					>
+						<Text>
+							First {influxDBAdapterName} must be fully running, go to the {influxDBAdapterName}{' '}
+							Configuration Page :{' '}
+							<Button
+								tip={I18n.t('GoTo Configuration')}
+								size="small"
+								plain
+								icon={<Configure />}
+								onClick={() => setSelectedTabTitle(influxDBAdapterName)}
+							/>
+						</Text>
+					</Box>
+				)}
 			</Box>
-		</Box>
+			<AutoChangeWizardStepper
+				open={showSearchDialog}
+				onClose={handleClose}
+				adapterNames={adapterNames}
+				generalProps={props}
+			/>
+		</>
 	);
 };
 
