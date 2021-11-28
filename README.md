@@ -105,8 +105,7 @@ The ioBroker.admin interface will then be available at http://localhost:8081/
 Please refer to the [`dev-server` documentation](https://github.com/ioBroker/dev-server#command-line) for more details.
 
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 0.0.2-beta.1 (2021-11-28)
 
 -   (swissglider) Webapp Framework for Development Environment build
 -   (swissglider) Webapp Skeleton
