@@ -1,0 +1,38 @@
+<html lang="de">
+	<head>
+		<meta charset="utf-8" />
+    <link rel="icon" href="favicon.ico" />
+		<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+		<link rel="stylesheet" type="text/css" href="js/index.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#F2F2F2" />
+		<link rel="apple-touch-icon" href="logo192.png" />
+		<link rel="manifest" href="manifest.json" />
+		<title>TheHome - %NODE_ENV%</title>
+	</head>
+
+	<body>
+
+		<script>
+			if ('serviceWorker' in navigator) {
+			  window.addEventListener('load', function() {
+				navigator.serviceWorker.register('js/worker.js').then(function(registration) {
+				  console.log('Worker registration successful', registration.scope);
+				}, function(err) {
+				  console.log('Worker registration failed', err);
+				}).catch(function(err) {
+				  console.log(err);
+				});
+			  });
+			} else {
+			  console.log('Service Worker is not supported by browser.');
+			}
+		  </script>
+
+        <!-- this is where the React components are loaded into -->
+		<div id="root"></div>
+
+		<!-- load compiled React scripts -->
+		<script type="text/javascript" src="js/index.js"></script>
+	</body>
+</html>

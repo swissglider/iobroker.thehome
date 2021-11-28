@@ -44,6 +44,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.18.0",
+    "react-icons": "^4.3.1",
     "react-router-dom": "^5.3.0",
     "recoil": "^0.4.1",
     "regenerator-runtime": "^0.13.9",
@@ -96,14 +97,20 @@
     "main": false,
     "admin": {
       "distDir": "admin/build"
+    },
+    "www": {
+      "distDir": "www/js"
     }
   },
   "scripts": {
+    "copyReactClientApp": "sh ./script/copyReactClientApp.sh",
     "prebuild": "rimraf ./build",
     "build:parcel": "parcel build admin/src/index.tsx admin/src/tab.tsx --target admin",
+    "build:www": "npm run copyReactClientApp && parcel build www/src/index.tsx --target www",
     "build:ts": "tsc -p tsconfig.build.json",
-    "build": "npm run build:ts && npm run build:parcel",
+    "build": "npm run build:ts && npm run build:parcel && npm run build:www",
     "watch:parcel": "parcel admin/src/index.tsx admin/src/tab.tsx --target admin --dist-dir admin/build",
+    "watch:www": "parcel www/src/index.tsx --target www --dist-dir www/js",
     "watch:ts": "tsc -p tsconfig.build.json --watch",
     "watch": "npm run watch:ts",
     "test:ts": "mocha --config test/mocharc.custom.json src/**/*.test.ts",
@@ -112,7 +119,7 @@
     "test:integration": "mocha test/integration --exit",
     "test": "npm run test:ts && npm run test:package",
     "check": "tsc --noEmit",
-    "lint": "eslint --ext .ts,.tsx src/ admin/src/",
+    "lint": "eslint --ext .ts,.tsx src/ admin/src/ www/src/",
     "release": "release-script"
   },
   "bugs": {

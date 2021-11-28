@@ -11,7 +11,9 @@ Thumbs.db
 
 # i18n intermediate files
 admin/i18n/flat.txt
+wwww/i18n/flat.txt
 admin/i18n/*/flat.txt
+www/i18n/*/flat.txt
 
 .cache
 .parcel-cache
@@ -21,5 +23,32 @@ admin/i18n/*/flat.txt
 .dev-server/
 
 admin/build
+www/build
 build
 
+
+#reactClientApp
+
+# dependencies
+reactClientApp/thehome/node_modules
+reactClientApp/thehome/.pnp
+reactClientApp/thehome/.pnp.js
+
+# testing
+reactClientApp/thehome/coverage
+
+# production
+reactClientApp/thehome/build
+
+# misc
+reactClientApp/thehome/.DS_Store
+reactClientApp/thehome/.env.local
+reactClientApp/thehome/.env.development.local
+reactClientApp/thehome/.env.test.local
+reactClientApp/thehome/.env.production.local
+
+reactClientApp/thehome/npm-debug.log*
+reactClientApp/thehome/yarn-debug.log*
+reactClientApp/thehome/yarn-error.log*
+reactClientApp/thehome/.gitignore
+reactClientApp/thehome/README.md

@@ -12,6 +12,7 @@ appveyor.yaml
 
 # React sources for the Admin UI
 admin/src/
+www/src/
 
 # TypeScript sources and project configuration
 src/
@@ -29,7 +30,17 @@ maintenance/**$
 .dev-server/
 
 admin/build
+www/build
 build
 
 #parcel
 .parcel-cache
+
+#docu
+docu/
+
+#reactClientApp
+reactClientApp/
+
+#script
+script/

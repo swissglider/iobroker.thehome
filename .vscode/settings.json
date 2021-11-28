@@ -1,7 +1,6 @@
 {
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"eslint.enable": true,
-	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"[typescript]": {
 		"editor.codeActionsOnSave": {
@@ -13,5 +12,12 @@
 			"fileMatch": ["io-package.json"],
 			"url": "https://json.schemastore.org/io-package"
 		}
-	]
+	],
+	"editor.formatOnSave": true,
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	}
 }

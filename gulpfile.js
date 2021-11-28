@@ -143,6 +143,26 @@ gulp.task('translate', async function (done) {
 				fs.writeFileSync('./admin/i18n/' + l + '/translations.json', JSON.stringify(existing, null, 4));
 			}
 		}
+
+		if (fs.existsSync('./www/i18n/en/translations.json')) {
+			let enTranslations = require('./www/i18n/en/translations.json');
+			for (let l in languages) {
+				console.log('Translate Text: ' + l);
+				let existing = {};
+				if (fs.existsSync('./www/i18n/' + l + '/translations.json')) {
+					existing = require('./www/i18n/' + l + '/translations.json');
+				}
+				for (let t in enTranslations) {
+					if (!existing[t]) {
+						existing[t] = await translate(enTranslations[t], l, yandex);
+					}
+				}
+				if (!fs.existsSync('./www/i18n/' + l + '/')) {
+					fs.mkdirSync('./www/i18n/' + l + '/');
+				}
+				fs.writeFileSync('./www/i18n/' + l + '/translations.json', JSON.stringify(existing, null, 4));
+			}
+		}
 	}
 	fs.writeFileSync('io-package.json', JSON.stringify(iopackage, null, 4));
 });
