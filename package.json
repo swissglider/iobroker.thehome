@@ -29,7 +29,7 @@
     "@iobroker/adapter-react": "2.0.14",
     "@mui/icons-material": "^5.0.5",
     "@mui/material": "^5.0.5",
-    "@mui/styles": "^5.0.2",
+    "@mui/styles": "^5.11.7",
     "@mui/x-data-grid": "^4.0.1",
     "ajv": "^8.6.3",
     "babel-polyfill": "^6.26.0",
