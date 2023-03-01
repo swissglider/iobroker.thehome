@@ -23,7 +23,7 @@
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@hookform/resolvers": "^2.8.2",
-    "@influxdata/influxdb-client": "^1.20.0",
+    "@influxdata/influxdb-client": "^1.33.2",
     "@influxdata/influxdb-client-apis": "^1.18.0",
     "@iobroker/adapter-core": "^2.5.1",
     "@iobroker/adapter-react": "2.0.14",
